@@ -159,3 +159,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Integrate OAuth authentication with Alpaca - 2025-04-04
 # Change made for: Integrate OAuth authentication with Alpaca
+
+// Rebrand project as Zennic - 2025-04-04
+# Change made for: Rebrand project as Zennic
