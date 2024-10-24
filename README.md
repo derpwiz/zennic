@@ -162,3 +162,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Rebrand project as Zennic - 2025-04-04
 # Change made for: Rebrand project as Zennic
+
+// Update documentation for rebranding - 2025-04-04
+# Change made for: Update documentation for rebranding
