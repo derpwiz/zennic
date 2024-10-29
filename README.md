@@ -156,3 +156,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Implement dark mode toggle functionality - 2025-04-04
 # Change made for: Implement dark mode toggle functionality
+
+// Integrate OAuth authentication with Alpaca - 2025-04-04
+# Change made for: Integrate OAuth authentication with Alpaca
