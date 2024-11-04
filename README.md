@@ -150,3 +150,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Implement trading view with real-time data - 2025-04-04
 # Change made for: Implement trading view with real-time data
+
+// Fix position model and improve error handling - 2025-04-04
+# Change made for: Fix position model and improve error handling
