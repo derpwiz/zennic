@@ -144,3 +144,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Add user authentication framework - 2025-04-04
 # Change made for: Add user authentication framework
+
+// Implement settings management - 2025-04-04
+# Change made for: Implement settings management
