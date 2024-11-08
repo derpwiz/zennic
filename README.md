@@ -138,3 +138,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Integrate with financial data providers - 2025-04-04
 # Change made for: Integrate with financial data providers
+
+// Implement basic charting functionality - 2025-04-04
+# Change made for: Implement basic charting functionality
