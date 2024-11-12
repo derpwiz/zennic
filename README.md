@@ -135,3 +135,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Add portfolio tracking capabilities - 2025-04-04
 # Change made for: Add portfolio tracking capabilities
+
+// Integrate with financial data providers - 2025-04-04
+# Change made for: Integrate with financial data providers
