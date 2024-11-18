@@ -126,3 +126,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Initial implementation of trading functionality - 2025-04-04
 # Change made for: Initial implementation of trading functionality
+
+// Create basic UI components for dashboard - 2025-04-04
+# Change made for: Create basic UI components for dashboard
