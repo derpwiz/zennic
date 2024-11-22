@@ -123,3 +123,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Switch to macOS configuration for builds - 2025-04-04
 # Change made for: Switch to macOS configuration for builds
+
+// Initial implementation of trading functionality - 2025-04-04
+# Change made for: Initial implementation of trading functionality
