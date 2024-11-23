@@ -117,3 +117,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Fix dependency and build issues - 2025-04-04
 # Change made for: Fix dependency and build issues
+
+// Fix Charts dependency configuration - 2025-04-04
+# Change made for: Fix Charts dependency configuration
