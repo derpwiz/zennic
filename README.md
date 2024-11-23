@@ -120,3 +120,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Fix Charts dependency configuration - 2025-04-04
 # Change made for: Fix Charts dependency configuration
+
+// Switch to macOS configuration for builds - 2025-04-04
+# Change made for: Switch to macOS configuration for builds
