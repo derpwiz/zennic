@@ -114,3 +114,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Improve Swift Package Manager configuration - 2025-04-04
 # Change made for: Improve Swift Package Manager configuration
+
+// Fix dependency and build issues - 2025-04-04
+# Change made for: Fix dependency and build issues
