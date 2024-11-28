@@ -111,3 +111,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Switch to Swift Package Manager for dependencies - 2025-04-04
 # Change made for: Switch to Swift Package Manager for dependencies
+
+// Improve Swift Package Manager configuration - 2025-04-04
+# Change made for: Improve Swift Package Manager configuration
