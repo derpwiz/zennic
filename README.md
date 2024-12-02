@@ -108,3 +108,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Handle SwiftLint warnings in codebase - 2025-04-04
 # Change made for: Handle SwiftLint warnings in codebase
+
+// Switch to Swift Package Manager for dependencies - 2025-04-04
+# Change made for: Switch to Swift Package Manager for dependencies
