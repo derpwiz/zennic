@@ -102,3 +102,6 @@ Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zen
 
 // Set up GitHub Actions workflow for CI/CD - 2025-04-04
 # Change made for: Set up GitHub Actions workflow for CI/CD
+
+// Add workflow permissions for GitHub Pages - 2025-04-04
+# Change made for: Add workflow permissions for GitHub Pages
