@@ -39,3 +39,14 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# Git utility scripts
+create_commits.sh
+redate_git_commits.sh
+commit_messages.txt
+main_branch_commits.txt
+redate_fixed.sh
+redate_zsh.sh
+simple_redate.sh
+fix_redate_script.sh
+*redate*.sh
