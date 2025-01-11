@@ -1,0 +1,44 @@
+import SwiftUI
+import Combine
+
+class AppViewModel: ObservableObject {
+    @Published var selectedTab: NavigationItem = .dashboard
+    @Published var isLoading = false
+    @Published var currentAlert: AlertItem?
+    @Published var holdings: [PortfolioHolding] = []
+    @Published var isAuthenticated: Bool = false
+    
+    // API Keys and Settings
+    @AppStorage("alphaVantageApiKey") var alphaVantageApiKey: String = ""
+    @AppStorage("openAIApiKey") var openAIApiKey: String = ""
+    @AppStorage("requireAuthentication") var requireAuthentication: Bool = false
+    
+    // Services
+    private var marketDataService: MarketDataService
+    private var portfolioService: PortfolioService
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(alphaVantageApiKey: String = "") {
+        self.marketDataService = MarketDataService(apiKey: alphaVantageApiKey)
+        self.portfolioService = PortfolioService()
+        
+        // Subscribe to portfolio changes
+        portfolioService.$holdings
+            .assign(to: \AppViewModel.holdings, on: self)
+            .store(in: &cancellables)
+    }
+    
+    func addHolding(_ holding: PortfolioHolding) {
+        portfolioService.addHolding(holding)
+        showAlert(title: "Success", message: "Added \(holding.symbol) to portfolio")
+    }
+    
+    func removeHolding(_ holding: PortfolioHolding) {
+        portfolioService.removeHolding(holding)
+        showAlert(title: "Success", message: "Removed \(holding.symbol) from portfolio")
+    }
+    
+    private func showAlert(title: String, message: String) {
+        currentAlert = AlertItem(title: title, message: message)
+    }
+}

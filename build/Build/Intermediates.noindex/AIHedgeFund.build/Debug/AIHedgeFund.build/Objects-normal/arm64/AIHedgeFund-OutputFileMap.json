@@ -1,0 +1,148 @@
+{
+  "" : {
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFund-master.dia",
+    "emit-module-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFund-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFund-master-emit-module.dia",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFund-master.swiftdeps"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/AIHedgeFundApp.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFundApp.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFundApp.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFundApp.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFundApp.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFundApp.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFundApp.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFundApp.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AIHedgeFundApp~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Models/AlertItem.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AlertItem.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AlertItem.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AlertItem.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AlertItem.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AlertItem.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AlertItem.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AlertItem.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AlertItem~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Models/NavigationItem.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/NavigationItem.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/NavigationItem.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/NavigationItem.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/NavigationItem.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/NavigationItem.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/NavigationItem.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/NavigationItem.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/NavigationItem~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Services/MarketDataService.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/MarketDataService.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/MarketDataService.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/MarketDataService.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/MarketDataService.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/MarketDataService.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/MarketDataService.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/MarketDataService.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/MarketDataService~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Services/PortfolioService.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioService.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioService.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioService.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioService.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioService.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioService.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioService.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioService~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/ViewModels/AppViewModel.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AppViewModel.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AppViewModel.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AppViewModel.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AppViewModel.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AppViewModel.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AppViewModel.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AppViewModel.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AppViewModel~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Views/AnalysisView.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AnalysisView.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AnalysisView.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AnalysisView.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AnalysisView.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AnalysisView.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AnalysisView.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AnalysisView.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/AnalysisView~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Views/ContentView.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Views/DashboardView.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/DashboardView.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/DashboardView.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/DashboardView.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/DashboardView.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/DashboardView.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/DashboardView.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/DashboardView.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/DashboardView~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Views/PortfolioView.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioView.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioView.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioView.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioView.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioView.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioView.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioView.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/PortfolioView~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Views/SettingsView.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/SettingsView.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/SettingsView.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/SettingsView.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/SettingsView.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/SettingsView.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/SettingsView.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/SettingsView.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/SettingsView~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Views/Sidebar.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/Sidebar.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/Sidebar.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/Sidebar.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/Sidebar.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/Sidebar.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/Sidebar.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/Sidebar.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/Sidebar~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Views/TabContentView.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TabContentView.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TabContentView.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TabContentView.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TabContentView.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TabContentView.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TabContentView.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TabContentView.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TabContentView~partial.swiftmodule"
+  },
+  "/Users/derpwiz/Developer/AIHedgeFund/AIHedgeFund/Views/TradingView.swift" : {
+    "const-values" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TradingView.swiftconstvalues",
+    "dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TradingView.d",
+    "diagnostics" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TradingView.dia",
+    "index-unit-output-path" : "/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TradingView.o",
+    "llvm-bc" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TradingView.bc",
+    "object" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TradingView.o",
+    "swift-dependencies" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TradingView.swiftdeps",
+    "swiftmodule" : "/Users/derpwiz/Developer/AIHedgeFund/build/Build/Intermediates.noindex/AIHedgeFund.build/Debug/AIHedgeFund.build/Objects-normal/arm64/TradingView~partial.swiftmodule"
+  }
+}

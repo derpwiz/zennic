@@ -1,0 +1,28 @@
+name: AIHedgeFund
+options:
+  bundleIdPrefix: com.aihedgefund
+  deploymentTarget:
+    macOS: 14.0
+  
+targets:
+  AIHedgeFund:
+    type: application
+    platform: macOS
+    sources: 
+      - path: AIHedgeFund
+    info:
+      path: AIHedgeFund/Info.plist
+      properties:
+        CFBundleDisplayName: AIHedgeFund
+        LSApplicationCategoryType: public.app-category.finance
+        LSMinimumSystemVersion: "14.0"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.aihedgefund.app
+        SWIFT_VERSION: 5.0
+        MACOSX_DEPLOYMENT_TARGET: 14.0
+    entitlements:
+      path: AIHedgeFund/AIHedgeFund.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.network.client: true
