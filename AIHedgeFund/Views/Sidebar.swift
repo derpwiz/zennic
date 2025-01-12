@@ -1,10 +1,13 @@
 import SwiftUI
 
+/// Navigation sidebar view providing access to main app sections
+/// Displays a list of navigation items with icons and labels
 struct Sidebar: View {
-    @Binding var selection: NavigationItem
+    @Binding var selection: NavigationItem    // Currently selected navigation item
     
     var body: some View {
         List(selection: $selection) {
+            // Create navigation links for each main section of the app
             ForEach([
                 NavigationItem.dashboard,
                 NavigationItem.portfolio,
@@ -22,6 +25,7 @@ struct Sidebar: View {
     }
 }
 
+/// Preview provider for SwiftUI canvas
 struct Sidebar_Previews: PreviewProvider {
     static var previews: some View {
         Sidebar(selection: .constant(.dashboard))

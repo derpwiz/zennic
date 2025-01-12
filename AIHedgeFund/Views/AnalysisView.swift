@@ -1,11 +1,16 @@
+// Import required frameworks for UI and charting functionality
 import SwiftUI
 import Charts
 
+/// Main view for stock analysis functionality
+/// Provides comprehensive analysis tools including price charts, technical indicators,
+/// fundamentals data, and AI-powered analysis
 struct AnalysisView: View {
     @EnvironmentObject private var appViewModel: AppViewModel
     @State private var selectedTimeframe: Timeframe = .oneDay
     @State private var selectedSymbol = ""
     
+    /// Timeframe options for analysis charts and data
     enum Timeframe: String, CaseIterable {
         case oneDay = "1D"
         case oneWeek = "1W"
@@ -19,9 +24,11 @@ struct AnalysisView: View {
         NavigationStack {
             VStack {
                 HStack {
+                    /// Custom search bar component for symbol lookup
                     SearchBar(text: $selectedSymbol)
                         .frame(maxWidth: 200)
                     
+                    /// Picker for selecting timeframe
                     Picker("Timeframe", selection: $selectedTimeframe) {
                         ForEach(Timeframe.allCases, id: \.self) { timeframe in
                             Text(timeframe.rawValue)
@@ -31,22 +38,27 @@ struct AnalysisView: View {
                 }
                 .padding()
                 
+                /// Tab view for switching between different analysis tools
                 TabView {
+                    /// View component for displaying price charts
                     PriceChartView()
                         .tabItem {
                             Label("Price", systemImage: "chart.xyaxis.line")
                         }
                     
+                    /// View displaying various technical indicators in a grid layout
                     TechnicalIndicatorsView()
                         .tabItem {
                             Label("Technical", systemImage: "waveform.path.ecg")
                         }
                     
+                    /// View displaying fundamental financial data
                     FundamentalsView()
                         .tabItem {
                             Label("Fundamentals", systemImage: "doc.text")
                         }
                     
+                    /// View providing AI-powered market analysis and predictions
                     AIAnalysisView()
                         .tabItem {
                             Label("AI Analysis", systemImage: "brain")
@@ -58,6 +70,7 @@ struct AnalysisView: View {
     }
 }
 
+/// Custom search bar component for symbol lookup
 struct SearchBar: View {
     @Binding var text: String
     
@@ -72,6 +85,7 @@ struct SearchBar: View {
     }
 }
 
+/// View component for displaying price charts
 struct PriceChartView: View {
     var body: some View {
         GroupBox {
@@ -84,10 +98,12 @@ struct PriceChartView: View {
     }
 }
 
+/// View displaying various technical indicators in a grid layout
 struct TechnicalIndicatorsView: View {
     var body: some View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                /// Reusable card component for displaying technical indicators
                 TechnicalIndicatorCard(title: "Moving Averages", value: "Bullish")
                 TechnicalIndicatorCard(title: "RSI", value: "65.5")
                 TechnicalIndicatorCard(title: "MACD", value: "Bearish")
@@ -98,9 +114,10 @@ struct TechnicalIndicatorsView: View {
     }
 }
 
+/// Reusable card component for displaying technical indicators
 struct TechnicalIndicatorCard: View {
-    let title: String
-    let value: String
+    let title: String    // Name of the technical indicator
+    let value: String    // Current value or status of the indicator
     
     var body: some View {
         GroupBox(title) {
@@ -111,10 +128,12 @@ struct TechnicalIndicatorCard: View {
     }
 }
 
+/// View displaying fundamental financial data
 struct FundamentalsView: View {
     var body: some View {
         List {
             Section("Key Statistics") {
+                /// Reusable row component for displaying key-value information
                 InfoRow(label: "Market Cap", value: "$2.5T")
                 InfoRow(label: "P/E Ratio", value: "28.5")
                 InfoRow(label: "Dividend Yield", value: "0.65%")
@@ -132,9 +151,10 @@ struct FundamentalsView: View {
     }
 }
 
+/// Reusable row component for displaying key-value information
 struct InfoRow: View {
-    let label: String
-    let value: String
+    let label: String    // Description of the financial metric
+    let value: String    // Value of the financial metric
     
     var body: some View {
         HStack {
@@ -146,6 +166,7 @@ struct InfoRow: View {
     }
 }
 
+/// View providing AI-powered market analysis and predictions
 struct AIAnalysisView: View {
     var body: some View {
         ScrollView {
@@ -186,6 +207,7 @@ struct AIAnalysisView: View {
     }
 }
 
+/// Preview provider for SwiftUI canvas
 struct AnalysisView_Previews: PreviewProvider {
     static var previews: some View {
         AnalysisView()
