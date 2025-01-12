@@ -24,8 +24,17 @@ jobs:
       continue-on-error: true
       run: swiftlint lint --reporter github-actions-logging
       
+    - name: Cache SPM dependencies
+      uses: actions/cache@v3
+      with:
+        path: .build
+        key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+        restore-keys: |
+          ${{ runner.os }}-spm-
+      
     - name: Build and Test
       run: |
+        swift package clean
         swift package resolve
         swift build -v
         swift test -v --enable-code-coverage
