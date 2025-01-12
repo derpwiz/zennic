@@ -75,14 +75,14 @@ jobs:
     - name: Generate HTML Coverage Report
       run: |
         brew install lcov
-        genhtml coverage.lcov --output-directory coverage_report
+        genhtml coverage.lcov --output-directory docs/coverage_report
         
-    - name: Upload Coverage Report
+    - name: Upload Pages Artifact
       uses: actions/upload-pages-artifact@v2
       with:
-        path: coverage_report
+        path: docs
         
-  deploy-coverage:
+  deploy-pages:
     needs: quality-checks
     if: github.ref == 'refs/heads/main'
     permissions:
@@ -93,6 +93,6 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy Coverage Report to GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
