@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Select Xcode
+      run: sudo xcode-select -s /Applications/Xcode.app
+      
+    - name: Install SwiftLint
+      run: brew install swiftlint
+      
+    - name: Run SwiftLint
+      run: swiftlint lint --reporter github-actions-logging
+      
+    - name: Build
+      run: |
+        xcodebuild clean build \
+          -scheme AIHedgeFund \
+          -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest'
+          
+    - name: Run Tests
+      run: |
+        xcodebuild test \
+          -scheme AIHedgeFund \
+          -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest' \
+          -enableCodeCoverage YES
+          
+    - name: Upload Coverage Reports
+      uses: codecov/codecov-action@v3
