@@ -24,55 +24,20 @@ jobs:
       continue-on-error: true
       run: swiftlint lint --reporter github-actions-logging
       
-    - name: Build for Testing
+    - name: Build
+      run: swift build -v
+      
+    - name: Run tests
+      run: swift test -v --enable-code-coverage
+      
+    - name: Convert coverage data
       run: |
-        xcodebuild clean build-for-testing \
-          -scheme AIHedgeFund \
-          -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest'
+        xcrun llvm-cov export -format="lcov" \
+          .build/debug/AIHedgeFundPackageTests.xctest/Contents/MacOS/AIHedgeFundPackageTests \
+          -instr-profile .build/debug/codecov/default.profdata \
+          -ignore-filename-regex="(.build|Tests)" \
+          > coverage.lcov
           
-    - name: Run Tests with Coverage
-      run: |
-        xcodebuild test-without-building \
-          -scheme AIHedgeFund \
-          -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest' \
-          -enableCodeCoverage YES \
-          -resultBundlePath TestResults.xcresult
-          
-    - name: Convert Coverage to LCOV
-      run: |
-        xcrun xccov view --report --json TestResults.xcresult > coverage.json
-        echo "Converting Xcode coverage to LCOV format..."
-        echo '#!/usr/bin/env python3
-        import json
-        import sys
-        
-        def convert_to_lcov(coverage_data):
-            lcov_lines = []
-            for target in coverage_data["targets"]:
-                for file in target["files"]:
-                    if not any(x in file["path"] for x in ["/Tests/", "/UITests/", "View.swift"]):
-                        lcov_lines.append(f"SF:{file['path']}")
-                        for function in file["functions"]:
-                            lcov_lines.append(f"FN:{function['lineNumber']},{function['name']}")
-                            lcov_lines.append(f"FNDA:{function['executionCount']},{function['name']}")
-                        for line in file["lines"]:
-                            lcov_lines.append(f"DA:{line['lineNumber']},{line['executionCount']}")
-                        lcov_lines.append("end_of_record")
-            return "\n".join(lcov_lines)
-        
-        with open("coverage.json") as f:
-            coverage_data = json.load(f)
-            print(convert_to_lcov(coverage_data))' > convert_coverage.py
-        
-        chmod +x convert_coverage.py
-        ./convert_coverage.py > coverage.lcov
-        
-    - name: Create Coverage Report
-      uses: actions/upload-artifact@v3
-      with:
-        name: code-coverage-report
-        path: coverage.lcov
-        
     - name: Generate HTML Coverage Report
       run: |
         brew install lcov
