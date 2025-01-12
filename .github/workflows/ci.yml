@@ -29,17 +29,70 @@ jobs:
           -scheme AIHedgeFund \
           -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest'
           
-    - name: Run Tests
+    - name: Run Tests with Coverage
       run: |
         xcodebuild test-without-building \
           -scheme AIHedgeFund \
           -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest' \
-          -enableCodeCoverage YES
+          -enableCodeCoverage YES \
+          -resultBundlePath TestResults.xcresult
           
-    - name: Generate Code Coverage Report
-      uses: maxep/spm-lcov-action@0.3.1
-      
-    - name: Upload Coverage to Codecov
-      uses: codecov/codecov-action@v3
+    - name: Convert Coverage to LCOV
+      run: |
+        xcrun xccov view --report --json TestResults.xcresult > coverage.json
+        echo "Converting Xcode coverage to LCOV format..."
+        echo '#!/usr/bin/env python3
+        import json
+        import sys
+        
+        def convert_to_lcov(coverage_data):
+            lcov_lines = []
+            for target in coverage_data["targets"]:
+                for file in target["files"]:
+                    if not any(x in file["path"] for x in ["/Tests/", "/UITests/", "View.swift"]):
+                        lcov_lines.append(f"SF:{file['path']}")
+                        for function in file["functions"]:
+                            lcov_lines.append(f"FN:{function['lineNumber']},{function['name']}")
+                            lcov_lines.append(f"FNDA:{function['executionCount']},{function['name']}")
+                        for line in file["lines"]:
+                            lcov_lines.append(f"DA:{line['lineNumber']},{line['executionCount']}")
+                        lcov_lines.append("end_of_record")
+            return "\n".join(lcov_lines)
+        
+        with open("coverage.json") as f:
+            coverage_data = json.load(f)
+            print(convert_to_lcov(coverage_data))' > convert_coverage.py
+        
+        chmod +x convert_coverage.py
+        ./convert_coverage.py > coverage.lcov
+        
+    - name: Create Coverage Report
+      uses: actions/upload-artifact@v3
       with:
-        fail_ci_if_error: true
+        name: code-coverage-report
+        path: coverage.lcov
+        
+    - name: Generate HTML Coverage Report
+      run: |
+        brew install lcov
+        genhtml coverage.lcov --output-directory coverage_report
+        
+    - name: Upload Coverage Report
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: coverage_report
+        
+  deploy-coverage:
+    needs: quality-checks
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Coverage Report to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
