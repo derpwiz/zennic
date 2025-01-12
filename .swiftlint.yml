@@ -3,6 +3,9 @@ excluded:
   - DerivedData
   - fastlane
 
+disabled_rules:
+  - trailing_whitespace  # Disable trailing whitespace warnings
+
 opt_in_rules:
   - empty_count
   - empty_string
