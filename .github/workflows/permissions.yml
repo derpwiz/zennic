@@ -1,0 +1,6 @@
+name: Workflow Permissions
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
