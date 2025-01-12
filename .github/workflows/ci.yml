@@ -7,8 +7,8 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  quality-checks:
+    name: Code Quality and Tests
     runs-on: macos-latest
     
     steps:
@@ -23,18 +23,23 @@ jobs:
     - name: Run SwiftLint
       run: swiftlint lint --reporter github-actions-logging
       
-    - name: Build
+    - name: Build for Testing
       run: |
-        xcodebuild clean build \
+        xcodebuild clean build-for-testing \
           -scheme AIHedgeFund \
           -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest'
           
     - name: Run Tests
       run: |
-        xcodebuild test \
+        xcodebuild test-without-building \
           -scheme AIHedgeFund \
           -destination 'platform=iOS Simulator,name=iPhone 14 Pro,OS=latest' \
           -enableCodeCoverage YES
           
-    - name: Upload Coverage Reports
+    - name: Generate Code Coverage Report
+      uses: maxep/spm-lcov-action@0.3.1
+      
+    - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v3
+      with:
+        fail_ci_if_error: true
