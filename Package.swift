@@ -13,15 +13,16 @@ let package = Package(
             targets: ["AIHedgeFund"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/danielgindi/Charts.git", .upToNextMajor(from: "5.0.0"))
+        .package(url: "https://github.com/danielgindi/Charts.git", exact: "5.0.0")
     ],
     targets: [
         .target(
             name: "AIHedgeFund",
             dependencies: [
-                .product(name: "DGCharts", package: "Charts")
+                .product(name: "DGCharts", package: "Charts", condition: .when(platforms: [.iOS]))
             ],
-            path: "AIHedgeFund"),
+            path: "AIHedgeFund",
+            exclude: ["Resources"]),
         .testTarget(
             name: "AIHedgeFundTests",
             dependencies: ["AIHedgeFund"],
