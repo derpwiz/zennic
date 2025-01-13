@@ -5,7 +5,7 @@ let package = Package(
     name: "AIHedgeFund",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v16)
+        .macOS(.v13)
     ],
     products: [
         .library(
@@ -19,7 +19,7 @@ let package = Package(
         .target(
             name: "AIHedgeFund",
             dependencies: [
-                .product(name: "DGCharts", package: "Charts", condition: .when(platforms: [.iOS]))
+                .product(name: "DGCharts", package: "Charts", condition: .when(platforms: [.macOS]))
             ],
             path: "AIHedgeFund",
             exclude: ["Resources"]),
