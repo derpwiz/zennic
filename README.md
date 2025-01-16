@@ -1,4 +1,4 @@
-# AI Hedge Fund
+# Zennic
 
 A sophisticated macOS application that leverages artificial intelligence for portfolio management and trading decisions. Built with SwiftUI and modern Apple frameworks.
 
@@ -40,13 +40,13 @@ A sophisticated macOS application that leverages artificial intelligence for por
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/derpwiz/AIHedgeFund.git
+git clone https://github.com/derpwiz/zennic.git
 ```
 
 2. Open the project in Xcode:
 ```bash
-cd AIHedgeFund
-open AIHedgeFund.xcodeproj
+cd zennic
+open zennic.xcodeproj
 ```
 
 3. Configure API Keys:
@@ -98,4 +98,4 @@ This project is proprietary and confidential. All rights reserved.
 
 derpwiz - derpwiz@tandemtechnical.com
 
-Project Link: [https://github.com/derpwiz/AIHedgeFund](https://github.com/derpwiz/AIHedgeFund)
+Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zennic)
