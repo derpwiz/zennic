@@ -96,6 +96,6 @@ This project is proprietary and confidential. All rights reserved.
 
 ## Contact
 
-derpwiz - derpwiz@tandemtechnical.com
+derpwiz - derpwiz@sysctl.dev
 
 Project Link: [https://github.com/derpwiz/zennic](https://github.com/derpwiz/zennic)
