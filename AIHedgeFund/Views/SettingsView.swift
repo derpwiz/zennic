@@ -67,8 +67,8 @@ struct SettingsView: View {
             
             // API configuration section
             Section("API Keys") {
-                SecureField("Alpha Vantage API Key", text: $appViewModel.alphaVantageApiKey)
-                SecureField("OpenAI API Key", text: $appViewModel.openAIApiKey)
+                SecureField("Alpaca API Key", text: $appViewModel.alpacaApiKey)
+                SecureField("Alpaca API Secret", text: $appViewModel.alpacaApiSecret)
             }
             
             // App appearance settings

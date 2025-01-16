@@ -3,76 +3,127 @@ import Combine
 
 struct TradingView: View {
     @EnvironmentObject private var appViewModel: AppViewModel
-    @StateObject private var viewModel = TradingViewModel()
+    @StateObject private var viewModel: TradingViewModel
+    
+    init() {
+        let vm = TradingViewModel(
+            appViewModel: nil,
+            marketDataService: MarketDataService(
+                apiKey: UserDefaults.standard.string(forKey: "alpacaApiKey") ?? "",
+                apiSecret: UserDefaults.standard.string(forKey: "alpacaApiSecret") ?? ""
+            )
+        )
+        _viewModel = StateObject(wrappedValue: vm)
+    }
+    
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Order Details")) {
+                VStack {
+                    Text("Order Details")
+                        .font(.headline)
+                    
                     TextField("Symbol", text: $viewModel.symbol)
                         .textCase(.uppercase)
-                        .onChange(of: viewModel.symbol) { _ in
-                            viewModel.fetchQuote()
-                        }
+                    
                     Picker("Order Type", selection: $viewModel.orderType) {
                         ForEach(OrderType.allCases, id: \.self) { type in
-                            Text(type.rawValue)
+                            Text(type.rawValue.capitalized)
                         }
                     }
+                    
                     Picker("Action", selection: $viewModel.action) {
-                        ForEach(TradeAction.allCases, id: \.self) { action in
-                            Text(action.rawValue)
+                        ForEach(OrderSide.allCases, id: \.self) { side in
+                            Text(side.rawValue.capitalized)
                         }
                     }
+                    
                     TextField("Quantity", text: $viewModel.quantity)
+                    
                     if viewModel.orderType == .limit {
                         TextField("Limit Price", text: $viewModel.limitPrice)
                     }
                 }
-                Section(header: Text("Market Data")) {
+                .padding()
+                
+                VStack {
                     if viewModel.isLoading {
                         ProgressView()
                     } else {
-                        HStack {
-                            Text("Current Price")
-                            Spacer()
-                            Text(viewModel.currentPrice.map { String(format: "$%.2f", $0) } ?? "-")
+                        Button(action: {
+                            Task {
+                                await viewModel.submitOrder()
+                            }
+                        }) {
+                            Text("Submit Order")
+                                .frame(maxWidth: .infinity)
                         }
-                        HStack {
-                            Text("Bid")
-                            Spacer()
-                            Text(viewModel.bid.map { String(format: "$%.2f", $0) } ?? "-")
-                        }
-                        HStack {
-                            Text("Ask")
-                            Spacer()
-                            Text(viewModel.ask.map { String(format: "$%.2f", $0) } ?? "-")
-                        }
+                        .disabled(viewModel.symbol.isEmpty || viewModel.quantity.isEmpty || 
+                                (viewModel.orderType == .limit && viewModel.limitPrice.isEmpty))
                     }
                 }
-                Section(header: Text("Order Preview")) {
-                    HStack {
-                        Text("Estimated Cost")
-                        Spacer()
-                        Text(viewModel.estimatedCost.map { String(format: "$%.2f", $0) } ?? "-")
-                    }
-                    if let error = viewModel.error {
+                .padding()
+                
+                if let error = viewModel.error {
+                    VStack {
+                        Text("Error")
+                            .font(.headline)
                         Text(error)
                             .foregroundColor(.red)
                     }
-                    Button(action: { viewModel.submitOrder() }) {
-                        Text("Submit Order")
-                            .frame(maxWidth: .infinity)
+                    .padding()
+                }
+                
+                if let quote = viewModel.currentQuote {
+                    VStack {
+                        Text("Current Quote")
+                            .font(.headline)
+                        
+                        HStack {
+                            Text("Ask:")
+                            Spacer()
+                            Text(String(format: "%.2f", quote.ask ?? 0))
+                        }
+                        
+                        HStack {
+                            Text("Bid:")
+                            Spacer()
+                            Text(String(format: "%.2f", quote.bid ?? 0))
+                        }
                     }
-                    .buttonStyle(.borderedProminent)
-                    .disabled(!viewModel.canSubmitOrder)
+                    .padding()
+                }
+                
+                if !viewModel.positions.isEmpty {
+                    VStack {
+                        Text("Positions")
+                            .font(.headline)
+                        
+                        ForEach(viewModel.positions) { position in
+                            HStack {
+                                Text(position.symbol)
+                                Spacer()
+                                Text(String(format: "%.2f", position.shares))
+                            }
+                        }
+                    }
+                    .padding()
                 }
             }
             .navigationTitle("Trading")
-            .padding()
-            .alert("Order Submitted", isPresented: $viewModel.showOrderSuccess) {
+            .alert("Order Status", isPresented: $viewModel.showOrderAlert) {
                 Button("OK", role: .cancel) { }
             } message: {
-                Text("Your order has been submitted successfully.")
+                Text(viewModel.orderAlertMessage)
+            }
+            .task {
+                await viewModel.loadPositions()
+            }
+            .onAppear {
+                // Update the MarketDataService with the latest API keys
+                let apiKey = UserDefaults.standard.string(forKey: "alpacaApiKey") ?? ""
+                let apiSecret = UserDefaults.standard.string(forKey: "alpacaApiSecret") ?? ""
+                viewModel.updateMarketDataService(apiKey: apiKey, apiSecret: apiSecret)
             }
         }
     }
@@ -82,111 +133,132 @@ struct TradingView: View {
 final class TradingViewModel: ObservableObject {
     @Published var symbol = ""
     @Published var orderType: OrderType = .market
-    @Published var action: TradeAction = .buy
+    @Published var action: OrderSide = .buy
     @Published var quantity = ""
     @Published var limitPrice = ""
-    @Published private(set) var currentPrice: Double?
-    @Published private(set) var bid: Double?
-    @Published private(set) var ask: Double?
+    @Published private(set) var currentQuote: AlpacaQuote?
+    @Published private(set) var positions: [PortfolioHolding] = []
     @Published private(set) var isLoading = false
     @Published private(set) var error: String?
-    @Published var showOrderSuccess = false
+    @Published var showOrderAlert = false
+    @Published private(set) var orderAlertMessage = ""
+    
     private var cancellables = Set<AnyCancellable>()
     private var marketDataService: MarketDataService
+    private weak var appViewModel: AppViewModel?
     
-    init(marketDataService: MarketDataService? = nil) {
-        if let service = marketDataService {
-            self.marketDataService = service
-        } else {
-            // Create a placeholder service, will be replaced in setup
-            self.marketDataService = MarketDataService(apiKey: "")
-        }
-        Task {
-            await setup()
-        }
+    init(appViewModel: AppViewModel?, marketDataService: MarketDataService) {
+        self.appViewModel = appViewModel
+        self.marketDataService = marketDataService
+        setupBindings()
     }
     
-    private func setup() async {
-        if !marketDataService.hasValidAPIKey {
-            await withCheckedContinuation { continuation in
-                self.marketDataService = MarketDataService(apiKey: "YOUR_API_KEY")
-                continuation.resume()
-            }
-        }
+    func updateMarketDataService(apiKey: String, apiSecret: String) {
+        marketDataService = MarketDataService(apiKey: apiKey, apiSecret: apiSecret)
+        setupBindings()
     }
     
-    var estimatedCost: Double? {
-        guard let quantity = Double(quantity) else { return nil }
-        let price = orderType == .limit ? Double(limitPrice) ?? currentPrice : currentPrice
-        guard let price = price else { return nil }
-        return quantity * price
-    }
-    var canSubmitOrder: Bool {
-        guard !symbol.isEmpty,
-              let quantity = Double(quantity),
-              quantity > 0 else {
-            return false
-        }
-        if orderType == .limit {
-            guard let limitPrice = Double(limitPrice),
-                  limitPrice > 0 else {
-                return false
-            }
-        }
-        return currentPrice != nil && error == nil
-    }
-    func fetchQuote() {
-        guard !symbol.isEmpty else {
-            currentPrice = nil
-            bid = nil
-            ask = nil
-            return
-        }
-        isLoading = true
-        error = nil
-        marketDataService.fetchStockPrice(symbol: symbol)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion {
-                    self?.error = error.localizedDescription
+    private func setupBindings() {
+        $symbol
+            .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+            .sink { [weak self] symbol in
+                guard !symbol.isEmpty else {
+                    self?.currentQuote = nil
+                    return
                 }
-            } receiveValue: { [weak self] price in
-                self?.currentPrice = price
-                // Simulate bid/ask spread
-                self?.bid = price * 0.999
-                self?.ask = price * 1.001
+                self?.fetchQuote()
             }
             .store(in: &cancellables)
     }
-    func submitOrder() {
-        guard canSubmitOrder else { return }
-        // Simulate order submission
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-            self?.showOrderSuccess = true
-            self?.resetForm()
+    
+    private func fetchQuote() {
+        marketDataService.getQuote(for: symbol)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] completion in
+                if case .failure(let error) = completion {
+                    self?.error = error.localizedDescription
+                }
+            } receiveValue: { [weak self] quote in
+                self?.currentQuote = quote
+                self?.error = nil
+            }
+            .store(in: &cancellables)
+    }
+    
+    public func loadPositions() async {
+        isLoading = true
+        error = nil
+        
+        do {
+            let alpacaPositions = try await marketDataService.getPositions()
+            positions = try alpacaPositions.compactMap { position in
+                guard let shares = Double(position.qty),
+                      let purchasePrice = Double(position.costBasis) else {
+                    print("Error converting numeric values for position \(position.symbol)")
+                    return nil
+                }
+                
+                do {
+                    return try PortfolioHolding(
+                        symbol: position.symbol,
+                        shares: shares,
+                        purchasePrice: purchasePrice,
+                        purchaseDate: Date()
+                    )
+                } catch {
+                    print("Error creating PortfolioHolding for \(position.symbol): \(error)")
+                    return nil
+                }
+            }
+        } catch {
+            self.error = error.localizedDescription
         }
+        
+        isLoading = false
     }
-    private func resetForm() {
-        symbol = ""
-        quantity = ""
-        limitPrice = ""
-        orderType = .market
-        action = .buy
-        currentPrice = nil
-        bid = nil
-        ask = nil
+    
+    func submitOrder() async {
+        guard canSubmitOrder,
+              let qty = Double(quantity) else { return }
+        
+        let limitPriceValue = Double(limitPrice)
+        isLoading = true
+        error = nil
+        
+        do {
+            let order = try await marketDataService.placeOrder(
+                symbol: symbol,
+                qty: qty,
+                side: action,
+                type: orderType,
+                timeInForce: .day,
+                limitPrice: limitPriceValue
+            )
+            
+            orderAlertMessage = "Order placed successfully: \(order.id)"
+            showOrderAlert = true
+            await loadPositions()
+        } catch {
+            self.error = error.localizedDescription
+        }
+        
+        isLoading = false
+    }
+    
+    private var canSubmitOrder: Bool {
+        !symbol.isEmpty && !quantity.isEmpty && 
+        (orderType != .limit || !limitPrice.isEmpty)
     }
 }
 
-enum OrderType: String, CaseIterable {
-    case market = "Market"
-    case limit = "Limit"
+// Make OrderType conform to CaseIterable
+extension OrderType: CaseIterable {
+    static var allCases: [OrderType] = [.market, .limit]
 }
 
-enum TradeAction: String, CaseIterable {
-    case buy = "Buy"
-    case sell = "Sell"
+// Make OrderSide conform to CaseIterable
+extension OrderSide: CaseIterable {
+    static var allCases: [OrderSide] = [.buy, .sell]
 }
 
 struct TradingView_Previews: PreviewProvider {

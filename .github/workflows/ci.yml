@@ -16,6 +16,8 @@ jobs:
     
     - name: Set up Swift
       uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: "5.9.2"
       
     - name: Install SwiftLint
       run: brew install swiftlint
@@ -38,6 +40,9 @@ jobs:
         swift package resolve
         swift build -v
         swift test -v --enable-code-coverage
+      env:
+        DEVELOPER_DIR: /Applications/Xcode.app/Contents/Developer
+        MACOSX_DEPLOYMENT_TARGET: 13.0
       
     - name: Generate Coverage Report
       run: |

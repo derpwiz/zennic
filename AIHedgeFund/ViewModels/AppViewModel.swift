@@ -10,8 +10,8 @@ final class AppViewModel: ObservableObject {
     @Published var isAuthenticated: Bool = false
     
     // API Keys and Settings
-    @AppStorage("alphaVantageApiKey") var alphaVantageApiKey: String = ""
-    @AppStorage("openAIApiKey") var openAIApiKey: String = ""
+    @AppStorage("alpacaApiKey") var alpacaApiKey: String = ""
+    @AppStorage("alpacaApiSecret") var alpacaApiSecret: String = ""
     @AppStorage("requireAuthentication") var requireAuthentication: Bool = false
     
     // Services
@@ -19,8 +19,8 @@ final class AppViewModel: ObservableObject {
     private var portfolioService: PortfolioService
     private var cancellables = Set<AnyCancellable>()
     
-    init(alphaVantageApiKey: String = "") {
-        self.marketDataService = MarketDataService(apiKey: alphaVantageApiKey)
+    init(alpacaApiKey: String = "", alpacaApiSecret: String = "") {
+        self.marketDataService = MarketDataService(apiKey: alpacaApiKey, apiSecret: alpacaApiSecret)
         self.portfolioService = PortfolioService()
         
         // Subscribe to portfolio changes
