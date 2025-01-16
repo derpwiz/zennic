@@ -1,6 +1,5 @@
 // Import required frameworks for UI and charting functionality
 import SwiftUI
-import Charts
 
 /// Main view for stock analysis functionality
 /// Provides comprehensive analysis tools including price charts, technical indicators,
@@ -89,10 +88,8 @@ struct SearchBar: View {
 struct PriceChartView: View {
     var body: some View {
         GroupBox {
-            Chart {
-                // Add chart data here
-            }
-            .frame(height: 400)
+            Text("Price Chart Coming Soon")
+                .frame(height: 400)
         }
         .padding()
     }

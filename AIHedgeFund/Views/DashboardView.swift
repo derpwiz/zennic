@@ -1,5 +1,4 @@
 import SwiftUI
-import Charts
 
 struct DashboardView: View {
     @EnvironmentObject private var appViewModel: AppViewModel

@@ -1,7 +1,8 @@
 import SwiftUI
 import Combine
 
-class AppViewModel: ObservableObject {
+@MainActor
+final class AppViewModel: ObservableObject {
     @Published var selectedTab: NavigationItem = .dashboard
     @Published var isLoading = false
     @Published var currentAlert: AlertItem?
@@ -24,7 +25,10 @@ class AppViewModel: ObservableObject {
         
         // Subscribe to portfolio changes
         portfolioService.$holdings
-            .assign(to: \AppViewModel.holdings, on: self)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] holdings in
+                self?.holdings = holdings
+            }
             .store(in: &cancellables)
     }
     

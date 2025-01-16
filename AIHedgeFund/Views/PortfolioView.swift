@@ -67,15 +67,19 @@ struct AddHoldingView: View {
                     Button("Add") {
                         if let shares = Double(shares),
                            let price = Double(purchasePrice) {
-                            let holding = PortfolioHolding(
-                                id: UUID(),
-                                symbol: symbol.uppercased(),
-                                shares: shares,
-                                purchasePrice: price,
-                                purchaseDate: Date()
-                            )
-                            appViewModel.addHolding(holding)
-                            dismiss()
+                            do {
+                                let holding = try PortfolioHolding(
+                                    id: UUID(),
+                                    symbol: symbol.uppercased(),
+                                    shares: shares,
+                                    purchasePrice: price,
+                                    purchaseDate: Date()
+                                )
+                                appViewModel.addHolding(holding)
+                                dismiss()
+                            } catch {
+                                print("Error creating holding: \(error)")
+                            }
                         }
                     }
                     .disabled(symbol.isEmpty || shares.isEmpty || purchasePrice.isEmpty)
