@@ -1,28 +1,28 @@
-name: AIHedgeFund
+name: zennic
 options:
-  bundleIdPrefix: com.aihedgefund
+  bundleIdPrefix: com.zennic
   deploymentTarget:
     macOS: 14.0
   
 targets:
-  AIHedgeFund:
+  zennic:
     type: application
     platform: macOS
     sources: 
-      - path: AIHedgeFund
+      - path: zennic
     info:
-      path: AIHedgeFund/Info.plist
+      path: zennic/Info.plist
       properties:
-        CFBundleDisplayName: AIHedgeFund
+        CFBundleDisplayName: zennic
         LSApplicationCategoryType: public.app-category.finance
         LSMinimumSystemVersion: "14.0"
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.aihedgefund.app
+        PRODUCT_BUNDLE_IDENTIFIER: com.zennic.app
         SWIFT_VERSION: 5.0
         MACOSX_DEPLOYMENT_TARGET: 14.0
     entitlements:
-      path: AIHedgeFund/AIHedgeFund.entitlements
+      path: zennic/zennic.entitlements
       properties:
         com.apple.security.app-sandbox: true
         com.apple.security.network.client: true

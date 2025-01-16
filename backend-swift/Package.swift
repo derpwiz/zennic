@@ -2,7 +2,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "AIHedgeFundAPI",
+    name: "zennicAPI",
     platforms: [
         .macOS(.v13)
     ],

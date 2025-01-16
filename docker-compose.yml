@@ -8,7 +8,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/aihedgefund
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/zennic
       - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET=your_jwt_secret_key
     depends_on:
@@ -22,7 +22,7 @@ services:
     ports:
       - "8001:8000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/aihedgefund
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/zennic
       - REDIS_URL=redis://redis:6379/0
     depends_on:
       - db
@@ -33,7 +33,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=aihedgefund
+      - POSTGRES_DB=zennic
     ports:
       - "5432:5432"
     volumes:

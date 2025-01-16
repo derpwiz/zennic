@@ -2,30 +2,30 @@
 import PackageDescription
 
 let package = Package(
-    name: "AIHedgeFund",
+    name: "zennic",
     defaultLocalization: "en",
     platforms: [
         .macOS(.v13)
     ],
     products: [
         .library(
-            name: "AIHedgeFund",
-            targets: ["AIHedgeFund"]),
+            name: "zennic",
+            targets: ["zennic"]),
     ],
     dependencies: [
         .package(url: "https://github.com/danielgindi/Charts.git", exact: "5.0.0")
     ],
     targets: [
         .target(
-            name: "AIHedgeFund",
+            name: "zennic",
             dependencies: [
                 .product(name: "DGCharts", package: "Charts", condition: .when(platforms: [.macOS]))
             ],
             path: "AIHedgeFund",
             exclude: ["Resources"]),
         .testTarget(
-            name: "AIHedgeFundTests",
-            dependencies: ["AIHedgeFund"],
+            name: "zennicTests",
+            dependencies: ["zennic"],
             path: "AIHedgeFundTests"),
     ],
     swiftLanguageVersions: [.v5]
