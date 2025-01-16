@@ -9,6 +9,10 @@ struct SettingsView: View {
     @AppStorage("enableNotifications") private var enableNotifications = true  // Persistent storage for notifications preference
     @State private var showingAuthenticationError = false                 // Controls visibility of authentication error alert
     @State private var authenticationError: String = ""                   // Stores authentication error message
+    @State private var showingOAuthModal = false                         // Controls visibility of OAuth modal
+    @State private var isConnectingWithOAuth = false                     // Loading state for OAuth connection
+    @State private var showingOAuthError = false                         // Controls visibility of OAuth error alert
+    @State private var oauthError: String = ""                           // Stores OAuth error message
     
     /// Authenticates user using device biometrics (Touch ID/Face ID)
     /// - Parameter completion: Closure called with authentication result (success/failure)
@@ -67,8 +71,42 @@ struct SettingsView: View {
             
             // API configuration section
             Section("API Keys") {
-                SecureField("Alpaca API Key", text: $appViewModel.alpacaApiKey)
-                SecureField("Alpaca API Secret", text: $appViewModel.alpacaApiSecret)
+                SecureField("Alpaca API Key", text: Binding(
+                    get: { appViewModel.alpacaApiKey },
+                    set: { newValue in
+                        appViewModel.alpacaApiKey = newValue
+                        appViewModel.saveSettings()
+                    }
+                ))
+                SecureField("Alpaca API Secret", text: Binding(
+                    get: { appViewModel.alpacaApiSecret },
+                    set: { newValue in
+                        appViewModel.alpacaApiSecret = newValue
+                        appViewModel.saveSettings()
+                    }
+                ))
+                
+                Button(action: {
+                    showingOAuthModal = true
+                }) {
+                    HStack {
+                        Image(systemName: "link.badge.plus")
+                        Text("Connect with OAuth")
+                    }
+                }
+                .disabled(appViewModel.alpacaApiKey.isEmpty || appViewModel.alpacaApiSecret.isEmpty)
+                
+                if !appViewModel.alpacaApiKey.isEmpty && !appViewModel.alpacaApiSecret.isEmpty {
+                    if appViewModel.isOAuthTokenValid {
+                        Text("Connected with OAuth")
+                            .foregroundColor(.green)
+                            .font(.callout)
+                    } else {
+                        Text("Please connect with OAuth to verify your API keys")
+                            .foregroundColor(.secondary)
+                            .font(.callout)
+                    }
+                }
             }
             
             // App appearance settings
@@ -89,8 +127,13 @@ struct SettingsView: View {
             
             // Trading-related settings
             Section("Trading") {
-                Toggle("Confirm Orders", isOn: .constant(true))
-                Toggle("Show Order Preview", isOn: .constant(true))
+                Toggle("Paper Trading", isOn: $appViewModel.isPaperTrading)
+                Toggle("Auto-Trading", isOn: $appViewModel.isAutoTradingEnabled)
+                
+                if appViewModel.isAutoTradingEnabled {
+                    Toggle("Risk Management", isOn: $appViewModel.isRiskManagementEnabled)
+                    Toggle("Position Sizing", isOn: $appViewModel.isPositionSizingEnabled)
+                }
             }
             
             // Data management options
@@ -122,10 +165,84 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .sheet(isPresented: $showingOAuthModal) {
+            NavigationView {
+                VStack {
+                    if isConnectingWithOAuth {
+                        ProgressView("Connecting to Alpaca...")
+                    } else {
+                        Text("Connect your Alpaca account")
+                            .font(.headline)
+                            .padding()
+                        
+                        Text("This will verify your API keys and enable trading.")
+                            .foregroundColor(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                        
+                        Button(action: {
+                            connectWithOAuth()
+                        }) {
+                            HStack {
+                                Image(systemName: "link")
+                                Text("Connect with Alpaca")
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.accentColor)
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                        }
+                        .padding()
+                    }
+                }
+                .padding()
+                .navigationTitle("Connect Account")
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            showingOAuthModal = false
+                        }
+                    }
+                }
+            }
+        }
         .alert("Authentication Error", isPresented: $showingAuthenticationError) {
             Button("OK", role: .cancel) { }
         } message: {
             Text(authenticationError)
+        }
+        .alert("OAuth Error", isPresented: $showingOAuthError) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text(oauthError)
+        }
+    }
+    
+    private func connectWithOAuth() {
+        isConnectingWithOAuth = true
+        
+        Task {
+            do {
+                let service = AlpacaService.shared
+                let response = try await service.authenticateWithAlpaca()
+                
+                // Store the OAuth response
+                await MainActor.run {
+                    appViewModel.alpacaOAuthToken = response.accessToken
+                    appViewModel.alpacaOAuthTokenExpiration = Date().addingTimeInterval(TimeInterval(response.expiresIn))
+                    showingOAuthModal = false
+                }
+            } catch {
+                await MainActor.run {
+                    oauthError = error.localizedDescription
+                    showingOAuthError = true
+                }
+            }
+            
+            await MainActor.run {
+                isConnectingWithOAuth = false
+            }
         }
     }
 }

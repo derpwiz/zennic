@@ -105,4 +105,45 @@ enum AppModels {
         let error: Bool
         let reason: String
     }
+    
+    // Request model for OAuth
+    public struct AlpacaOAuthRequest: Codable {
+        let clientId: String
+        let redirectUri: String
+        let responseType: String
+        let scope: String
+        
+        enum CodingKeys: String, CodingKey {
+            case clientId = "client_id"
+            case redirectUri = "redirect_uri"
+            case responseType = "response_type"
+            case scope
+        }
+    }
+    
+    // Response model for OAuth
+    public struct AlpacaOAuthResponse: Codable {
+        let accessToken: String
+        let tokenType: String
+        let expiresIn: Int
+        let scope: String
+        
+        enum CodingKeys: String, CodingKey {
+            case accessToken = "access_token"
+            case tokenType = "token_type"
+            case expiresIn = "expires_in"
+            case scope
+        }
+    }
+    
+    // Error model for OAuth
+    public struct AlpacaOAuthError: Codable {
+        let error: String
+        let errorDescription: String
+        
+        enum CodingKeys: String, CodingKey {
+            case error
+            case errorDescription = "error_description"
+        }
+    }
 }

@@ -24,5 +24,16 @@
 	<string>public.app-category.finance</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>14.0</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.aihedgefund.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>aihedgefund</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
