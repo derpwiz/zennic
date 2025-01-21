@@ -18,6 +18,7 @@ final class AppViewModel: ObservableObject {
     @Published var isAutoTradingEnabled: Bool = false
     @Published var isRiskManagementEnabled: Bool = true
     @Published var isPositionSizingEnabled: Bool = true
+    @Published var realTimeMarket: RealTimeMarketViewModel
     
     // Services
     private var marketDataService: MarketDataService
@@ -28,6 +29,12 @@ final class AppViewModel: ObservableObject {
     init(alpacaApiKey: String = "", alpacaApiSecret: String = "") {
         self.marketDataService = MarketDataService(apiKey: alpacaApiKey, apiSecret: alpacaApiSecret)
         self.portfolioService = PortfolioService()
+        
+        // Initialize real-time market data with stored API credentials
+        self.realTimeMarket = RealTimeMarketViewModel(
+            apiKey: userDefaults.string(forKey: "alpacaApiKey") ?? "",
+            apiSecret: userDefaults.string(forKey: "alpacaApiSecret") ?? ""
+        )
         
         // Load saved settings
         self.requireAuthentication = userDefaults.bool(forKey: "requireAuthentication")
@@ -47,6 +54,17 @@ final class AppViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] holdings in
                 self?.holdings = holdings
+            }
+            .store(in: &cancellables)
+        
+        // Connect to WebSocket when authenticated
+        $isAuthenticated
+            .sink { [weak self] authenticated in
+                if authenticated {
+                    self?.realTimeMarket.connect()
+                } else {
+                    self?.realTimeMarket.disconnect()
+                }
             }
             .store(in: &cancellables)
     }

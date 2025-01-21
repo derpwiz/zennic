@@ -103,87 +103,192 @@ final class MarketDataService {
         let (data, _) = try await session.data(for: request)
         return try JSONDecoder().decode(AlpacaOrder.self, from: data)
     }
+    
+    /// Fetches historical bar data for a symbol
+    /// - Parameters:
+    ///   - symbol: The stock symbol
+    ///   - timeframe: Timeframe for each bar (1Min, 5Min, 15Min, 1H, 1D)
+    ///   - start: Start date
+    ///   - end: End date (optional, defaults to now)
+    /// - Returns: Array of CandleStickData
+    func getHistoricalBars(
+        symbol: String,
+        timeframe: String,
+        start: Date,
+        end: Date? = nil
+    ) async throws -> [CandleStickData] {
+        var components = URLComponents(url: baseURL.appendingPathComponent("bars"), resolvingAgainstBaseURL: true)!
+        components.queryItems = [
+            URLQueryItem(name: "symbols", value: symbol),
+            URLQueryItem(name: "timeframe", value: timeframe),
+            URLQueryItem(name: "start", value: formatDate(start)),
+            URLQueryItem(name: "limit", value: "1000")
+        ]
+        
+        if let end = end {
+            components.queryItems?.append(URLQueryItem(name: "end", value: formatDate(end)))
+        }
+        
+        guard let url = components.url else {
+            throw MarketDataError.invalidResponse
+        }
+        
+        let (data, _) = try await session.data(from: url)
+        let response = try JSONDecoder().decode(BarsResponse.self, from: data)
+        
+        return response.bars.map { bar in
+            CandleStickData(
+                date: bar.timestamp,
+                open: bar.openPrice,
+                high: bar.highPrice,
+                low: bar.lowPrice,
+                close: bar.closePrice,
+                volume: bar.volume
+            )
+        }
+    }
+    
+    /// Fetches trade data for portfolio performance tracking
+    /// - Parameters:
+    ///   - symbols: Array of stock symbols
+    ///   - start: Start date
+    ///   - end: End date (optional, defaults to now)
+    /// - Returns: Dictionary of symbol to array of PricePoint
+    func getHistoricalTrades(
+        symbols: [String],
+        start: Date,
+        end: Date? = nil
+    ) async throws -> [String: [PricePoint]] {
+        var result: [String: [PricePoint]] = [:]
+        
+        for symbol in symbols {
+            let bars = try await getHistoricalBars(
+                symbol: symbol,
+                timeframe: "1Min",
+                start: start,
+                end: end
+            )
+            
+            result[symbol] = bars.map { PricePoint(date: $0.date, price: $0.close) }
+        }
+        
+        return result
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime]
+        return formatter.string(from: date)
+    }
+}
+
+// MARK: - Response Models
+
+struct BarsResponse: Codable {
+    let bars: [Bar]
+    
+    enum CodingKeys: String, CodingKey {
+        case bars = "bars"
+    }
+}
+
+struct Bar: Codable {
+    let timestamp: Date
+    let openPrice: Double
+    let highPrice: Double
+    let lowPrice: Double
+    let closePrice: Double
+    let volume: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case timestamp = "t"
+        case openPrice = "o"
+        case highPrice = "h"
+        case lowPrice = "l"
+        case closePrice = "c"
+        case volume = "v"
+    }
 }
 
 // Move these models to a separate file
-// struct AlpacaQuote: Codable {
-//     let ask: Double?
-//     let bid: Double?
-//     let askSize: Int?
-//     let bidSize: Int?
-//     let timestamp: Date?
-// }
+struct AlpacaQuote: Codable {
+    let ask: Double?
+    let bid: Double?
+    let askSize: Int?
+    let bidSize: Int?
+    let timestamp: Date?
+}
 
-// struct AlpacaPosition: Codable {
-//     let symbol: String
-//     let qty: String
-//     let costBasis: String
-//     let marketValue: String
-//     let unrealizedPL: String
-//     let currentPrice: String
-//     let lastDayPrice: String
-//     let changeToday: String
-//     let assetId: String
-//     let assetClass: String
+struct AlpacaPosition: Codable {
+    let symbol: String
+    let qty: String
+    let costBasis: String
+    let marketValue: String
+    let unrealizedPL: String
+    let currentPrice: String
+    let lastDayPrice: String
+    let changeToday: String
+    let assetId: String
+    let assetClass: String
     
-//     enum CodingKeys: String, CodingKey {
-//         case symbol
-//         case qty
-//         case costBasis = "cost_basis"
-//         case marketValue = "market_value"
-//         case unrealizedPL = "unrealized_pl"
-//         case currentPrice = "current_price"
-//         case lastDayPrice = "lastday_price"
-//         case changeToday = "change_today"
-//         case assetId = "asset_id"
-//         case assetClass = "asset_class"
-//     }
-// }
+    enum CodingKeys: String, CodingKey {
+        case symbol
+        case qty
+        case costBasis = "cost_basis"
+        case marketValue = "market_value"
+        case unrealizedPL = "unrealized_pl"
+        case currentPrice = "current_price"
+        case lastDayPrice = "lastday_price"
+        case changeToday = "change_today"
+        case assetId = "asset_id"
+        case assetClass = "asset_class"
+    }
+}
 
-// struct AlpacaOrder: Codable {
-//     let id: String
-//     let clientOrderId: String?
-//     let createdAt: Date
-//     let updatedAt: Date?
-//     let submittedAt: Date?
-//     let filledAt: Date?
-//     let expiredAt: Date?
-//     let canceledAt: Date?
-//     let failedAt: Date?
-//     let replacedAt: Date?
-//     let replacedBy: String?
-//     let replaces: String?
-//     let assetId: String
-//     let symbol: String
-//     let assetClass: String
-//     let notional: Double?
-//     let qty: Double?
-//     let filledQty: Double?
-//     let type: String
-//     let side: String
-//     let timeInForce: String
-//     let limitPrice: Double?
-//     let stopPrice: Double?
-//     let status: String
-// }
+struct AlpacaOrder: Codable {
+    let id: String
+    let clientOrderId: String?
+    let createdAt: Date
+    let updatedAt: Date?
+    let submittedAt: Date?
+    let filledAt: Date?
+    let expiredAt: Date?
+    let canceledAt: Date?
+    let failedAt: Date?
+    let replacedAt: Date?
+    let replacedBy: String?
+    let replaces: String?
+    let assetId: String
+    let symbol: String
+    let assetClass: String
+    let notional: Double?
+    let qty: Double?
+    let filledQty: Double?
+    let type: String
+    let side: String
+    let timeInForce: String
+    let limitPrice: Double?
+    let stopPrice: Double?
+    let status: String
+}
 
-// enum OrderSide: String {
-//     case buy
-//     case sell
-// }
+enum OrderSide: String {
+    case buy
+    case sell
+}
 
-// enum OrderType: String {
-//     case market
-//     case limit
-//     case stop
-//     case stopLimit
-// }
+enum OrderType: String {
+    case market
+    case limit
+    case stop
+    case stopLimit
+}
 
-// enum TimeInForce: String {
-//     case day = "day"
-//     case gtc = "gtc"
-//     case opg = "opg"
-//     case cls = "cls"
-//     case ioc = "ioc"
-//     case fok = "fok"
-// }
+enum TimeInForce: String {
+    case day = "day"
+    case gtc = "gtc"
+    case opg = "opg"
+    case cls = "cls"
+    case ioc = "ioc"
+    case fok = "fok"
+}

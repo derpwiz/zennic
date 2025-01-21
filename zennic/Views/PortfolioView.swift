@@ -7,38 +7,88 @@ struct PortfolioView: View {
     @State private var showingAddHoldingSheet = false
     
     var body: some View {
-        VStack {
-            HStack {
-                Text("Portfolio")
-                    .font(.title)
-                Spacer()
+        VStack(spacing: 20) {
+            // Portfolio summary with real-time value
+            PortfolioValueView(viewModel: appViewModel.realTimeMarket)
+                .frame(maxWidth: .infinity)
+            
+            // Holdings list with real-time prices
+            List {
+                ForEach(appViewModel.holdings) { holding in
+                    HoldingRow(
+                        holding: holding,
+                        currentPrice: appViewModel.realTimeMarket.lastTrades[holding.symbol] ?? holding.averagePrice
+                    )
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        selectedHolding = holding
+                    }
+                }
+            }
+            .listStyle(.inset)
+        }
+        .padding()
+        .navigationTitle("Portfolio")
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
                 Button(action: { showingAddHoldingSheet = true }) {
                     Label("Add Holding", systemImage: "plus")
                 }
             }
-            .padding()
-            
-            Table(appViewModel.holdings) {
-                TableColumn("Symbol", value: \.symbol)
-                TableColumn("Shares") { (holding: PortfolioHolding) in
-                    Text(String(format: "%.2f", holding.shares))
-                }
-                TableColumn("Purchase Price") { (holding: PortfolioHolding) in
-                    Text(String(format: "$%.2f", holding.purchasePrice))
-                }
-                TableColumn("Total Cost") { (holding: PortfolioHolding) in
-                    let totalCost = holding.shares * holding.purchasePrice
-                    Text(String(format: "$%.2f", totalCost))
-                }
-                TableColumn("Date") { (holding: PortfolioHolding) in
-                    Text(holding.purchaseDate, style: .date)
-                }
-            }
-            .padding()
         }
         .sheet(isPresented: $showingAddHoldingSheet) {
             AddHoldingView(appViewModel: appViewModel)
         }
+        .sheet(item: $selectedHolding) { holding in
+            HoldingDetailView(holding: holding)
+        }
+        .onAppear {
+            // Subscribe to real-time updates for all holdings
+            let symbols = appViewModel.holdings.map(\.symbol)
+            appViewModel.realTimeMarket.subscribeToSymbols(symbols)
+        }
+        .onDisappear {
+            // Unsubscribe when view disappears
+            let symbols = appViewModel.holdings.map(\.symbol)
+            appViewModel.realTimeMarket.unsubscribeFromSymbols(symbols)
+        }
+    }
+}
+
+struct HoldingRow: View {
+    let holding: PortfolioHolding
+    let currentPrice: Double
+    
+    private var priceChange: Double {
+        currentPrice - holding.averagePrice
+    }
+    
+    private var percentageChange: Double {
+        (priceChange / holding.averagePrice) * 100
+    }
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text(holding.symbol)
+                    .font(.headline)
+                Text("\(holding.shares) shares")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            
+            Spacer()
+            
+            VStack(alignment: .trailing) {
+                Text(String(format: "$%.2f", currentPrice))
+                    .font(.headline)
+                
+                Text(String(format: "%.2f%%", percentageChange))
+                    .font(.subheadline)
+                    .foregroundColor(percentageChange >= 0 ? .green : .red)
+            }
+        }
+        .padding(.vertical, 4)
     }
 }
 

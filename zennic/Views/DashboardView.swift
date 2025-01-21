@@ -2,26 +2,112 @@ import SwiftUI
 
 struct DashboardView: View {
     @EnvironmentObject private var appViewModel: AppViewModel
+    @State private var selectedSymbol: String?
+    @State private var selectedChartPeriod: ChartTimePeriod = .day
+    
+    // Default symbols to track
+    private let watchlistSymbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
     
     var body: some View {
         ScrollView {
-            LazyVGrid(columns: [
-                GridItem(.flexible()),
-                GridItem(.flexible())
-            ], spacing: 20) {
-                PortfolioSummaryCard()
-                MarketOverviewCard()
-                RecentTradesCard()
-                AIInsightsCard()
+            VStack(spacing: 20) {
+                // Portfolio value and performance
+                VStack(spacing: 0) {
+                    PortfolioValueView(viewModel: appViewModel.realTimeMarket)
+                        .frame(maxWidth: .infinity)
+                    
+                    // Portfolio performance chart
+                    GroupBox {
+                        VStack {
+                            Picker("Time Period", selection: $selectedChartPeriod) {
+                                ForEach(ChartTimePeriod.allCases, id: \.self) { period in
+                                    Text(period.rawValue).tag(period)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .padding(.horizontal)
+                            
+                            if appViewModel.realTimeMarket.isLoadingHistoricalData {
+                                ProgressView()
+                                    .frame(height: 300)
+                            } else {
+                                PortfolioChartView(
+                                    pricePoints: appViewModel.realTimeMarket.portfolioHistory
+                                )
+                                .frame(height: 300)
+                            }
+                        }
+                    }
+                    .padding(.top)
+                }
+                
+                // Market overview with live tickers
+                GroupBox(label: Text("Market Overview").font(.headline)) {
+                    LiveTickerListView(
+                        viewModel: appViewModel.realTimeMarket,
+                        symbols: watchlistSymbols
+                    )
+                    .frame(height: 200)
+                }
+                
+                // Stock chart for selected symbol
+                if let symbol = selectedSymbol,
+                   let candleData = appViewModel.realTimeMarket.candleStickData[symbol] {
+                    GroupBox(label: Text("\(symbol) Chart").font(.headline)) {
+                        VStack {
+                            if appViewModel.realTimeMarket.isLoadingHistoricalData {
+                                ProgressView()
+                                    .frame(height: 300)
+                            } else {
+                                StockChartView(
+                                    candleStickData: candleData,
+                                    volumeData: candleData.map {
+                                        VolumeData(
+                                            date: $0.date,
+                                            volume: $0.volume,
+                                            isUpDay: $0.close >= $0.open
+                                        )
+                                    }
+                                )
+                                .frame(height: 300)
+                            }
+                        }
+                    }
+                }
+                
+                // Recent trade updates
+                GroupBox(label: Text("Recent Activity").font(.headline)) {
+                    ForEach(appViewModel.realTimeMarket.tradeUpdates.prefix(5), id: \.self) { update in
+                        Text(update)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                            .padding(.vertical, 4)
+                    }
+                }
             }
             .padding()
+        }
+        .navigationTitle("Dashboard")
+        .onChange(of: selectedChartPeriod) { newPeriod in
+            Task {
+                await appViewModel.realTimeMarket.loadPortfolioHistory(for: newPeriod)
+            }
+        }
+        .onAppear {
+            // Load initial data
+            Task {
+                await appViewModel.realTimeMarket.loadPortfolioHistory(for: selectedChartPeriod)
+                await appViewModel.realTimeMarket.loadHistoricalData(for: watchlistSymbols)
+            }
         }
     }
 }
 
-struct PortfolioSummaryCard: View {
+struct PortfolioValueView: View {
+    let viewModel: RealTimeMarket
+    
     var body: some View {
-        GroupBox("Portfolio Summary") {
+        GroupBox("Portfolio Value") {
             VStack(alignment: .leading, spacing: 10) {
                 Text("Total Value: $100,000")
                     .font(.headline)
@@ -34,54 +120,19 @@ struct PortfolioSummaryCard: View {
     }
 }
 
-struct MarketOverviewCard: View {
+struct LiveTickerListView: View {
+    let viewModel: RealTimeMarket
+    let symbols: [String]
+    
     var body: some View {
-        GroupBox("Market Overview") {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("S&P 500: 4,500 (+0.5%)")
-                Text("NASDAQ: 15,000 (+0.7%)")
-                Text("DOW: 35,000 (+0.3%)")
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-        }
-    }
-}
-
-struct RecentTradesCard: View {
-    var body: some View {
-        GroupBox("Recent Trades") {
-            List {
-                ForEach(1...5, id: \.self) { _ in
-                    HStack {
-                        Text("AAPL")
-                        Spacer()
-                        Text("Buy")
-                            .foregroundColor(.green)
-                        Text("100 shares")
-                        Text("$150.00")
-                    }
+        List {
+            ForEach(symbols, id: \.self) { symbol in
+                HStack {
+                    Text(symbol)
+                    Spacer()
+                    Text(viewModel.getQuote(for: symbol))
                 }
             }
-            .frame(height: 200)
-        }
-    }
-}
-
-struct AIInsightsCard: View {
-    var body: some View {
-        GroupBox("AI Insights") {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Market Sentiment: Bullish")
-                    .font(.headline)
-                Text("Recommended Actions:")
-                    .font(.subheadline)
-                Text("• Consider increasing position in technology sector")
-                Text("• Monitor inflation data release tomorrow")
-                Text("• Review portfolio allocation")
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
         }
     }
 }
