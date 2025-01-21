@@ -21,12 +21,12 @@ let package = Package(
             dependencies: [
                 .product(name: "DGCharts", package: "Charts", condition: .when(platforms: [.macOS]))
             ],
-            path: "AIHedgeFund",
+            path: "zennic",
             exclude: ["Resources"]),
         .testTarget(
             name: "zennicTests",
             dependencies: ["zennic"],
-            path: "AIHedgeFundTests"),
+            path: "zennicTests"),
     ],
     swiftLanguageVersions: [.v5]
 )

@@ -22,6 +22,9 @@ struct AlpacaPosition: Codable {
     let costBasis: String
     let unrealizedPl: String
     let unrealizedPlPc: String
+    let lastDayPrice: String
+    let changeToday: String
+    let assetClass: String
     
     enum CodingKeys: String, CodingKey {
         case assetId = "asset_id"
@@ -32,15 +35,18 @@ struct AlpacaPosition: Codable {
         case costBasis = "cost_basis"
         case unrealizedPl = "unrealized_pl"
         case unrealizedPlPc = "unrealized_plpc"
+        case lastDayPrice = "lastday_price"
+        case changeToday = "change_today"
+        case assetClass = "asset_class"
     }
 }
 
 struct AlpacaOrder: Codable {
     let id: String
-    let clientOrderId: String
+    let clientOrderId: String?
     let createdAt: String
-    let updatedAt: String
-    let submittedAt: String
+    let updatedAt: String?
+    let submittedAt: String?
     let filledAt: String?
     let expiredAt: String?
     let canceledAt: String?
@@ -51,6 +57,7 @@ struct AlpacaOrder: Codable {
     let assetId: String
     let symbol: String
     let assetClass: String
+    let notional: Double?
     let qty: String
     let filledQty: String
     let type: String
@@ -76,6 +83,7 @@ struct AlpacaOrder: Codable {
         case assetId = "asset_id"
         case symbol
         case assetClass = "asset_class"
+        case notional
         case qty
         case filledQty = "filled_qty"
         case type
@@ -87,21 +95,23 @@ struct AlpacaOrder: Codable {
     }
 }
 
-enum OrderSide: String {
+enum OrderSide: String, Codable, CaseIterable {
     case buy
     case sell
 }
 
-enum OrderType: String {
+enum OrderType: String, Codable, CaseIterable {
     case market
     case limit
     case stop
     case stopLimit = "stop_limit"
 }
 
-enum TimeInForce: String {
+enum TimeInForce: String, Codable {
     case day
     case gtc
+    case opg
+    case cls
     case ioc
     case fok
 }

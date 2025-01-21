@@ -1,6 +1,6 @@
-# AIHedgeFund Backend API
+# zennic Backend API
 
-This is the Swift backend API for the AIHedgeFund project.
+This is the Swift backend API for the zennic project.
 
 ## Setup
 
@@ -17,7 +17,7 @@ The following environment variables need to be configured:
 - `DATABASE_PORT`: PostgreSQL port (default: 5432)
 - `DATABASE_USERNAME`: PostgreSQL username (default: postgres)
 - `DATABASE_PASSWORD`: PostgreSQL password (default: postgres)
-- `DATABASE_NAME`: PostgreSQL database name (default: aihedgefund)
+- `DATABASE_NAME`: PostgreSQL database name (default: zennic)
 - `REDIS_HOST`: Redis host (default: localhost)
 - `REDIS_PORT`: Redis port (default: 6379)
 - `JWT_SECRET`: Secret key for JWT token signing
@@ -35,4 +35,3 @@ In production, you MUST set a strong, unique secret key at least 32 characters l
 The project uses SwiftLint for code style enforcement. Make sure to install it:
 ```bash
 brew install swiftlint
-```

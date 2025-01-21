@@ -1,5 +1,5 @@
-import Vapor
 import Fluent
+import Vapor
 
 final class AlpacaKeys: Model, Content {
     static let schema = "alpaca_keys"
@@ -16,27 +16,13 @@ final class AlpacaKeys: Model, Content {
     @Field(key: "secret_key")
     var secretKey: String
     
-    @Field(key: "is_paper")
-    var isPaper: Bool
-    
-    @Timestamp(key: "created_at", on: .create)
-    var createdAt: Date?
-    
-    @Timestamp(key: "updated_at", on: .update)
-    var updatedAt: Date?
-    
     init() { }
     
-    init(id: UUID? = nil,
-         userID: User.IDValue,
-         apiKey: String,
-         secretKey: String,
-         isPaper: Bool = true) {
+    init(id: UUID? = nil, userId: User.IDValue, apiKey: String, secretKey: String) {
         self.id = id
-        self.$user.id = userID
+        self.$user.id = userId
         self.apiKey = apiKey
         self.secretKey = secretKey
-        self.isPaper = isPaper
     }
 }
 
@@ -44,24 +30,28 @@ extension AlpacaKeys {
     struct Create: Content {
         var apiKey: String
         var secretKey: String
-        var isPaper: Bool
     }
     
     struct Public: Content {
         var id: UUID?
         var apiKey: String
-        var secretKey: String
-        var isPaper: Bool
-        var createdAt: Date?
-        var updatedAt: Date?
+        var userId: UUID
         
         init(keys: AlpacaKeys) {
             self.id = keys.id
             self.apiKey = keys.apiKey
-            self.secretKey = keys.secretKey
-            self.isPaper = keys.isPaper
-            self.createdAt = keys.createdAt
-            self.updatedAt = keys.updatedAt
+            self.userId = keys.$user.id
         }
+    }
+    
+    var `public`: Public {
+        .init(keys: self)
+    }
+}
+
+extension AlpacaKeys: Validatable {
+    static func validations(_ validations: inout Validations) {
+        validations.add("apiKey", as: String.self, is: !.empty)
+        validations.add("secretKey", as: String.self, is: !.empty)
     }
 }

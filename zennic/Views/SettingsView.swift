@@ -158,10 +158,10 @@ struct SettingsView: View {
                 LabeledContent("Build", value: "100")
                 
                 Link("Privacy Policy",
-                     destination: URL(string: "https://www.aihedgefund.com/privacy")!)
+                     destination: URL(string: "https://www.zennic.com/privacy")!)
                 
                 Link("Terms of Service",
-                     destination: URL(string: "https://www.aihedgefund.com/terms")!)
+                     destination: URL(string: "https://www.zennic.com/terms")!)
             }
         }
         .formStyle(.grouped)

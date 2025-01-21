@@ -8,13 +8,13 @@ final class AlpacaService: NSObject, ASWebAuthenticationPresentationContextProvi
     private let alpacaBaseURL = "https://api.alpaca.markets"
     private let backendBaseURL = "http://localhost:8080"
     private let session: URLSession
-    private let logger = Logger(subsystem: "com.aihedgefund.app", category: "AlpacaService")
+    private let logger = Logger(subsystem: "com.zennic.app", category: "AlpacaService")
     private let userDefaults = UserDefaults.standard
     
     // OAuth configuration
     private let clientId = "YOUR_ALPACA_CLIENT_ID"  // Replace with your actual client ID
     private let clientSecret = "YOUR_ALPACA_CLIENT_SECRET"  // Replace with your actual client secret
-    private let redirectUri = "aihedgefund://oauth/callback"
+    private let redirectUri = "zennic://oauth/callback"
     private let oauthBaseURL = "https://app.alpaca.markets/oauth"
     
     private override init() {
@@ -54,7 +54,7 @@ final class AlpacaService: NSObject, ASWebAuthenticationPresentationContextProvi
             
             let authSession = ASWebAuthenticationSession(
                 url: urlComponents.url!,
-                callbackURLScheme: "aihedgefund"
+                callbackURLScheme: "zennic"
             ) { callbackURL, error in
                 if let error = error {
                     self.logger.error("OAuth error: \(error.localizedDescription)")

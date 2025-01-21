@@ -12,7 +12,7 @@ final class DashboardViewModel: ObservableObject {
     private let portfolioService: PortfolioService
     private let alpacaService: AlpacaService
     private var cancellables = Set<AnyCancellable>()
-    private let logger = Logger(subsystem: "com.aihedgefund.app", category: "DashboardViewModel")
+    private let logger = Logger(subsystem: "com.zennic.app", category: "DashboardViewModel")
     
     var holdings: [PortfolioHolding] {
         portfolioService.holdings

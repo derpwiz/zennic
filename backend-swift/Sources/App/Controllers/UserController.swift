@@ -60,7 +60,7 @@ struct UserController: RouteCollection {
         return User.Public(user: user)
     }
     
-    func saveAlpacaKeys(req: Request) async throws -> AlpacaKeys.Public {
+    func saveAlpacaKeys(req: Request) async throws -> HTTPStatus {
         let user = try req.auth.require(User.self)
         guard let userId = user.id else {
             throw Abort(.internalServerError, reason: "User ID not found")
@@ -71,24 +71,19 @@ struct UserController: RouteCollection {
         if let existingKeys = try await AlpacaKeys.query(on: req.db)
             .filter(\.$user.$id == userId)
             .first() {
-            // Update existing keys
-            existingKeys.apiKey = create.apiKey
-            existingKeys.secretKey = create.secretKey
-            existingKeys.isPaper = create.isPaper
-            try await existingKeys.save(on: req.db)
-            return AlpacaKeys.Public(keys: existingKeys)
+            try await existingKeys.delete(on: req.db)
         }
         
         // Create new keys
         let keys = AlpacaKeys(
-            userID: userId,
+            id: nil,
+            userId: userId,
             apiKey: create.apiKey,
-            secretKey: create.secretKey,
-            isPaper: create.isPaper
+            secretKey: create.secretKey
         )
         
         try await keys.save(on: req.db)
-        return AlpacaKeys.Public(keys: keys)
+        return .ok
     }
     
     func getAlpacaKeys(req: Request) async throws -> AlpacaKeys.Public {
@@ -100,10 +95,10 @@ struct UserController: RouteCollection {
         guard let keys = try await AlpacaKeys.query(on: req.db)
             .filter(\.$user.$id == userId)
             .first() else {
-            throw Abort(.notFound, reason: "No Alpaca keys found for this user")
+            throw Abort(.notFound, reason: "No Alpaca keys found for user")
         }
         
-        return AlpacaKeys.Public(keys: keys)
+        return keys.public
     }
     
     func deleteAlpacaKeys(req: Request) async throws -> HTTPStatus {

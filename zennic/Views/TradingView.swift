@@ -191,7 +191,7 @@ final class TradingViewModel: ObservableObject {
         
         do {
             let alpacaPositions = try await marketDataService.getPositions()
-            positions = try alpacaPositions.compactMap { position in
+            positions = alpacaPositions.compactMap { position in
                 guard let shares = Double(position.qty),
                       let purchasePrice = Double(position.costBasis) else {
                     print("Error converting numeric values for position \(position.symbol)")
@@ -249,16 +249,6 @@ final class TradingViewModel: ObservableObject {
         !symbol.isEmpty && !quantity.isEmpty && 
         (orderType != .limit || !limitPrice.isEmpty)
     }
-}
-
-// Make OrderType conform to CaseIterable
-extension OrderType: CaseIterable {
-    static var allCases: [OrderType] = [.market, .limit]
-}
-
-// Make OrderSide conform to CaseIterable
-extension OrderSide: CaseIterable {
-    static var allCases: [OrderSide] = [.buy, .sell]
 }
 
 struct TradingView_Previews: PreviewProvider {
