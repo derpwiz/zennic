@@ -1,143 +1,217 @@
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 final class AlpacaKeysViewModel: ObservableObject {
-    @Published var isAuthenticated: Bool = false
-    @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
-    @Published var apiKey: String = ""
-    @Published var secretKey: String = ""
+    // MARK: - Published Properties
+    
+    @Published private(set) var isAuthenticated: Bool = false
+    @Published private(set) var isLoading: Bool = false
+    @Published private(set) var errorMessage: String?
+    @Published var apiKey: String = "" {
+        didSet {
+            // Clear error when user starts typing
+            if !apiKey.isEmpty {
+                errorMessage = nil
+            }
+        }
+    }
+    @Published var secretKey: String = "" {
+        didSet {
+            // Clear error when user starts typing
+            if !secretKey.isEmpty {
+                errorMessage = nil
+            }
+        }
+    }
     @Published var isPaperTrading: Bool = true
     
-    private let alpacaService = AlpacaService.shared
+    // MARK: - Private Properties
+    
+    private let alpacaService: AlpacaService
+    private let webSocketService: WebSocketService
+    private let authService: AuthService
+    private var cancellables = Set<AnyCancellable>()
+    private let queue = DispatchQueue(label: "com.zennic.alpacakeys", qos: .userInitiated)
+    
+    // MARK: - Initialization
     
     init() {
+        self.alpacaService = AlpacaService.shared
+        self.webSocketService = WebSocketService.shared
+        self.authService = AuthService.shared
+        
         Task {
             await checkAuthenticationStatus()
         }
     }
     
-    func checkAuthenticationStatus() async {
-        isLoading = true
-        defer { isLoading = false }
+    init(alpacaService: AlpacaService,
+         webSocketService: WebSocketService,
+         authService: AuthService) {
+        self.alpacaService = alpacaService
+        self.webSocketService = webSocketService
+        self.authService = authService
         
-        // Check for API key authentication
-        if let keys = try? await alpacaService.getAlpacaKeys() {
-            await MainActor.run {
-                self.apiKey = keys.apiKey
-                self.isPaperTrading = keys.isPaper
-                self.isAuthenticated = true
-                self.errorMessage = nil
-            }
-            return
-        }
-        
-        // Check for OAuth authentication
-        if let expirationDate = UserDefaults.standard.object(forKey: "alpacaTokenExpiration") as? Date,
-           let _ = UserDefaults.standard.string(forKey: "alpacaAccessToken"),
-           expirationDate > Date() {
-            isAuthenticated = true
-            errorMessage = nil
-        } else {
-            isAuthenticated = false
+        Task {
+            await checkAuthenticationStatus()
         }
     }
     
-    func authenticateWithKeys() async {
+    // MARK: - Public Methods
+    
+    func checkAuthenticationStatus() async {
+        guard !isLoading else { return }
+        
         isLoading = true
         defer { isLoading = false }
         
         do {
-            let keys = AppModels.AlpacaKeysCreate(
+            // Check for API key authentication
+            if let keys = try await alpacaService.getAlpacaKeys() {
+                await MainActor.run {
+                    self.apiKey = keys.apiKey
+                    self.isPaperTrading = keys.isPaperTrading
+                    self.isAuthenticated = true
+                    self.errorMessage = nil
+                }
+                return
+            }
+            
+            // Check for OAuth authentication
+            let isOAuthValid = await authService.validateOAuthToken()
+            await MainActor.run {
+                self.isAuthenticated = isOAuthValid
+                self.errorMessage = isOAuthValid ? nil : "No valid authentication found"
+            }
+        } catch {
+            await MainActor.run {
+                self.isAuthenticated = false
+                self.errorMessage = "Failed to check authentication status: \(error.localizedDescription)"
+            }
+        }
+    }
+    
+    func authenticateWithKeys() async {
+        guard !isLoading else { return }
+        guard !apiKey.isEmpty && !secretKey.isEmpty else {
+            errorMessage = "Please enter both API key and secret key"
+            return
+        }
+        
+        isLoading = true
+        defer { isLoading = false }
+        
+        do {
+            let keys = AlpacaKeysCreate(
                 apiKey: apiKey,
-                secretKey: secretKey,
-                isPaper: isPaperTrading
+                apiSecret: secretKey,
+                isPaperTrading: isPaperTrading
             )
-            _ = try await alpacaService.saveAlpacaKeys(keys)
+            
+            // Save keys to AlpacaService
+            try await alpacaService.saveAlpacaKeys(keys)
+            
+            // Update WebSocketService with new credentials
+            WebSocketService.updateShared(apiKey: apiKey, apiSecret: secretKey)
+            
             await MainActor.run {
                 self.isAuthenticated = true
                 self.errorMessage = nil
             }
         } catch let error as APIError {
-            await MainActor.run {
-                self.isAuthenticated = false
-                switch error {
-                case .serverError(let message):
-                    self.errorMessage = message
-                case .unauthorized:
-                    self.errorMessage = "Please log in to connect your Alpaca account"
-                case .invalidCredentials:
-                    self.errorMessage = "Invalid API keys. Please check and try again."
-                case .invalidResponse:
-                    self.errorMessage = "Invalid response from Alpaca. Please try again."
-                case .authenticationFailed:
-                    self.errorMessage = "Authentication failed. Please check your API keys."
-                case .unknown:
-                    self.errorMessage = "An unexpected error occurred. Please try again."
-                }
-            }
+            await handleAPIError(error)
         } catch {
             await MainActor.run {
                 self.isAuthenticated = false
-                self.errorMessage = error.localizedDescription
+                self.errorMessage = "Authentication failed: \(error.localizedDescription)"
             }
         }
     }
     
     func authenticateWithOAuth() async {
+        guard !isLoading else { return }
+        
         isLoading = true
         defer { isLoading = false }
         
         do {
-            _ = try await alpacaService.authenticateWithAlpaca()
+            let token = try await authService.authenticateWithOAuth()
+            
+            // Update WebSocketService with OAuth token
+            WebSocketService.updateShared(apiKey: token.accessToken, apiSecret: "")
+            
             await MainActor.run {
                 self.isAuthenticated = true
                 self.errorMessage = nil
             }
         } catch let error as APIError {
-            await MainActor.run {
-                self.isAuthenticated = false
-                switch error {
-                case .serverError(let message):
-                    self.errorMessage = message
-                case .unauthorized:
-                    self.errorMessage = "Please log in to connect your Alpaca account"
-                case .invalidCredentials:
-                    self.errorMessage = "Invalid credentials. Please try again."
-                case .invalidResponse:
-                    self.errorMessage = "Invalid response from Alpaca. Please try again."
-                case .authenticationFailed:
-                    self.errorMessage = "Authentication failed. Please try again."
-                case .unknown:
-                    self.errorMessage = "An unexpected error occurred. Please try again."
-                }
-            }
+            await handleAPIError(error)
         } catch {
             await MainActor.run {
                 self.isAuthenticated = false
-                self.errorMessage = error.localizedDescription
+                self.errorMessage = "OAuth authentication failed: \(error.localizedDescription)"
             }
         }
     }
     
     func disconnect() async {
+        guard !isLoading else { return }
+        
         isLoading = true
         defer { isLoading = false }
         
-        // Remove OAuth tokens
-        UserDefaults.standard.removeObject(forKey: "alpacaAccessToken")
-        UserDefaults.standard.removeObject(forKey: "alpacaTokenExpiration")
-        
-        // Remove API keys
         do {
+            // Remove OAuth tokens
+            await authService.clearOAuthTokens()
+            
+            // Remove API keys
             try await alpacaService.deleteAlpacaKeys()
+            
+            // Update WebSocket service
+            WebSocketService.updateShared(apiKey: "", apiSecret: "")
+            
+            await MainActor.run {
+                self.isAuthenticated = false
+                self.apiKey = ""
+                self.secretKey = ""
+                self.errorMessage = nil
+            }
         } catch {
-            self.errorMessage = "Failed to remove API keys: \(error.localizedDescription)"
+            await MainActor.run {
+                self.errorMessage = "Failed to disconnect: \(error.localizedDescription)"
+            }
         }
-        
-        isAuthenticated = false
-        apiKey = ""
-        secretKey = ""
+    }
+    
+    // MARK: - Public Methods
+    
+    func clearError() {
+        errorMessage = nil
+    }
+    
+    // MARK: - Private Methods
+    
+    private func handleAPIError(_ error: APIError) async {
+        await MainActor.run {
+            self.isAuthenticated = false
+            switch error {
+            case .serverError(let message):
+                self.errorMessage = "Server error: \(message)"
+            case .unauthorized:
+                self.errorMessage = "Please log in to connect your Alpaca account"
+            case .invalidCredentials:
+                self.errorMessage = "Invalid API keys. Please check and try again."
+            case .invalidResponse:
+                self.errorMessage = "Invalid response from Alpaca. Please try again."
+            case .authenticationFailed:
+                self.errorMessage = "Authentication failed. Please check your credentials."
+            case .unknown:
+                self.errorMessage = "An unexpected error occurred. Please try again."
+            case .httpError(let statusCode):
+                self.errorMessage = "HTTP error: \(statusCode)"
+            }
+        }
     }
 }

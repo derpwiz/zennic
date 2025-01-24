@@ -7,6 +7,7 @@ enum APIError: LocalizedError {
     case invalidResponse
     case authenticationFailed
     case unknown
+    case httpError(statusCode: Int)
     
     var errorDescription: String? {
         switch self {
@@ -22,6 +23,8 @@ enum APIError: LocalizedError {
             return "Authentication failed"
         case .unknown:
             return "An unknown error occurred"
+        case .httpError(let statusCode):
+            return "HTTP error with status code: \(statusCode)"
         }
     }
 }

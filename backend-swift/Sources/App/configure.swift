@@ -11,7 +11,7 @@ public func configure(_ app: Application) throws {
         port: Environment.get("DATABASE_PORT").flatMap(Int.init(_:)) ?? 5432,
         username: Environment.get("DATABASE_USERNAME") ?? "postgres",
         password: Environment.get("DATABASE_PASSWORD") ?? "postgres",
-        database: Environment.get("DATABASE_NAME") ?? "updated_database_name",
+        database: Environment.get("DATABASE_NAME") ?? "zennic",
         tls: .disable
     )
     

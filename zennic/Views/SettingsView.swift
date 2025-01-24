@@ -14,6 +14,43 @@ struct SettingsView: View {
     @State private var showingOAuthError = false                         // Controls visibility of OAuth error alert
     @State private var oauthError: String = ""                           // Stores OAuth error message
     
+    private var apiKeyBinding: Binding<String> {
+        Binding(
+            get: { self.appViewModel.alpacaApiKey },
+            set: { newValue in
+                self.appViewModel.alpacaApiKey = newValue
+                self.appViewModel.saveSettings()
+            }
+        )
+    }
+    
+    private var apiSecretBinding: Binding<String> {
+        Binding(
+            get: { self.appViewModel.alpacaSecretKey },
+            set: { newValue in
+                self.appViewModel.alpacaSecretKey = newValue
+                self.appViewModel.saveSettings()
+            }
+        )
+    }
+    
+    private var authenticationBinding: Binding<Bool> {
+        Binding(
+            get: { self.appViewModel.requireAuthentication },
+            set: { newValue in
+                if self.appViewModel.requireAuthentication {
+                    authenticateWithBiometrics { success in
+                        if success {
+                            self.appViewModel.requireAuthentication = newValue
+                        }
+                    }
+                } else {
+                    self.appViewModel.requireAuthentication = newValue
+                }
+            }
+        )
+    }
+    
     /// Authenticates user using device biometrics (Touch ID/Face ID)
     /// - Parameter completion: Closure called with authentication result (success/failure)
     func authenticateWithBiometrics(completion: @escaping (Bool) -> Void) {
@@ -47,20 +84,7 @@ struct SettingsView: View {
         Form {
             // Security settings section
             Section("Security") {
-                Toggle("Require Touch ID", isOn: Binding(
-                    get: { appViewModel.requireAuthentication },
-                    set: { newValue in
-                        if appViewModel.requireAuthentication {
-                            authenticateWithBiometrics { success in
-                                if success {
-                                    appViewModel.requireAuthentication = newValue
-                                }
-                            }
-                        } else {
-                            appViewModel.requireAuthentication = newValue
-                        }
-                    }
-                ))
+                Toggle("Require Touch ID", isOn: authenticationBinding)
                 
                 if appViewModel.requireAuthentication {
                     Text("Touch ID will be required to access the app")
@@ -71,20 +95,8 @@ struct SettingsView: View {
             
             // API configuration section
             Section("API Keys") {
-                SecureField("Alpaca API Key", text: Binding(
-                    get: { appViewModel.alpacaApiKey },
-                    set: { newValue in
-                        appViewModel.alpacaApiKey = newValue
-                        appViewModel.saveSettings()
-                    }
-                ))
-                SecureField("Alpaca API Secret", text: Binding(
-                    get: { appViewModel.alpacaApiSecret },
-                    set: { newValue in
-                        appViewModel.alpacaApiSecret = newValue
-                        appViewModel.saveSettings()
-                    }
-                ))
+                SecureField("Alpaca API Key", text: apiKeyBinding)
+                SecureField("Alpaca API Secret", text: apiSecretBinding)
                 
                 Button(action: {
                     showingOAuthModal = true
@@ -94,9 +106,9 @@ struct SettingsView: View {
                         Text("Connect with OAuth")
                     }
                 }
-                .disabled(appViewModel.alpacaApiKey.isEmpty || appViewModel.alpacaApiSecret.isEmpty)
+                .disabled(appViewModel.alpacaApiKey.isEmpty || appViewModel.alpacaSecretKey.isEmpty)
                 
-                if !appViewModel.alpacaApiKey.isEmpty && !appViewModel.alpacaApiSecret.isEmpty {
+                if !appViewModel.alpacaApiKey.isEmpty && !appViewModel.alpacaSecretKey.isEmpty {
                     if appViewModel.isOAuthTokenValid {
                         Text("Connected with OAuth")
                             .foregroundColor(.green)
@@ -138,18 +150,29 @@ struct SettingsView: View {
             
             // Data management options
             Section("Data") {
-                Button("Clear Cache") {
-                    // TODO: Implement cache clearing
+                SettingsActionRow(
+                    title: "Clear Cache",
+                    icon: "arrow.clockwise",
+                    isDestructive: false
+                ) {
+                    // TODO: Implement actions
                 }
                 
-                Button("Export Portfolio Data") {
-                    // TODO: Implement data export
+                SettingsActionRow(
+                    title: "Export Portfolio Data",
+                    icon: "square.and.arrow.up",
+                    isDestructive: false
+                ) {
+                    // TODO: Implement actions
                 }
                 
-                Button("Reset All Settings") {
-                    // TODO: Implement settings reset
+                SettingsActionRow(
+                    title: "Reset All Settings",
+                    icon: "exclamationmark.triangle",
+                    isDestructive: true
+                ) {
+                    // TODO: Implement actions
                 }
-                .foregroundColor(.red)
             }
             
             // App information and legal links
@@ -224,13 +247,8 @@ struct SettingsView: View {
         
         Task {
             do {
-                let service = AlpacaService.shared
-                let response = try await service.authenticateWithAlpaca()
-                
-                // Store the OAuth response
+                try await AlpacaService.shared.authenticateWithAlpaca()
                 await MainActor.run {
-                    appViewModel.alpacaOAuthToken = response.accessToken
-                    appViewModel.alpacaOAuthTokenExpiration = Date().addingTimeInterval(TimeInterval(response.expiresIn))
                     showingOAuthModal = false
                 }
             } catch {

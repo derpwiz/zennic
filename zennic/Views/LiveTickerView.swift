@@ -13,48 +13,31 @@ struct LiveTickerView: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
-                Text(symbol)
-                    .font(.headline)
-                
-                Spacer()
-                
-                if let trade = lastTrade {
-                    Text(String(format: "%.2f", trade))
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                }
-            }
+        HStack {
+            Text(symbol)
+                .font(.headline)
+            
+            Spacer()
             
             if let quote = quote {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text("Bid")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text(String(format: "%.2f", quote.bid))
-                            .font(.subheadline)
-                            .foregroundColor(.green)
+                VStack(alignment: .trailing) {
+                    if let trade = lastTrade {
+                        Text(String(format: "%.2f", trade))
+                            .font(.headline)
+                            .foregroundColor(.primary)
                     }
                     
-                    Spacer()
-                    
-                    VStack(alignment: .trailing) {
-                        Text("Ask")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text(String(format: "%.2f", quote.ask))
-                            .font(.subheadline)
+                    HStack(spacing: 12) {
+                        Text("B: \(String(format: "%.2f", quote.bid))")
+                            .foregroundColor(.green)
+                        Text("A: \(String(format: "%.2f", quote.ask))")
                             .foregroundColor(.red)
                     }
+                    .font(.subheadline)
                 }
             }
         }
-        .padding()
-        .background(Color(.windowBackgroundColor))
-        .cornerRadius(8)
-        .shadow(radius: 2)
+        .padding(.vertical, 4)
     }
 }
 
@@ -79,19 +62,23 @@ struct LiveTickerListView: View {
             .padding(.horizontal)
             
             ScrollView {
-                LazyVStack(spacing: 8) {
+                LazyVStack(spacing: 0) {
                     ForEach(symbols, id: \.self) { symbol in
                         LiveTickerView(symbol: symbol, viewModel: viewModel)
+                            .padding(.horizontal)
+                            .background(Color(.windowBackgroundColor))
                     }
                 }
-                .padding(.horizontal)
+                .task {
+                    await viewModel.subscribeToSymbols(symbols)
+                }
             }
-        }
-        .onAppear {
-            viewModel.subscribeToSymbols(symbols)
-        }
-        .onDisappear {
-            viewModel.unsubscribeFromSymbols(symbols)
+            .frame(maxHeight: 200)
+            .onDisappear {
+                Task {
+                    await viewModel.unsubscribeFromSymbols(symbols)
+                }
+            }
         }
     }
 }

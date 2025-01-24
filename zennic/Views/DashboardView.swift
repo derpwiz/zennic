@@ -1,139 +1,139 @@
 import SwiftUI
+import Foundation
 
 struct DashboardView: View {
     @EnvironmentObject private var appViewModel: AppViewModel
     @State private var selectedSymbol: String?
     @State private var selectedChartPeriod: ChartTimePeriod = .day
-    
     // Default symbols to track
-    private let watchlistSymbols = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]
-    
+    private let watchlistSymbols = ["AAPL", "GOOGL", "AMZN"] // Example symbols
+
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
-                // Portfolio value and performance
-                VStack(spacing: 0) {
-                    PortfolioValueView(viewModel: appViewModel.realTimeMarket)
-                        .frame(maxWidth: .infinity)
-                    
-                    // Portfolio performance chart
-                    GroupBox {
-                        VStack {
-                            Picker("Time Period", selection: $selectedChartPeriod) {
-                                ForEach(ChartTimePeriod.allCases, id: \.self) { period in
-                                    Text(period.rawValue).tag(period)
-                                }
-                            }
-                            .pickerStyle(.segmented)
-                            .padding(.horizontal)
-                            
-                            if appViewModel.realTimeMarket.isLoadingHistoricalData {
-                                ProgressView()
-                                    .frame(height: 300)
-                            } else {
-                                PortfolioChartView(
-                                    pricePoints: appViewModel.realTimeMarket.portfolioHistory
-                                )
-                                .frame(height: 300)
-                            }
-                        }
-                    }
-                    .padding(.top)
+            LazyVStack(spacing: 20) {
+                portfolioSection
+                marketOverviewSection
+                if let symbol = selectedSymbol {
+                    stockChartSection(for: symbol)
                 }
-                
-                // Market overview with live tickers
-                GroupBox(label: Text("Market Overview").font(.headline)) {
-                    LiveTickerListView(
-                        viewModel: appViewModel.realTimeMarket,
-                        symbols: watchlistSymbols
-                    )
-                    .frame(height: 200)
-                }
-                
-                // Stock chart for selected symbol
-                if let symbol = selectedSymbol,
-                   let candleData = appViewModel.realTimeMarket.candleStickData[symbol] {
-                    GroupBox(label: Text("\(symbol) Chart").font(.headline)) {
-                        VStack {
-                            if appViewModel.realTimeMarket.isLoadingHistoricalData {
-                                ProgressView()
-                                    .frame(height: 300)
-                            } else {
-                                StockChartView(
-                                    candleStickData: candleData,
-                                    volumeData: candleData.map {
-                                        VolumeData(
-                                            date: $0.date,
-                                            volume: $0.volume,
-                                            isUpDay: $0.close >= $0.open
-                                        )
-                                    }
-                                )
-                                .frame(height: 300)
-                            }
-                        }
-                    }
-                }
-                
-                // Recent trade updates
-                GroupBox(label: Text("Recent Activity").font(.headline)) {
-                    ForEach(appViewModel.realTimeMarket.tradeUpdates.prefix(5), id: \.self) { update in
-                        Text(update)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                            .padding(.vertical, 4)
-                    }
-                }
+                recentActivitySection
             }
             .padding()
         }
         .navigationTitle("Dashboard")
-        .onChange(of: selectedChartPeriod) { newPeriod in
-            Task {
-                await appViewModel.realTimeMarket.loadPortfolioHistory(for: newPeriod)
-            }
+        .task {
+            await loadData()
         }
-        .onAppear {
-            // Load initial data
+        .onChange(of: selectedChartPeriod) { oldValue, newValue in
             Task {
-                await appViewModel.realTimeMarket.loadPortfolioHistory(for: selectedChartPeriod)
-                await appViewModel.realTimeMarket.loadHistoricalData(for: watchlistSymbols)
+                await loadData()
             }
         }
     }
-}
 
-struct PortfolioValueView: View {
-    let viewModel: RealTimeMarket
-    
-    var body: some View {
-        GroupBox("Portfolio Value") {
-            VStack(alignment: .leading, spacing: 10) {
-                Text("Total Value: $100,000")
-                    .font(.headline)
-                Text("Daily Change: +$1,500 (1.5%)")
-                    .foregroundColor(.green)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-        }
-    }
-}
-
-struct LiveTickerListView: View {
-    let viewModel: RealTimeMarket
-    let symbols: [String]
-    
-    var body: some View {
-        List {
-            ForEach(symbols, id: \.self) { symbol in
-                HStack {
-                    Text(symbol)
-                    Spacer()
-                    Text(viewModel.getQuote(for: symbol))
+    // MARK: - View Components
+    private var portfolioSection: some View {
+        VStack(spacing: 0) {
+            PortfolioValueView(viewModel: appViewModel.realTimeMarketViewModel)
+                .frame(maxWidth: .infinity)
+            GroupBox {
+                VStack {
+                    periodPicker
+                    chartContent
                 }
             }
+            .padding(.top)
         }
+    }
+
+    private var periodPicker: some View {
+        Picker("Time Period", selection: $selectedChartPeriod) {
+            ForEach(ChartTimePeriod.allCases, id: \.self) { period in
+                Text(period.rawValue).tag(period)
+            }
+        }
+        .pickerStyle(.segmented)
+        .padding(.horizontal)
+    }
+
+    @ViewBuilder
+    private var chartContent: some View {
+        if appViewModel.realTimeMarketViewModel.isLoadingHistoricalData {
+            ProgressView()
+                .frame(height: 300)
+        } else {
+            PortfolioChartView(
+                pricePoints: appViewModel.realTimeMarketViewModel.portfolioHistory
+            )
+            .frame(height: 300)
+        }
+    }
+
+    private var marketOverviewSection: some View {
+        GroupBox {
+            LiveTickerListView(
+                viewModel: appViewModel.realTimeMarketViewModel,
+                symbols: watchlistSymbols
+            )
+        } label: {
+            Text("Market Overview")
+                .font(.headline)
+        }
+    }
+
+    private func stockChartSection(for symbol: String) -> some View {
+        Group {
+            if let candleData = appViewModel.realTimeMarketViewModel.candleStickData[symbol] {
+                GroupBox {
+                    VStack(alignment: .leading) {
+                        stockChartContent(candleData: candleData)
+                    }
+                } label: {
+                    Text("\(symbol) Chart")
+                        .font(.headline)
+                }
+            } else {
+                Color.clear
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func stockChartContent(candleData: [StockBarData]) -> some View {
+        if appViewModel.realTimeMarketViewModel.isLoadingHistoricalData {
+            ProgressView()
+                .frame(height: 300)
+        } else {
+            StockChartView(
+                candleStickData: candleData,
+                volumeData: candleData.map {
+                    VolumeData(
+                        date: $0.timestamp,
+                        volume: $0.volume,
+                        isUp: $0.isUpward
+                    )
+                }
+            )
+            .frame(height: 300)
+        }
+    }
+
+    private var recentActivitySection: some View {
+        GroupBox {
+            ForEach(appViewModel.realTimeMarketViewModel.tradeUpdates.prefix(5), id: \.self) { update in
+                Text(update)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 4)
+            }
+        } label: {
+            Text("Recent Activity")
+                .font(.headline)
+        }
+    }
+
+    private func loadData() async {
+        await appViewModel.realTimeMarketViewModel.loadHistoricalData(for: watchlistSymbols)
     }
 }
 

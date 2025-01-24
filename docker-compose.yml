@@ -1,29 +1,21 @@
 version: '3.8'
 
 services:
-  user_service:
+  api:
     build:
-      context: ./backend
-      dockerfile: Dockerfile.user_service
+      context: ./backend-swift
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8080:8080"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/zennic
-      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_HOST=db
+      - DATABASE_PORT=5432
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+      - DATABASE_NAME=zennic
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
       - JWT_SECRET=your_jwt_secret_key
-    depends_on:
-      - db
-      - redis
-
-  trading_service:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile.trading_service
-    ports:
-      - "8001:8000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/zennic
-      - REDIS_URL=redis://redis:6379/0
     depends_on:
       - db
       - redis

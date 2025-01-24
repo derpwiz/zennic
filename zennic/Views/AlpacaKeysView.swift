@@ -108,12 +108,7 @@ struct AlpacaKeysView: View {
                                         showingAPIKeyForm = false
                                     }
                                 }) {
-                                    HStack {
-                                        Spacer()
-                                        Text("Connect")
-                                            .fontWeight(.semibold)
-                                        Spacer()
-                                    }
+                                    Text("Connect")
                                 }
                                 .disabled(viewModel.apiKey.isEmpty || viewModel.secretKey.isEmpty)
                             }
@@ -133,7 +128,7 @@ struct AlpacaKeysView: View {
         .padding()
         .alert("Authentication Error", isPresented: .init(
             get: { viewModel.errorMessage != nil },
-            set: { if !$0 { viewModel.errorMessage = nil } }
+            set: { if !$0 { viewModel.clearError() } }
         )) {
             Button("OK", role: .cancel) { }
         } message: {

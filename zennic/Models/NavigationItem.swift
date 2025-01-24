@@ -11,8 +11,6 @@ enum NavigationItem: Hashable {
     case trading
     /// Market analysis and research tools
     case analysis
-    /// Charting view for visualizing market data
-    case charting
     /// Application settings and configuration
     case settings
     
@@ -23,7 +21,6 @@ enum NavigationItem: Hashable {
         case .portfolio: return "Portfolio"
         case .trading: return "Trading"
         case .analysis: return "Analysis"
-        case .charting: return "Charting"
         case .settings: return "Settings"
         }
     }
@@ -35,7 +32,6 @@ enum NavigationItem: Hashable {
         case .portfolio: return "briefcase"
         case .trading: return "arrow.left.arrow.right"
         case .analysis: return "magnifyingglass"
-        case .charting: return "chart.xyaxis.line"
         case .settings: return "gear"
         }
     }

@@ -17,7 +17,7 @@ struct ContentView: View {
                 NavigationSplitView {
                     Sidebar(selection: $selectedTab)
                 } detail: {
-                    TabContentView(selectedTab: selectedTab)
+                    TabContentView(selectedTab: $selectedTab)
                 }
             }
         }

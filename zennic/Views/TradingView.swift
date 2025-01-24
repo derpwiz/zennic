@@ -27,21 +27,35 @@ struct TradingView: View {
                         .textCase(.uppercase)
                     
                     Picker("Order Type", selection: $viewModel.orderType) {
-                        ForEach(OrderType.allCases, id: \.self) { type in
-                            Text(type.rawValue.capitalized)
+                        ForEach(OrderType.allCases) { type in
+                            Text(type.description)
+                                .tag(type)
                         }
                     }
                     
                     Picker("Action", selection: $viewModel.action) {
-                        ForEach(OrderSide.allCases, id: \.self) { side in
+                        ForEach(OrderSide.allCases) { side in
                             Text(side.rawValue.capitalized)
+                                .tag(side)
                         }
                     }
                     
                     TextField("Quantity", text: $viewModel.quantity)
+                        .onReceive(Just(viewModel.quantity)) { newValue in
+                            let filtered = newValue.filter { "0123456789".contains($0) }
+                            if filtered != newValue {
+                                viewModel.quantity = filtered
+                            }
+                        }
                     
                     if viewModel.orderType == .limit {
                         TextField("Limit Price", text: $viewModel.limitPrice)
+                            .onReceive(Just(viewModel.limitPrice)) { newValue in
+                                let filtered = newValue.filter { "0123456789.".contains($0) }
+                                if filtered != newValue {
+                                    viewModel.limitPrice = filtered
+                                }
+                            }
                     }
                 }
                 .padding()
@@ -82,13 +96,13 @@ struct TradingView: View {
                         HStack {
                             Text("Ask:")
                             Spacer()
-                            Text(String(format: "%.2f", quote.ask ?? 0))
+                            Text(String(format: "%.2f", quote.askPrice))
                         }
                         
                         HStack {
                             Text("Bid:")
                             Spacer()
-                            Text(String(format: "%.2f", quote.bid ?? 0))
+                            Text(String(format: "%.2f", quote.bidPrice))
                         }
                     }
                     .padding()
@@ -103,7 +117,7 @@ struct TradingView: View {
                             HStack {
                                 Text(position.symbol)
                                 Spacer()
-                                Text(String(format: "%.2f", position.shares))
+                                Text(String(format: "%.2f", position.quantity))
                             }
                         }
                     }
@@ -166,83 +180,52 @@ final class TradingViewModel: ObservableObject {
                     self?.currentQuote = nil
                     return
                 }
-                self?.fetchQuote()
+                Task {
+                    await self?.fetchQuote()
+                }
             }
             .store(in: &cancellables)
     }
     
-    private func fetchQuote() {
-        marketDataService.getQuote(for: symbol)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] completion in
-                if case .failure(let error) = completion {
-                    self?.error = error.localizedDescription
-                }
-            } receiveValue: { [weak self] quote in
-                self?.currentQuote = quote
-                self?.error = nil
+    private func fetchQuote() async {
+        do {
+            let quote = try await marketDataService.fetchQuote(symbol: symbol)
+            await MainActor.run {
+                self.currentQuote = quote
+                self.error = nil
             }
-            .store(in: &cancellables)
+        } catch {
+            await MainActor.run {
+                self.error = error.localizedDescription
+            }
+        }
     }
     
     public func loadPositions() async {
-        isLoading = true
-        error = nil
+        await MainActor.run { isLoading = true }
         
-        do {
-            let alpacaPositions = try await marketDataService.getPositions()
-            positions = alpacaPositions.compactMap { position in
-                guard let shares = Double(position.qty),
-                      let purchasePrice = Double(position.costBasis) else {
-                    print("Error converting numeric values for position \(position.symbol)")
-                    return nil
-                }
-                
-                do {
-                    return try PortfolioHolding(
-                        symbol: position.symbol,
-                        shares: shares,
-                        purchasePrice: purchasePrice,
-                        purchaseDate: Date()
-                    )
-                } catch {
-                    print("Error creating PortfolioHolding for \(position.symbol): \(error)")
-                    return nil
-                }
-            }
-        } catch {
-            self.error = error.localizedDescription
+        // For now, since we don't have a getPositions endpoint, we'll leave this empty
+        // You would need to implement this in MarketDataService or use AlpacaService
+        await MainActor.run {
+            positions = []
+            isLoading = false
         }
-        
-        isLoading = false
     }
     
     func submitOrder() async {
         guard canSubmitOrder,
-              let qty = Double(quantity) else { return }
+              let _ = Double(quantity) else { return }
         
-        let limitPriceValue = Double(limitPrice)
-        isLoading = true
-        error = nil
+        let _ = Double(limitPrice) // Placeholder for future implementation
+        await MainActor.run { isLoading = true }
         
-        do {
-            let order = try await marketDataService.placeOrder(
-                symbol: symbol,
-                qty: qty,
-                side: action,
-                type: orderType,
-                timeInForce: .day,
-                limitPrice: limitPriceValue
-            )
-            
-            orderAlertMessage = "Order placed successfully: \(order.id)"
+        // For now, since we don't have a placeOrder endpoint, we'll just show a message
+        // You would need to implement this in MarketDataService or use AlpacaService
+        await MainActor.run {
+            orderAlertMessage = "Order submission not implemented yet"
             showOrderAlert = true
-            await loadPositions()
-        } catch {
-            self.error = error.localizedDescription
+            isLoading = false
         }
-        
-        isLoading = false
     }
     
     private var canSubmitOrder: Bool {

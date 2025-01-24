@@ -1,55 +1,126 @@
 import Foundation
 import Combine
+import SwiftUI
+import Charts
 
 /// View model for handling real-time market data updates
-final class RealTimeMarketViewModel: ObservableObject {
-    @Published var lastTrades: [String: Double] = [:]
-    @Published var lastQuotes: [String: (bid: Double, ask: Double)] = [:]
-    @Published var portfolioValue: Double = 0.0
-    @Published var tradeUpdates: [String] = []
-    @Published var isConnected: Bool = false
+@MainActor
+final class RealTimeMarketViewModel: ObservableObject, WebSocketObserver {
+    // MARK: - Published Properties
+    
+    @Published private(set) var lastTrades: [String: Double] = [:]
+    @Published private(set) var lastQuotes: [String: (bid: Double, ask: Double)] = [:]
+    @Published private(set) var portfolioValue: Double = 0.0
+    @Published private(set) var tradeUpdates: [String] = []
+    @Published private(set) var isConnected: Bool = false {
+        didSet {
+            if !isConnected {
+                handleDisconnection()
+            }
+        }
+    }
     
     // Historical data for charts
-    @Published var candleStickData: [String: [CandleStickData]] = [:]
-    @Published var portfolioHistory: [PricePoint] = []
-    @Published var isLoadingHistoricalData: Bool = false
+    @Published private(set) var candleStickData: [String: [StockBarData]] = [:]
+    @Published private(set) var portfolioHistory: [PricePoint] = []
+    @Published private(set) var isLoadingHistoricalData: Bool = false
+    @Published private(set) var lastError: Error?
     
-    private var webSocketService: WebSocketService?
+    // MARK: - Private Properties
+    
     private let marketDataService: MarketDataService
     private var cancellables = Set<AnyCancellable>()
+    private let webSocketService: WebSocketService
+    private let serialQueue = DispatchQueue(label: "com.zennic.realTimeMarketViewModel")
+    private let maxTradeUpdates = 50
+    private let decoder = JSONDecoder()
+    private var subscribedSymbols: Set<String> = []
+    private var reconnectTask: Task<Void, Never>?
+    private var portfolioUpdateTimer: Timer?
+    private let maxReconnectAttempts = 5
+    private var reconnectAttempts = 0
+    private var portfolioUpdateTask: Task<Void, Never>?
     
-    init(apiKey: String, apiSecret: String) {
-        self.marketDataService = MarketDataService(apiKey: apiKey, apiSecret: apiSecret)
-        setupWebSocket(apiKey: apiKey, apiSecret: apiSecret)
+    // MARK: - Initialization
+    
+    init(marketDataService: MarketDataService = MarketDataService.shared,
+         webSocketService: WebSocketService = WebSocketService.shared) {
+        self.marketDataService = marketDataService
+        self.webSocketService = webSocketService
+        setupDecoder()
+        startPortfolioUpdates()
+        webSocketService.addObserver(self)
     }
     
-    // MARK: - WebSocket Methods
-    
-    func connect() {
-        webSocketService?.connect()
+    deinit {
+        portfolioUpdateTimer?.invalidate()
+        portfolioUpdateTimer = nil
+        portfolioUpdateTask?.cancel()
+        reconnectTask?.cancel()
+        webSocketService.removeObserver(self)
     }
     
-    func disconnect() {
-        webSocketService?.disconnect()
+    private func setupDecoder() {
+        decoder.dateDecodingStrategy = .iso8601
     }
+    
+    private func startPortfolioUpdates() {
+        portfolioUpdateTask?.cancel()
+        portfolioUpdateTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds
+                guard let self = self else { break }
+                
+                // Calculate portfolio value
+                let totalValue = self.lastTrades.reduce(0.0) { total, trade in
+                    return total + trade.value
+                }
+                
+                self.portfolioValue = totalValue
+                self.portfolioHistory.append(PricePoint(date: Date(), price: totalValue))
+                
+                // Keep only last 24 hours of history
+                let oneDayAgo = Date().addingTimeInterval(-24 * 60 * 60)
+                self.portfolioHistory.removeAll { $0.date < oneDayAgo }
+            }
+        }
+    }
+    
+    // MARK: - Public Methods
     
     func subscribeToSymbols(_ symbols: [String]) {
-        webSocketService?.subscribeToSymbols(symbols)
-        // Load historical data for newly subscribed symbols
-        Task {
-            await loadHistoricalData(for: symbols)
+        guard !symbols.isEmpty else { return }
+        
+        Task { @MainActor in
+            let newSymbols = Set(symbols).subtracting(subscribedSymbols)
+            guard !newSymbols.isEmpty else { return }
+            
+            subscribedSymbols.formUnion(newSymbols)
+            webSocketService.subscribeToSymbols(Array(newSymbols))
+            await loadHistoricalData(for: Array(newSymbols))
         }
     }
     
     func unsubscribeFromSymbols(_ symbols: [String]) {
-        webSocketService?.unsubscribeFromSymbols(symbols)
+        guard !symbols.isEmpty else { return }
+        
+        Task { @MainActor in
+            let existingSymbols = Set(symbols).intersection(subscribedSymbols)
+            guard !existingSymbols.isEmpty else { return }
+            
+            subscribedSymbols.subtract(existingSymbols)
+            webSocketService.unsubscribeFromSymbols(Array(existingSymbols))
+            
+            symbols.forEach { symbol in
+                lastTrades.removeValue(forKey: symbol)
+                lastQuotes.removeValue(forKey: symbol)
+                candleStickData.removeValue(forKey: symbol)
+            }
+        }
     }
-    
-    // MARK: - Historical Data Methods
     
     /// Loads historical data for specified symbols
     /// - Parameter symbols: Array of stock symbols
-    @MainActor
     func loadHistoricalData(for symbols: [String]) async {
         guard !symbols.isEmpty else { return }
         
@@ -57,166 +128,126 @@ final class RealTimeMarketViewModel: ObservableObject {
         defer { isLoadingHistoricalData = false }
         
         do {
-            // Get data for the last day with 1-minute bars
-            let endDate = Date()
-            let startDate = Calendar.current.date(byAdding: .day, value: -1, to: endDate)!
-            
-            for symbol in symbols {
-                let bars = try await marketDataService.getHistoricalBars(
-                    symbol: symbol,
-                    timeframe: "1Min",
-                    start: startDate,
-                    end: endDate
-                )
-                candleStickData[symbol] = bars
+            try await withThrowingTaskGroup(of: (String, [StockBarData]).self) { group in
+                for symbol in symbols {
+                    group.addTask { [marketDataService] in
+                        let now = Date()
+                        let thirtyDaysAgo = Calendar.current.date(byAdding: .day, value: -30, to: now)!
+                        let data = try await marketDataService.getHistoricalData(
+                            symbol: symbol,
+                            timeframe: "1Day",
+                            start: thirtyDaysAgo,
+                            end: now
+                        )
+                        return (symbol, data)
+                    }
+                }
+                
+                for try await (symbol, data) in group {
+                    self.candleStickData[symbol] = data
+                }
             }
         } catch {
             print("Error loading historical data: \(error)")
+            self.lastError = error
         }
     }
     
-    /// Loads portfolio performance history
-    /// - Parameter period: Time period to load data for
-    @MainActor
-    func loadPortfolioHistory(for period: ChartTimePeriod) async {
-        isLoadingHistoricalData = true
-        defer { isLoadingHistoricalData = false }
-        
+    // MARK: - WebSocketObserver Methods
+    
+    nonisolated func didReceiveMessage(_ data: Data, type: WebSocketMessageType) {
         do {
-            let endDate = Date()
-            let startDate = Calendar.current.date(byAdding: .day, value: -period.days, to: endDate)!
+            let message = try decoder.decode(WebSocketMessage.self, from: data)
             
-            // Get historical data for all holdings
-            let holdingsData = try await marketDataService.getHistoricalTrades(
-                symbols: Array(lastTrades.keys),
-                start: startDate,
-                end: endDate
-            )
-            
-            // Calculate portfolio value at each point
-            var portfolioValues: [PricePoint] = []
-            let timePoints = Set(holdingsData.values.flatMap { $0.map(\.date) }).sorted()
-            
-            for date in timePoints {
-                var totalValue = 0.0
-                for (symbol, prices) in holdingsData {
-                    if let price = prices.first(where: { $0.date <= date })?.price {
-                        totalValue += price * (lastTrades[symbol] ?? 0)
+            Task { @MainActor [weak self] in
+                guard let self = self else { return }
+                switch message.data {
+                case .trade(let tradeMessage):
+                    self.lastTrades[tradeMessage.symbol] = tradeMessage.price
+                case .quote(let quoteMessage):
+                    self.lastQuotes[quoteMessage.symbol] = (bid: quoteMessage.bidPrice, ask: quoteMessage.askPrice)
+                case .tradeUpdate(let update):
+                    let updateText = "\(update.event.capitalized): \(update.symbol)"
+                    self.tradeUpdates.insert(updateText, at: 0)
+                    if self.tradeUpdates.count > self.maxTradeUpdates {
+                        self.tradeUpdates.removeLast()
                     }
+                case .news(let news):
+                    print("Received news update: \(news.headline)")
                 }
-                portfolioValues.append(PricePoint(date: date, price: totalValue))
             }
-            
-            self.portfolioHistory = portfolioValues
         } catch {
-            print("Error loading portfolio history: \(error)")
+            Task { @MainActor [weak self] in
+                print("Error decoding WebSocket message: \(error)")
+                self?.lastError = error
+            }
         }
     }
     
-    private func setupWebSocket(apiKey: String, apiSecret: String) {
-        webSocketService = WebSocketService(apiKey: apiKey, apiSecret: apiSecret, delegate: self)
-    }
-}
-
-// MARK: - WebSocket Delegate
-
-extension RealTimeMarketViewModel: WebSocketDelegate {
-    func didReceiveMessage(_ message: Data, type: WebSocketMessageType) {
-        switch type {
-        case .tradeUpdate:
-            handleTradeUpdate(message)
-        case .quote(let symbol):
-            handleQuote(message, symbol: symbol)
-        case .trade(let symbol):
-            handleTrade(message, symbol: symbol)
-        case .news:
-            // Handle news updates if needed
-            break
-        }
-    }
-    
-    func didConnect() {
-        DispatchQueue.main.async {
+    nonisolated func didConnect() {
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
             self.isConnected = true
-        }
-    }
-    
-    func didDisconnect(error: Error?) {
-        DispatchQueue.main.async {
-            self.isConnected = false
-        }
-    }
-    
-    private func handleTradeUpdate(_ data: Data) {
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let event = json["data"] as? [String: Any],
-              let eventType = event["event"] as? String else {
-            return
-        }
-        
-        DispatchQueue.main.async {
-            self.tradeUpdates.insert(eventType, at: 0)
-            if self.tradeUpdates.count > 50 {
-                self.tradeUpdates.removeLast()
-            }
+            self.lastError = nil
+            self.reconnectAttempts = 0
             
-            // Trigger portfolio history update when trades occur
-            Task {
-                await self.loadPortfolioHistory(for: .day)
+            // Resubscribe to symbols
+            let symbols = Array(self.subscribedSymbols)
+            if !symbols.isEmpty {
+                self.webSocketService.subscribeToSymbols(symbols)
             }
         }
     }
     
-    private func handleQuote(_ data: Data, symbol: String) {
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let quote = json["data"] as? [String: Any],
-              let bidPrice = quote["bp"] as? Double,
-              let askPrice = quote["ap"] as? Double else {
-            return
-        }
-        
-        DispatchQueue.main.async {
-            self.lastQuotes[symbol] = (bid: bidPrice, ask: askPrice)
-        }
-    }
-    
-    private func handleTrade(_ data: Data, symbol: String) {
-        guard let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let trade = json["data"] as? [String: Any],
-              let price = trade["p"] as? Double else {
-            return
-        }
-        
-        DispatchQueue.main.async {
-            self.lastTrades[symbol] = price
+    nonisolated func didDisconnect(error: Error?) {
+        Task { @MainActor [weak self] in
+            self?.isConnected = false
+            self?.lastError = error
             
-            // Update candlestick data with the new trade
-            if var bars = self.candleStickData[symbol],
-               let lastBar = bars.last {
-                let calendar = Calendar.current
-                if calendar.isDate(lastBar.date, equalTo: Date(), toGranularity: .minute) {
-                    // Update the last bar
-                    bars[bars.count - 1] = CandleStickData(
-                        date: lastBar.date,
-                        open: lastBar.open,
-                        high: max(lastBar.high, price),
-                        low: min(lastBar.low, price),
-                        close: price,
-                        volume: lastBar.volume + 1
-                    )
-                } else {
-                    // Add a new bar
-                    bars.append(CandleStickData(
-                        date: Date(),
-                        open: price,
-                        high: price,
-                        low: price,
-                        close: price,
-                        volume: 1
-                    ))
-                }
-                self.candleStickData[symbol] = bars
+            if let error = error {
+                print("RealTimeMarketViewModel disconnected with error: \(error.localizedDescription)")
             }
+        }
+    }
+    
+    // MARK: - Private Methods
+    
+    @MainActor
+    private func handleDisconnection() {
+        Task { [weak self] in
+            guard let self = self else { return }
+            await self.clearData()
+            self.reconnectIfNeeded()
+        }
+    }
+    
+    @MainActor
+    private func clearData() async {
+        lastTrades.removeAll()
+        lastQuotes.removeAll()
+        tradeUpdates.removeAll()
+        candleStickData.removeAll()
+        portfolioHistory.removeAll()
+    }
+    
+    private func reconnectIfNeeded() {
+        guard reconnectAttempts < maxReconnectAttempts else {
+            lastError = NSError(domain: "RealTimeMarketViewModel",
+                              code: -1,
+                              userInfo: [NSLocalizedDescriptionKey: "Max reconnection attempts reached"])
+            return
+        }
+        
+        reconnectTask?.cancel()
+        reconnectTask = Task { @MainActor [weak self] in
+            guard let self = self else { return }
+            
+            // Exponential backoff
+            let delay = TimeInterval(pow(2.0, Double(self.reconnectAttempts)))
+            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+            
+            self.reconnectAttempts += 1
+            self.webSocketService.connect()
         }
     }
 }

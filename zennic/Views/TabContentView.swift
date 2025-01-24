@@ -1,28 +1,46 @@
 import SwiftUI
+import Charts
 
 struct TabContentView: View {
-    let selectedTab: NavigationItem
+    @Binding var selectedTab: NavigationItem
     
     var body: some View {
-        Group {
-            switch selectedTab {
-            case .dashboard:
-                DashboardView()
-            case .portfolio:
-                PortfolioView()
-            case .trading:
-                TradingView()
-            case .analysis:
-                AnalysisView()
-            case .settings:
-                SettingsView()
-            }
+        TabView(selection: $selectedTab) {
+            DashboardView()
+                .tabItem {
+                    Label("Dashboard", systemImage: "chart.bar.fill")
+                }
+                .tag(NavigationItem.dashboard)
+            
+            PortfolioView()
+                .tabItem {
+                    Label("Portfolio", systemImage: "briefcase.fill")
+                }
+                .tag(NavigationItem.portfolio)
+            
+            TradingView()
+                .tabItem {
+                    Label("Trading", systemImage: "dollarsign.circle.fill")
+                }
+                .tag(NavigationItem.trading)
+            
+            AnalysisView()
+                .tabItem {
+                    Label("Analysis", systemImage: "chart.xyaxis.line")
+                }
+                .tag(NavigationItem.analysis)
+            
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
+                .tag(NavigationItem.settings)
         }
     }
 }
 
 struct TabContentView_Previews: PreviewProvider {
     static var previews: some View {
-        TabContentView(selectedTab: .dashboard)
+        TabContentView(selectedTab: .constant(.dashboard))
     }
 }

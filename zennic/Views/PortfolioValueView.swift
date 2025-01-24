@@ -39,7 +39,7 @@ struct PortfolioValueView: View {
 // Preview provider for SwiftUI canvas
 struct PortfolioValueView_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = RealTimeMarketViewModel(apiKey: "", apiSecret: "")
+        let viewModel = RealTimeMarketViewModel()
         PortfolioValueView(viewModel: viewModel)
             .frame(width: 300)
             .padding()

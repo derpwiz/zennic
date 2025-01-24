@@ -1,294 +1,255 @@
 import Foundation
 import Combine
+import SwiftUI
+import Charts
 
-/// Represents possible errors that can occur when interacting with the market data API
-enum MarketDataError: Error {
-    /// The API response was not in the expected format
-    case invalidResponse
-    /// The price data received was invalid
-    case invalidPrice
-    /// The API credentials are invalid or expired
-    case unauthorized
-    /// A general API error occurred with a specific message
-    case apiError(String)
-}
-
-/// Service responsible for fetching market data and executing trades through the Alpaca API.
-/// This service handles all communication with Alpaca's paper trading environment.
+/// Service class responsible for interacting with market data APIs
 final class MarketDataService {
-    private let apiKey: String
-    private let apiSecret: String
+    // MARK: - Properties
+    
+    static var shared = MarketDataService()
+    
     private let session: URLSession
-    private let baseURL = URL(string: "https://paper-api.alpaca.markets/v2")!
+    private let baseURL: URL
+    private let dateFormatter: ISO8601DateFormatter
+    private let decoder: JSONDecoder
+    private let queue = DispatchQueue(label: "com.zennic.marketdata", qos: .userInitiated)
     
-    /// Indicates whether the service has valid API credentials
-    var hasValidCredentials: Bool {
-        !apiKey.isEmpty && !apiSecret.isEmpty
-    }
+    // MARK: - Initialization
     
-    /// Initializes the market data service with Alpaca API credentials
-    /// - Parameters:
-    ///   - apiKey: The Alpaca API key
-    ///   - apiSecret: The Alpaca API secret
-    init(apiKey: String, apiSecret: String) {
-        self.apiKey = apiKey
-        self.apiSecret = apiSecret
+    init(apiKey: String = ProcessInfo.processInfo.environment["ALPACA_API_KEY"] ?? "",
+         apiSecret: String = ProcessInfo.processInfo.environment["ALPACA_API_SECRET"] ?? "",
+         baseURL: URL = URL(string: "https://data.alpaca.markets/v2")!) {
+        self.baseURL = baseURL
         
+        // Configure URLSession
         let config = URLSessionConfiguration.default
         config.httpAdditionalHeaders = [
             "APCA-API-KEY-ID": apiKey,
             "APCA-API-SECRET-KEY": apiSecret
         ]
+        config.timeoutIntervalForRequest = 30
+        config.timeoutIntervalForResource = 300
         self.session = URLSession(configuration: config)
-    }
-    
-    /// Fetches the latest quote for a given stock symbol
-    /// - Parameter symbol: The stock symbol to get the quote for
-    /// - Returns: A publisher that emits the quote data or an error
-    func getQuote(for symbol: String) -> AnyPublisher<AlpacaQuote, Error> {
-        let url = baseURL.appendingPathComponent("quotes/\(symbol)/latest")
         
-        return session.dataTaskPublisher(for: url)
-            .map(\.data)
-            .decode(type: AlpacaQuote.self, decoder: JSONDecoder())
-            .eraseToAnyPublisher()
-    }
-    
-    /// Retrieves all current positions in the portfolio
-    /// - Returns: An array of positions
-    /// - Throws: An error if the request fails or the response is invalid
-    func getPositions() async throws -> [AlpacaPosition] {
-        let url = baseURL.appendingPathComponent("positions")
-        let (data, _) = try await session.data(from: url)
-        return try JSONDecoder().decode([AlpacaPosition].self, from: data)
-    }
-    
-    /// Places an order for a given stock symbol
-    /// - Parameters:
-    ///   - symbol: The stock symbol to place the order for
-    ///   - qty: The quantity of shares to buy or sell
-    ///   - side: The side of the order (buy or sell)
-    ///   - type: The type of order (market, limit, stop, or stop limit)
-    ///   - timeInForce: The time in force for the order (day, gtc, opg, cls, ioc, or fok)
-    ///   - limitPrice: The limit price for the order (optional)
-    /// - Returns: The placed order
-    /// - Throws: An error if the request fails or the response is invalid
-    func placeOrder(
-        symbol: String,
-        qty: Double,
-        side: OrderSide,
-        type: OrderType,
-        timeInForce: TimeInForce,
-        limitPrice: Double? = nil
-    ) async throws -> AlpacaOrder {
-        let url = baseURL.appendingPathComponent("orders")
+        // Configure date formatter
+        self.dateFormatter = ISO8601DateFormatter()
         
-        var parameters: [String: Any] = [
-            "symbol": symbol,
-            "qty": String(format: "%.2f", qty),
-            "side": side.rawValue,
-            "type": type.rawValue,
-            "time_in_force": timeInForce.rawValue
-        ]
-        
-        if let limitPrice = limitPrice {
-            parameters["limit_price"] = String(format: "%.2f", limitPrice)
+        // Configure decoder
+        self.decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let timestamp = try container.decode(String.self)
+            
+            if let date = self.dateFormatter.date(from: timestamp) {
+                return date
+            }
+            
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid date format"
+            )
         }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
-        
-        let (data, _) = try await session.data(for: request)
-        return try JSONDecoder().decode(AlpacaOrder.self, from: data)
     }
     
-    /// Fetches historical bar data for a symbol
+    /// Updates the shared instance with new API credentials
+    static func updateShared(apiKey: String, apiSecret: String) {
+        shared = MarketDataService(apiKey: apiKey, apiSecret: apiSecret)
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Fetches historical bar data for a given symbol and timeframe
     /// - Parameters:
-    ///   - symbol: The stock symbol
-    ///   - timeframe: Timeframe for each bar (1Min, 5Min, 15Min, 1H, 1D)
-    ///   - start: Start date
-    ///   - end: End date (optional, defaults to now)
-    /// - Returns: Array of CandleStickData
-    func getHistoricalBars(
-        symbol: String,
-        timeframe: String,
-        start: Date,
-        end: Date? = nil
-    ) async throws -> [CandleStickData] {
-        var components = URLComponents(url: baseURL.appendingPathComponent("bars"), resolvingAgainstBaseURL: true)!
+    ///   - symbol: The stock symbol to fetch data for
+    ///   - timeframe: The timeframe for the bars (e.g., "1Day", "1Hour")
+    ///   - limit: Maximum number of bars to return
+    /// - Returns: An array of StockBarData
+    func fetchBarData(symbol: String, timeframe: String, limit: Int = 100) async throws -> [StockBarData] {
+        var components = URLComponents(url: baseURL.appendingPathComponent("stocks/\(symbol)/bars"), resolvingAgainstBaseURL: true)!
         components.queryItems = [
-            URLQueryItem(name: "symbols", value: symbol),
             URLQueryItem(name: "timeframe", value: timeframe),
-            URLQueryItem(name: "start", value: formatDate(start)),
-            URLQueryItem(name: "limit", value: "1000")
+            URLQueryItem(name: "limit", value: String(limit))
         ]
-        
-        if let end = end {
-            components.queryItems?.append(URLQueryItem(name: "end", value: formatDate(end)))
-        }
         
         guard let url = components.url else {
-            throw MarketDataError.invalidResponse
+            throw APIError.invalidResponse
         }
         
-        let (data, _) = try await session.data(from: url)
-        let response = try JSONDecoder().decode(BarsResponse.self, from: data)
+        let (data, response) = try await session.data(from: url)
         
-        return response.bars.map { bar in
-            CandleStickData(
-                date: bar.timestamp,
-                open: bar.openPrice,
-                high: bar.highPrice,
-                low: bar.lowPrice,
-                close: bar.closePrice,
-                volume: bar.volume
-            )
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
         }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(statusCode: httpResponse.statusCode)
+        }
+        
+        let barsResponse = try decoder.decode(BarsResponse.self, from: data)
+        guard !barsResponse.bars.isEmpty else {
+            throw APIError.serverError(message: "No data available for \(symbol)")
+        }
+        
+        return barsResponse.bars
     }
     
-    /// Fetches trade data for portfolio performance tracking
+    /// Fetches latest quote data for a given symbol
+    /// - Parameter symbol: The stock symbol to fetch data for
+    /// - Returns: The latest quote data
+    func fetchQuote(symbol: String) async throws -> AlpacaQuote {
+        let url = baseURL.appendingPathComponent("stocks/\(symbol)/quotes/latest")
+        
+        let (data, response) = try await session.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(statusCode: httpResponse.statusCode)
+        }
+        
+        return try decoder.decode(AlpacaQuote.self, from: data)
+    }
+    
+    /// Fetches latest trade data for a given symbol
+    /// - Parameter symbol: The stock symbol to fetch data for
+    /// - Returns: The latest trade data
+    func fetchTrade(symbol: String) async throws -> AlpacaTrade {
+        let url = baseURL.appendingPathComponent("stocks/\(symbol)/trades/latest")
+        
+        let (data, response) = try await session.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(statusCode: httpResponse.statusCode)
+        }
+        
+        return try decoder.decode(AlpacaTrade.self, from: data)
+    }
+    
+    /// Fetches historical price data between two dates
+    /// - Parameters:
+    ///   - symbol: The stock symbol to fetch data for
+    ///   - timeframe: The timeframe for the bars
+    ///   - start: Start date
+    ///   - end: End date
+    /// - Returns: An array of StockBarData
+    func getHistoricalData(symbol: String, timeframe: String, start: Date, end: Date) async throws -> [StockBarData] {
+        var components = URLComponents(url: baseURL.appendingPathComponent("stocks/\(symbol)/bars"), resolvingAgainstBaseURL: true)!
+        components.queryItems = [
+            URLQueryItem(name: "timeframe", value: timeframe),
+            URLQueryItem(name: "start", value: dateFormatter.string(from: start)),
+            URLQueryItem(name: "end", value: dateFormatter.string(from: end))
+        ]
+        
+        guard let url = components.url else {
+            throw APIError.invalidResponse
+        }
+        
+        let (data, response) = try await session.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(statusCode: httpResponse.statusCode)
+        }
+        
+        let barsResponse = try decoder.decode(BarsResponse.self, from: data)
+        guard !barsResponse.bars.isEmpty else {
+            throw APIError.serverError(message: "No historical data available for \(symbol)")
+        }
+        
+        return barsResponse.bars
+    }
+    
+    /// Fetches historical prices for multiple symbols
     /// - Parameters:
     ///   - symbols: Array of stock symbols
-    ///   - start: Start date
-    ///   - end: End date (optional, defaults to now)
-    /// - Returns: Dictionary of symbol to array of PricePoint
-    func getHistoricalTrades(
-        symbols: [String],
-        start: Date,
-        end: Date? = nil
-    ) async throws -> [String: [PricePoint]] {
+    ///   - timeframe: The timeframe for the bars
+    ///   - start: Start date for historical data
+    ///   - end: End date for historical data
+    /// - Returns: Dictionary mapping symbols to their historical price data
+    func getHistoricalPrices(symbols: [String], timeframe: String, start: Date, end: Date) async throws -> [String: [PricePoint]] {
         var result: [String: [PricePoint]] = [:]
         
-        for symbol in symbols {
-            let bars = try await getHistoricalBars(
-                symbol: symbol,
-                timeframe: "1Min",
-                start: start,
-                end: end
-            )
+        try await withThrowingTaskGroup(of: (String, [PricePoint]).self) { group in
+            for symbol in symbols {
+                group.addTask {
+                    let bars = try await self.getHistoricalData(
+                        symbol: symbol,
+                        timeframe: timeframe,
+                        start: start,
+                        end: end
+                    )
+                    
+                    let pricePoints = bars.map { bar in
+                        PricePoint(date: bar.timestamp, price: bar.closePrice)
+                    }
+                    
+                    return (symbol, pricePoints)
+                }
+            }
             
-            result[symbol] = bars.map { PricePoint(date: $0.date, price: $0.close) }
+            for try await (symbol, prices) in group {
+                result[symbol] = prices
+            }
         }
         
         return result
     }
     
-    private func formatDate(_ date: Date) -> String {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = [.withInternetDateTime]
-        return formatter.string(from: date)
+    /// Fetches historical portfolio prices between two dates
+    /// - Parameters:
+    ///   - holdings: Array of portfolio holdings
+    ///   - timeframe: The timeframe for the bars
+    ///   - start: Start date
+    ///   - end: End date
+    /// - Returns: Array of price points representing portfolio value over time
+    func getHistoricalPrices(holdings: [PortfolioHolding], timeframe: String, start: Date, end: Date) async throws -> [PricePoint] {
+        var pricePoints: [PricePoint] = []
+        
+        try await withThrowingTaskGroup(of: [StockBarData].self) { group in
+            for holding in holdings {
+                group.addTask {
+                    return try await self.getHistoricalData(
+                        symbol: holding.symbol,
+                        timeframe: timeframe,
+                        start: start,
+                        end: end
+                    )
+                }
+            }
+            
+            for try await bars in group {
+                for bar in bars {
+                    if let existingIndex = pricePoints.firstIndex(where: { $0.date == bar.timestamp }) {
+                        let additionalValue = bar.closePrice * Double(holdings.first { $0.symbol == bar.symbol }?.quantity ?? 0)
+                        let newValue = pricePoints[existingIndex].price + additionalValue
+                        pricePoints[existingIndex] = PricePoint(date: bar.timestamp, price: newValue)
+                    } else {
+                        let value = bar.closePrice * Double(holdings.first { $0.symbol == bar.symbol }?.quantity ?? 0)
+                        pricePoints.append(PricePoint(date: bar.timestamp, price: value))
+                    }
+                }
+            }
+        }
+        
+        return pricePoints.sorted { $0.date < $1.date }
     }
-}
-
-// MARK: - Response Models
-
-struct BarsResponse: Codable {
-    let bars: [Bar]
     
-    enum CodingKeys: String, CodingKey {
-        case bars = "bars"
+    /// Fetches historical bar data for a given symbol and timeframe
+    /// - Parameters:
+    ///   - symbol: The stock symbol to fetch data for
+    ///   - timeframe: The timeframe for the bars
+    /// - Returns: An array of StockBarData
+    func fetchBars(symbol: String, timeframe: ChartTimePeriod) async throws -> [StockBarData] {
+        return try await fetchBarData(symbol: symbol, timeframe: timeframe.timeframe)
     }
-}
-
-struct Bar: Codable {
-    let timestamp: Date
-    let openPrice: Double
-    let highPrice: Double
-    let lowPrice: Double
-    let closePrice: Double
-    let volume: Double
-    
-    enum CodingKeys: String, CodingKey {
-        case timestamp = "t"
-        case openPrice = "o"
-        case highPrice = "h"
-        case lowPrice = "l"
-        case closePrice = "c"
-        case volume = "v"
-    }
-}
-
-// Move these models to a separate file
-struct AlpacaQuote: Codable {
-    let ask: Double?
-    let bid: Double?
-    let askSize: Int?
-    let bidSize: Int?
-    let timestamp: Date?
-}
-
-struct AlpacaPosition: Codable {
-    let symbol: String
-    let qty: String
-    let costBasis: String
-    let marketValue: String
-    let unrealizedPL: String
-    let currentPrice: String
-    let lastDayPrice: String
-    let changeToday: String
-    let assetId: String
-    let assetClass: String
-    
-    enum CodingKeys: String, CodingKey {
-        case symbol
-        case qty
-        case costBasis = "cost_basis"
-        case marketValue = "market_value"
-        case unrealizedPL = "unrealized_pl"
-        case currentPrice = "current_price"
-        case lastDayPrice = "lastday_price"
-        case changeToday = "change_today"
-        case assetId = "asset_id"
-        case assetClass = "asset_class"
-    }
-}
-
-struct AlpacaOrder: Codable {
-    let id: String
-    let clientOrderId: String?
-    let createdAt: Date
-    let updatedAt: Date?
-    let submittedAt: Date?
-    let filledAt: Date?
-    let expiredAt: Date?
-    let canceledAt: Date?
-    let failedAt: Date?
-    let replacedAt: Date?
-    let replacedBy: String?
-    let replaces: String?
-    let assetId: String
-    let symbol: String
-    let assetClass: String
-    let notional: Double?
-    let qty: Double?
-    let filledQty: Double?
-    let type: String
-    let side: String
-    let timeInForce: String
-    let limitPrice: Double?
-    let stopPrice: Double?
-    let status: String
-}
-
-enum OrderSide: String {
-    case buy
-    case sell
-}
-
-enum OrderType: String {
-    case market
-    case limit
-    case stop
-    case stopLimit
-}
-
-enum TimeInForce: String {
-    case day = "day"
-    case gtc = "gtc"
-    case opg = "opg"
-    case cls = "cls"
-    case ioc = "ioc"
-    case fok = "fok"
 }

@@ -9,7 +9,7 @@ struct PortfolioView: View {
     var body: some View {
         VStack(spacing: 20) {
             // Portfolio summary with real-time value
-            PortfolioValueView(viewModel: appViewModel.realTimeMarket)
+            PortfolioValueView(viewModel: appViewModel.realTimeMarketViewModel)
                 .frame(maxWidth: .infinity)
             
             // Holdings list with real-time prices
@@ -17,7 +17,7 @@ struct PortfolioView: View {
                 ForEach(appViewModel.holdings) { holding in
                     HoldingRow(
                         holding: holding,
-                        currentPrice: appViewModel.realTimeMarket.lastTrades[holding.symbol] ?? holding.averagePrice
+                        currentPrice: appViewModel.realTimeMarketViewModel.lastTrades[holding.symbol] ?? holding.averagePrice
                     )
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -45,12 +45,12 @@ struct PortfolioView: View {
         .onAppear {
             // Subscribe to real-time updates for all holdings
             let symbols = appViewModel.holdings.map(\.symbol)
-            appViewModel.realTimeMarket.subscribeToSymbols(symbols)
+            appViewModel.realTimeMarketViewModel.subscribeToSymbols(symbols)
         }
         .onDisappear {
             // Unsubscribe when view disappears
             let symbols = appViewModel.holdings.map(\.symbol)
-            appViewModel.realTimeMarket.unsubscribeFromSymbols(symbols)
+            appViewModel.realTimeMarketViewModel.unsubscribeFromSymbols(symbols)
         }
     }
 }
@@ -72,7 +72,7 @@ struct HoldingRow: View {
             VStack(alignment: .leading) {
                 Text(holding.symbol)
                     .font(.headline)
-                Text("\(holding.shares) shares")
+                Text("\(holding.quantity, specifier: "%.2f") shares")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
@@ -117,19 +117,20 @@ struct AddHoldingView: View {
                     Button("Add") {
                         if let shares = Double(shares),
                            let price = Double(purchasePrice) {
-                            do {
-                                let holding = try PortfolioHolding(
-                                    id: UUID(),
-                                    symbol: symbol.uppercased(),
-                                    shares: shares,
-                                    purchasePrice: price,
-                                    purchaseDate: Date()
-                                )
-                                appViewModel.addHolding(holding)
-                                dismiss()
-                            } catch {
-                                print("Error creating holding: \(error)")
-                            }
+                            let holding = PortfolioHolding(
+                                symbol: symbol.uppercased(),
+                                quantity: shares,
+                                averagePrice: price,
+                                marketValue: shares * price,
+                                unrealizedPL: 0,
+                                currentPrice: price,
+                                lastDayPrice: price,
+                                changeToday: 0,
+                                assetId: UUID().uuidString,
+                                assetClass: "stock"
+                            )
+                            appViewModel.addHolding(holding)
+                            dismiss()
                         }
                     }
                     .disabled(symbol.isEmpty || shares.isEmpty || purchasePrice.isEmpty)
