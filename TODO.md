@@ -6,17 +6,19 @@ This project aims to develop a macOS application for algorithmic hedge fund trad
 ## Development Plan
 
 ### 1. Core App Structure and UI (2-3 weeks)
-- [ ] Set up macOS app project with AppKit and SwiftUI
-- [ ] Implement main navigation structure
-- [ ] Design and implement UI components following Apple's Human Interface Guidelines (HIG)
-- [ ] Create code editor interface
+- [x] Set up macOS app project with AppKit and SwiftUI
+- [x] Implement main navigation structure
+- [x] Design and implement UI components following Apple's Human Interface Guidelines (HIG)
+- [x] Create placeholder views for main features
+- [ ] Implement code editor interface
 - [ ] Implement basic app settings and preferences
 
 ### 2. Data Integration and Storage (2-3 weeks)
-- [ ] Integrate Alpaca.markets API
-  - [ ] Implement OAuth 2.0 authentication
-  - [ ] Set up API calls for market data retrieval
+- [x] Integrate Alpaca.markets API
+  - [x] Implement OAuth 2.0 authentication
+  - [x] Set up API calls for market data retrieval
   - [ ] Implement order execution functionality
+- [ ] Implement secure storage for access tokens
 - [ ] Set up Core Data for local storage
   - [ ] Design data models for user data, trading algorithms, and local caching
   - [ ] Implement CRUD operations for local data
@@ -24,7 +26,25 @@ This project aims to develop a macOS application for algorithmic hedge fund trad
   - [ ] Set up secure connection to AWS
   - [ ] Implement data upload/download functionality for historical data
 
-### 3. Quantitative Analysis Engine (3-4 weeks)
+### 3. Feature Implementation (8-10 weeks)
+- [ ] Code Editor
+  - [ ] Implement syntax highlighting
+  - [ ] Add auto-completion functionality
+  - [ ] Integrate with Alpaca's paper trading feature
+- [ ] Data Integration
+  - [ ] Implement real-time data streaming
+  - [ ] Create data preprocessing pipeline
+- [ ] Backtesting
+  - [ ] Develop backtesting engine
+  - [ ] Implement performance metrics calculation
+- [ ] Real-Time Monitoring
+  - [ ] Create real-time dashboard
+  - [ ] Implement alerting system
+- [ ] Visualization
+  - [ ] Implement various chart types (candlestick, line, bar)
+  - [ ] Add technical indicators
+
+### 4. Quantitative Analysis Engine (3-4 weeks)
 - [ ] Develop Swift-based backtesting engine
   - [ ] Implement historical data processing
   - [ ] Create flexible strategy input mechanism

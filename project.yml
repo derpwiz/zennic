@@ -1,0 +1,46 @@
+name: zennic
+options:
+  bundleIdPrefix: com.example
+targets:
+  zennic:
+    type: application
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources: 
+      - path: App
+      - path: Features
+      - path: Features/Shared
+    dependencies:
+      - target: DataIntegration
+    scheme:
+      environmentVariables:
+        ALPACA_ACCESS_TOKEN: ${ALPACA_ACCESS_TOKEN}
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleName: zennic
+        CFBundleDisplayName: zennic
+        CFBundleIdentifier: com.example.zennic
+        CFBundleVersion: 1.0.0
+        CFBundleShortVersionString: 1.0.0
+        NSPrincipalClass: NSApplication
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+  DataIntegration:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/DataIntegration
+      - path: Features/Shared
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "DataIntegration"
+        DEFINES_MODULE: "YES"
