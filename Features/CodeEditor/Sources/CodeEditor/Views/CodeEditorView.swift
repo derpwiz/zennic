@@ -131,16 +131,26 @@ public struct CodeEditorView: View {
                 )
             }
         )
-        .sheet(isPresented: $showSaveDialog) {
-            SaveFileView(
-                fileName: $saveFileName,
-                fileExtension: viewModel.language.rawValue.lowercased(),
-                onSave: { fileName in
-                    viewModel.selectedFile = fileName
-                    saveCurrentFile()
-                }
-            )
-            .frame(width: 480, height: 160)
+        .sheet(isPresented: $showSaveDialog, onDismiss: {
+            // Reset filename if dismissed without saving
+            saveFileName = viewModel.getDefaultFileName()
+        }) {
+            if #available(macOS 13.3, *) {
+                SaveFileView(
+                    fileName: $saveFileName,
+                    fileExtension: viewModel.language.rawValue.lowercased(),
+                    onSave: { fileName in
+                        viewModel.selectedFile = fileName
+                        saveCurrentFile()
+                    }
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .presentationBackground(.ultraThinMaterial)
+                .presentationDetents([.height(160)])
+                .presentationDragIndicator(.visible)
+            } else {
+                // Fallback on earlier versions
+            }
         }
     }
     
@@ -308,35 +318,63 @@ struct SaveFileView: View {
     @FocusState private var isFileNameFocused: Bool
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            TextField("File Name", text: $fileName)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .focused($isFileNameFocused)
-            
-            Text("\(fileName).\(fileExtension)")
-                .foregroundColor(.secondary)
-                .font(.system(.subheadline))
-            
-            Spacer()
-            
-            HStack(spacing: 12) {
-                Spacer()
-                Button("Cancel") {
+        ZStack {
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
                     dismiss()
                 }
-                .keyboardShortcut(.escape, modifiers: [])
+            
+            VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Save As:")
+                        .font(.system(.body))
+                        .foregroundColor(Color(NSColor.labelColor))
+                    
+                    TextField("", text: $fileName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .focused($isFileNameFocused)
+                }
                 
-                Button("Save") {
-                    onSave("\(fileName).\(fileExtension)")
-                    dismiss()
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Where:")
+                        .font(.system(.body))
+                        .foregroundColor(Color(NSColor.labelColor))
+                    
+                    Text("\(fileName).\(fileExtension)")
+                        .foregroundColor(Color(NSColor.secondaryLabelColor))
+                        .font(.system(.body))
                 }
-                .keyboardShortcut(.return, modifiers: [])
-                .buttonStyle(.borderedProminent)
+                
+                Spacer()
+                
+                HStack {
+                    Spacer()
+                    HStack(spacing: 8) {
+                        Button("Cancel") {
+                            dismiss()
+                        }
+                        .keyboardShortcut(.escape, modifiers: [])
+                        .frame(width: 82)
+                        
+                        Button("Save") {
+                            onSave("\(fileName).\(fileExtension)")
+                            dismiss()
+                        }
+                        .keyboardShortcut(.return, modifiers: [])
+                        .buttonStyle(.borderedProminent)
+                        .frame(width: 82)
+                    }
+                }
             }
-        }
-        .padding()
-        .onAppear {
-            isFileNameFocused = true
+            .padding()
+            .background(Color(NSColor.windowBackgroundColor))
+            .cornerRadius(8)
+            .shadow(radius: 10)
+            .onAppear {
+                isFileNameFocused = true
+            }
+            .frame(width: 480)
         }
     }
 }
