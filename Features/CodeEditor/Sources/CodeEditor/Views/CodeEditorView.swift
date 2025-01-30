@@ -23,33 +23,44 @@ public struct CodeEditorView: View {
             
             VStack {
                 HStack {
-                    Picker("Language", selection: $viewModel.language) {
-                        ForEach(CodeLanguage.allCases, id: \.self) { lang in
-                            Text(lang.rawValue).tag(lang)
+                    HStack(spacing: 16) {
+                        Button("New File") {
+                            viewModel.createNewFile()
                         }
+                        .help("Create a new file")
+                        
+                        Picker("Language", selection: $viewModel.language) {
+                            ForEach(CodeLanguage.allCases, id: \.self) { lang in
+                                Text(lang.rawValue).tag(lang)
+                            }
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .onChange(of: viewModel.language) { newLanguage in
+                            appState.currentLanguage = newLanguage.rawValue
+                        }
+                        .help("Select the programming language for syntax highlighting")
                     }
-                    .pickerStyle(SegmentedPickerStyle())
-                    .onChange(of: viewModel.language) { newLanguage in
-                        appState.currentLanguage = newLanguage.rawValue
-                    }
-                    .help("Select the programming language for syntax highlighting")
                     
-                    Button("Run") {
-                        runCode()
-                    }
-                    .keyboardShortcut(.return, modifiers: .command)
-                    .help("Execute the current code (⌘↩)")
+                    Spacer()
                     
-                    Button("Save") {
-                        saveCurrentFile()
+                    HStack(spacing: 8) {
+                        Button("Run") {
+                            runCode()
+                        }
+                        .keyboardShortcut(.return, modifiers: .command)
+                        .help("Execute the current code (⌘↩)")
+                        
+                        Button("Save") {
+                            saveCurrentFile()
+                        }
+                        .keyboardShortcut("s", modifiers: .command)
+                        .help("Save changes to the current file (⌘S)")
+                        
+                        Button("History") {
+                            showHistory.toggle()
+                        }
+                        .help("View and restore previous versions of the file")
                     }
-                    .keyboardShortcut("s", modifiers: .command)
-                    .help("Save changes to the current file (⌘S)")
-                    
-                    Button("History") {
-                        showHistory.toggle()
-                    }
-                    .help("View and restore previous versions of the file")
                 }
                 .padding()
                 

@@ -27,6 +27,7 @@ public class CodeEditorViewModel: ObservableObject {
     @Published public var error: Error?
     
     private let gitService: GitService
+    private var fileCounter = 0
     
     public init(code: String, language: CodeLanguage, gitService: GitService = GitService.shared) {
         self.code = code
@@ -51,7 +52,18 @@ public class CodeEditorViewModel: ObservableObject {
         }
     }
     
+    public func createNewFile() {
+        fileCounter += 1
+        let extension = language.rawValue.lowercased()
+        selectedFile = "untitled\(fileCounter).\(extension)"
+        code = ""
+    }
+    
     public func saveCurrentFile() throws {
+        if selectedFile == nil {
+            createNewFile()
+        }
+        
         guard let fileName = selectedFile else { throw CodeEditorError.noFileSelected }
         
         do {
