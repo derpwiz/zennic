@@ -6,6 +6,8 @@ public struct CodeEditorView: View {
     @StateObject private var viewModel: CodeEditorViewModel
     @EnvironmentObject private var appState: AppState
     @State private var showHistory = false
+    @State private var showSaveDialog = false
+    @State private var saveFileName = ""
     
     public init(gitService: GitService = GitService.shared) {
         let code = UserDefaults.standard.string(forKey: "currentCode") ?? ""
@@ -51,7 +53,12 @@ public struct CodeEditorView: View {
                         .help("Execute the current code (⌘↩)")
                         
                         Button("Save") {
-                            saveCurrentFile()
+                            if viewModel.selectedFile == nil {
+                                saveFileName = viewModel.getDefaultFileName()
+                                showSaveDialog = true
+                            } else {
+                                saveCurrentFile()
+                            }
                         }
                         .keyboardShortcut("s", modifiers: .command)
                         .help("Save changes to the current file (⌘S)")
@@ -124,6 +131,16 @@ public struct CodeEditorView: View {
                 )
             }
         )
+        .sheet(isPresented: $showSaveDialog) {
+            SaveFileView(
+                fileName: $saveFileName,
+                fileExtension: viewModel.language.rawValue.lowercased(),
+                onSave: { fileName in
+                    viewModel.selectedFile = fileName
+                    saveCurrentFile()
+                }
+            )
+        }
     }
     
     private func runCode() {
@@ -279,6 +296,49 @@ struct AutoCompleteView: View {
         .background(Color.white)
         .border(Color.gray, width: 1)
         .cornerRadius(4)
+    }
+}
+
+struct SaveFileView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var fileName: String
+    let fileExtension: String
+    let onSave: (String) -> Void
+    
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Enter file name:")
+                        .font(.headline)
+                    
+                    TextField("File Name", text: $fileName)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(width: 400)
+                }
+                
+                Text("File will be saved as: \(fileName).\(fileExtension)")
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+            }
+            .padding(30)
+            .frame(width: 500, height: 200)
+            .navigationTitle("Save As")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        dismiss()
+                    }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        onSave("\(fileName).\(fileExtension)")
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 }
 
