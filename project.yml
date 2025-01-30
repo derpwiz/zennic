@@ -2,16 +2,66 @@ name: zennic
 options:
   bundleIdPrefix: com.example
 targets:
+  Core:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/Core/Sources/Core
+    dependencies:
+      - target: Shared
+      - target: DataIntegration
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "Core"
+        DEFINES_MODULE: "YES"
+  
+  App:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: App/Main
+    dependencies:
+      - target: Core
+      - target: CodeEditor
+      - target: DataIntegration
+      - target: RealTimeMonitoring
+      - target: Backtesting
+      - target: Visualization
+      - target: UI
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "App"
+        DEFINES_MODULE: "YES"
+        SWIFT_INCLUDE_PATHS: "$(SRCROOT)/App $(SRCROOT)/Features/RealTimeMonitoring/Sources/RealTimeMonitoring/include"
+  
   zennic:
     type: application
     platform: macOS
     deploymentTarget: "13.0"
     sources: 
-      - path: App
-      - path: Features
-      - path: Features/Shared
+      - path: App/Main
+      - path: App/Resources
+      - path: Features/RealTimeMonitoring/Sources/RealTimeMonitoring
+      - path: Features/Visualization/Sources/Visualization
+      - path: Features/UI/Sources/UI
     dependencies:
       - target: DataIntegration
+      - target: Shared
+      - target: CodeEditor
+      - target: RealTimeMonitoring
+      - target: Backtesting
+      - target: Visualization
+      - target: UI
     scheme:
       environmentVariables:
         ALPACA_ACCESS_TOKEN: ${ALPACA_ACCESS_TOKEN}
@@ -34,8 +84,9 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: Features/DataIntegration
-      - path: Features/Shared
+      - path: Features/DataIntegration/Sources/DataIntegration
+    dependencies:
+      - target: Shared
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -43,4 +94,113 @@ targets:
         CODE_SIGN_ENTITLEMENTS: ""
         GENERATE_INFOPLIST_FILE: "YES"
         PRODUCT_MODULE_NAME: "DataIntegration"
+        DEFINES_MODULE: "YES"
+  Shared:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/Shared
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "Shared"
+        DEFINES_MODULE: "YES"
+  CodeEditor:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/CodeEditor/Sources/CodeEditor
+    dependencies:
+      - target: Shared
+      - target: Core
+      - target: UI
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "CodeEditor"
+        DEFINES_MODULE: "YES"
+
+  RealTimeMonitoring:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/RealTimeMonitoring/Sources/RealTimeMonitoring
+        excludes:
+          - "include"
+      - path: Features/RealTimeMonitoring/Sources/RealTimeMonitoring/include
+        type: headers
+    dependencies:
+      - target: Shared
+      - target: Core
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "RealTimeMonitoring"
+        DEFINES_MODULE: "YES"
+        SWIFT_INCLUDE_PATHS: $(SRCROOT)/Features/RealTimeMonitoring
+
+  Backtesting:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/Backtesting/Sources/Backtesting
+    dependencies:
+      - target: Shared
+      - target: Core
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "Backtesting"
+        DEFINES_MODULE: "YES"
+
+  Visualization:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/Visualization/Sources/Visualization
+    dependencies:
+      - target: Shared
+      - target: Core
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "Visualization"
+        DEFINES_MODULE: "YES"
+
+  UI:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/UI/Sources/UI
+    dependencies:
+      - target: Shared
+      - target: Core
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "UI"
         DEFINES_MODULE: "YES"

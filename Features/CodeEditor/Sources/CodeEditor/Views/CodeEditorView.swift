@@ -1,12 +1,14 @@
 import SwiftUI
 import Shared
 import Core
+import UI
 
 public struct CodeEditorView: View {
     @StateObject private var viewModel: CodeEditorViewModel
     @EnvironmentObject private var appState: AppState
     @State private var showHistory = false
     @State private var showSaveDialog = false
+    @State private var showGitView = false
     @State private var saveFileName = ""
     
     public init(gitService: GitService = GitService.shared) {
@@ -67,6 +69,11 @@ public struct CodeEditorView: View {
                             showHistory.toggle()
                         }
                         .help("View and restore previous versions of the file")
+                        
+                        Button(action: { showGitView = true }) {
+                            Image(systemName: "arrow.triangle.branch")
+                        }
+                        .help("Git Operations")
                     }
                 }
                 .padding()
@@ -131,6 +138,10 @@ public struct CodeEditorView: View {
                 )
             }
         )
+        .sheet(isPresented: $showGitView) {
+            GitView(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                .appendingPathComponent("ZennicCode").path)
+        }
         .sheet(isPresented: $showSaveDialog, onDismiss: {
             // Reset filename if dismissed without saving
             saveFileName = viewModel.getDefaultFileName()
