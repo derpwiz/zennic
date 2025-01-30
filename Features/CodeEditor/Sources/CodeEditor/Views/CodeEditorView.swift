@@ -144,10 +144,11 @@ public struct CodeEditorView: View {
                         saveCurrentFile()
                     }
                 )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .presentationBackground(.ultraThinMaterial)
-                .presentationDetents([.height(160)])
-                .presentationDragIndicator(.visible)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .background(.ultraThinMaterial)
+            .presentationDetents([.height(160)])
+            .presentationDragIndicator(.visible)
+            .interactiveDismissDisabled()
             } else {
                 // Fallback on earlier versions
             }
