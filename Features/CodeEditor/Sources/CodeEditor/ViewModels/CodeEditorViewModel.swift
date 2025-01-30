@@ -52,10 +52,14 @@ public class CodeEditorViewModel: ObservableObject {
         }
     }
     
-    public func createNewFile() {
+    public func getDefaultFileName() -> String {
         fileCounter += 1
+        return "untitled\(fileCounter)"
+    }
+    
+    public func createNewFile() {
         let fileExtension = language.rawValue.lowercased()
-        selectedFile = "untitled\(fileCounter).\(fileExtension)"
+        selectedFile = "\(getDefaultFileName()).\(fileExtension)"
         code = ""
     }
     
@@ -68,6 +72,7 @@ public class CodeEditorViewModel: ObservableObject {
         
         do {
             try gitService.updateFile(name: fileName, content: code)
+            objectWillChange.send() // Notify observers of the change
         } catch let error as GitError {
             throw CodeEditorError.gitOperationFailed(error.localizedDescription)
         }
