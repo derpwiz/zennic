@@ -147,6 +147,7 @@ public struct CodeEditorView: View {
             .background(.ultraThinMaterial)
             .presentationDetents([.height(160)])
             .presentationDragIndicator(.visible)
+            .presentationBackground(.windowBackground)
         }
     }
     
@@ -364,7 +365,7 @@ struct SaveFileView: View {
                 }
             }
             .padding()
-            .background(Color(NSColor.windowBackgroundColor))
+            .background(.background)
             .cornerRadius(8)
             .shadow(radius: 10)
             .onAppear {
