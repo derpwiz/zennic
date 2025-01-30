@@ -326,21 +326,21 @@ struct SaveFileView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Save As")
                         .font(.headline)
-                        .foregroundColor(Color(NSColor.labelColor))
+                        .foregroundColor(.primary)
                     
                     TextField("Untitled", text: $fileName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .textFieldStyle(.roundedBorder)
                         .focused($isFileNameFocused)
                 }
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Where")
                         .font(.headline)
-                        .foregroundColor(Color(NSColor.labelColor))
+                        .foregroundColor(.primary)
                     
                     Text("\(fileName).\(fileExtension)")
-                        .foregroundColor(Color(NSColor.secondaryLabelColor))
-                        .font(.system(.body))
+                        .foregroundColor(.secondary)
+                        .font(.body)
                 }
                 
                 Spacer()
