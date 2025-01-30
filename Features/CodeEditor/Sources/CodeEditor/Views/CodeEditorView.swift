@@ -135,19 +135,26 @@ public struct CodeEditorView: View {
             // Reset filename if dismissed without saving
             saveFileName = viewModel.getDefaultFileName()
         }) {
-            SaveFileView(
-                fileName: $saveFileName,
-                fileExtension: viewModel.language.rawValue.lowercased(),
-                onSave: { fileName in
-                    viewModel.selectedFile = fileName
-                    saveCurrentFile()
+            Group {
+                let view = SaveFileView(
+                    fileName: $saveFileName,
+                    fileExtension: viewModel.language.rawValue.lowercased(),
+                    onSave: { fileName in
+                        viewModel.selectedFile = fileName
+                        saveCurrentFile()
+                    }
+                )
+                
+                if #available(macOS 13.0, *) {
+                    view
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        .background(Color(NSColor.windowBackgroundColor))
+                        .presentationDetents([.height(160)])
+                        .presentationDragIndicator(.visible)
+                } else {
+                    view.frame(width: 480, height: 160)
                 }
-            )
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .background(.ultraThinMaterial)
-            .presentationDetents([.height(160)])
-            .presentationDragIndicator(.visible)
-            .presentationBackground(.windowBackground)
+            }
         }
     }
     
@@ -325,7 +332,7 @@ struct SaveFileView: View {
             VStack(alignment: .leading, spacing: 16) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Save As")
-                        .font(.headline)
+                        .font(.system(size: 13, weight: .regular))
                         .foregroundColor(.primary)
                     
                     TextField("Untitled", text: $fileName)
@@ -335,12 +342,12 @@ struct SaveFileView: View {
                 
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Where")
-                        .font(.headline)
+                        .font(.system(size: 13, weight: .regular))
                         .foregroundColor(.primary)
                     
                     Text("\(fileName).\(fileExtension)")
                         .foregroundColor(.secondary)
-                        .font(.body)
+                        .font(.system(size: 13))
                 }
                 
                 Spacer()
