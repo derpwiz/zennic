@@ -140,6 +140,9 @@ public struct CodeEditorView: View {
                     saveCurrentFile()
                 }
             )
+            .frame(minWidth: 600, minHeight: 400)
+            .presentationDragIndicator(.visible)
+            .interactiveDismissDisabled()
         }
     }
     
@@ -304,26 +307,36 @@ struct SaveFileView: View {
     @Binding var fileName: String
     let fileExtension: String
     let onSave: (String) -> Void
+    @FocusState private var isFileNameFocused: Bool
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Enter file name:")
-                        .font(.headline)
-                    
+            Form {
+                Section {
                     TextField("File Name", text: $fileName)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(width: 400)
+                        .font(.system(size: 15))
+                        .focused($isFileNameFocused)
+                } header: {
+                    Text("Enter file name:")
                 }
                 
-                Text("File will be saved as: \(fileName).\(fileExtension)")
-                    .foregroundColor(.secondary)
-                
-                Spacer()
+                Section {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("File will be saved as:")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                        
+                        Text("\(fileName).\(fileExtension)")
+                            .font(.system(.body, design: .monospaced))
+                            .padding(12)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.black.opacity(0.05))
+                            .cornerRadius(8)
+                    }
+                }
             }
-            .padding(30)
-            .frame(width: 500, height: 200)
+            .formStyle(GroupedFormStyle())
             .navigationTitle("Save As")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -336,7 +349,13 @@ struct SaveFileView: View {
                         onSave("\(fileName).\(fileExtension)")
                         dismiss()
                     }
+                    .keyboardShortcut(.return)
+                    .buttonStyle(.borderedProminent)
                 }
+            }
+            .padding()
+            .onAppear {
+                isFileNameFocused = true
             }
         }
     }
