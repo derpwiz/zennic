@@ -140,9 +140,7 @@ public struct CodeEditorView: View {
                     saveCurrentFile()
                 }
             )
-            .frame(minWidth: 600, minHeight: 400)
-            .presentationDragIndicator(.visible)
-            .interactiveDismissDisabled()
+            .frame(width: 480, height: 160)
         }
     }
     
@@ -310,53 +308,35 @@ struct SaveFileView: View {
     @FocusState private var isFileNameFocused: Bool
     
     var body: some View {
-        NavigationView {
-            Form {
-                Section {
-                    TextField("File Name", text: $fileName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .font(.system(size: 15))
-                        .focused($isFileNameFocused)
-                } header: {
-                    Text("Enter file name:")
+        VStack(alignment: .leading, spacing: 8) {
+            TextField("File Name", text: $fileName)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .focused($isFileNameFocused)
+            
+            Text("\(fileName).\(fileExtension)")
+                .foregroundColor(.secondary)
+                .font(.system(.subheadline))
+            
+            Spacer()
+            
+            HStack(spacing: 12) {
+                Spacer()
+                Button("Cancel") {
+                    dismiss()
                 }
+                .keyboardShortcut(.escape, modifiers: [])
                 
-                Section {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("File will be saved as:")
-                            .foregroundColor(.secondary)
-                            .font(.subheadline)
-                        
-                        Text("\(fileName).\(fileExtension)")
-                            .font(.system(.body, design: .monospaced))
-                            .padding(12)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.black.opacity(0.05))
-                            .cornerRadius(8)
-                    }
+                Button("Save") {
+                    onSave("\(fileName).\(fileExtension)")
+                    dismiss()
                 }
+                .keyboardShortcut(.return, modifiers: [])
+                .buttonStyle(.borderedProminent)
             }
-            .formStyle(GroupedFormStyle())
-            .navigationTitle("Save As")
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        onSave("\(fileName).\(fileExtension)")
-                        dismiss()
-                    }
-                    .keyboardShortcut(.return)
-                    .buttonStyle(.borderedProminent)
-                }
-            }
-            .padding()
-            .onAppear {
-                isFileNameFocused = true
-            }
+        }
+        .padding()
+        .onAppear {
+            isFileNameFocused = true
         }
     }
 }
