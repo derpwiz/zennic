@@ -135,23 +135,18 @@ public struct CodeEditorView: View {
             // Reset filename if dismissed without saving
             saveFileName = viewModel.getDefaultFileName()
         }) {
-            if #available(macOS 13.3, *) {
-                SaveFileView(
-                    fileName: $saveFileName,
-                    fileExtension: viewModel.language.rawValue.lowercased(),
-                    onSave: { fileName in
-                        viewModel.selectedFile = fileName
-                        saveCurrentFile()
-                    }
-                )
+            SaveFileView(
+                fileName: $saveFileName,
+                fileExtension: viewModel.language.rawValue.lowercased(),
+                onSave: { fileName in
+                    viewModel.selectedFile = fileName
+                    saveCurrentFile()
+                }
+            )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .background(.ultraThinMaterial)
             .presentationDetents([.height(160)])
             .presentationDragIndicator(.visible)
-            .interactiveDismissDisabled()
-            } else {
-                // Fallback on earlier versions
-            }
         }
     }
     
