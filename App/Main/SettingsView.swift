@@ -1,4 +1,5 @@
 import SwiftUI
+import Core
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState

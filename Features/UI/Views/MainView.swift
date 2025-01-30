@@ -1,11 +1,18 @@
 import SwiftUI
+import Shared
+import CodeEditor
+import DataIntegration
+import Core
+import Backtesting
+import RealTimeMonitoring
+import Visualization
 
 struct MainView: View {
     @EnvironmentObject var appState: AppState
     
     var body: some View {
         NavigationSplitView {
-            List(selection: $appState.selectedFeature) {
+            List(selection: $appState.selectedFeature as Binding<String?>) {
                 NavigationLink(value: "CodeEditor") {
                     Label("Code Editor", systemImage: "doc.text")
                 }
@@ -29,7 +36,10 @@ struct MainView: View {
                 case "CodeEditor":
                     CodeEditorView()
                 case "DataIntegration":
-                    DataIntegrationView()
+                    DataIntegrationView(
+                        clientID: "your_client_id",
+                        clientSecret: "your_client_secret"
+                    )
                 case "Backtesting":
                     BacktestingView()
                 case "RealTimeMonitoring":
