@@ -54,8 +54,8 @@ public class CodeEditorViewModel: ObservableObject {
     
     public func createNewFile() {
         fileCounter += 1
-        let extension = language.rawValue.lowercased()
-        selectedFile = "untitled\(fileCounter).\(extension)"
+        let fileExtension = language.rawValue.lowercased()
+        selectedFile = "untitled\(fileCounter).\(fileExtension)"
         code = ""
     }
     
