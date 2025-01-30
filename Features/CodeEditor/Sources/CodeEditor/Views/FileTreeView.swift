@@ -113,6 +113,7 @@ public struct FileTreeView: View {
         }
         .onChange(of: codeEditorViewModel.selectedFile) { fileName in
             if let fileName = fileName {
+                viewModel.loadFiles()
                 viewModel.selectedItem = viewModel.items.first { $0.name == fileName }
             }
         }
