@@ -50,9 +50,6 @@ targets:
     deploymentTarget: "13.0"
     sources: 
       - path: App/Main
-      - path: App/Resources
-      - path: Features/RealTimeMonitoring/Sources/RealTimeMonitoring
-      - path: Features/Visualization/Sources/Visualization
       - path: Features/UI/Sources/UI
     dependencies:
       - target: DataIntegration
@@ -100,7 +97,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: Features/Shared
+      - path: Features/Shared/Sources/Shared
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -133,11 +130,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: Features/RealTimeMonitoring/Sources/RealTimeMonitoring
-        excludes:
-          - "include"
-      - path: Features/RealTimeMonitoring/Sources/RealTimeMonitoring/include
-        type: headers
+      - path: Features/RealTimeMonitoring/Views
     dependencies:
       - target: Shared
       - target: Core
@@ -156,7 +149,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: Features/Backtesting/Sources/Backtesting
+      - path: Features/Backtesting/Views
     dependencies:
       - target: Shared
       - target: Core
@@ -174,7 +167,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: Features/Visualization/Sources/Visualization
+      - path: Features/Visualization/Views
     dependencies:
       - target: Shared
       - target: Core

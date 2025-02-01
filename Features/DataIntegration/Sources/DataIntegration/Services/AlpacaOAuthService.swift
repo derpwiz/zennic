@@ -1,18 +1,18 @@
 import Foundation
 
-class AlpacaOAuthService {
+public class AlpacaOAuthService {
     private let clientID: String
     private let clientSecret: String
     private let redirectURI = "alpaca://oauth"
     private let authorizationEndpoint = "https://app.alpaca.markets/oauth/authorize"
     private let tokenEndpoint = "https://api.alpaca.markets/oauth/token"
     
-    init(clientID: String, clientSecret: String) {
+    public init(clientID: String, clientSecret: String) {
         self.clientID = clientID
         self.clientSecret = clientSecret
     }
     
-    func getAuthorizationURL() -> URL? {
+    public func getAuthorizationURL() -> URL? {
         var components = URLComponents(string: authorizationEndpoint)
         components?.queryItems = [
             URLQueryItem(name: "response_type", value: "code"),
@@ -23,7 +23,7 @@ class AlpacaOAuthService {
         return components?.url
     }
     
-    func exchangeCodeForToken(code: String) async throws -> String {
+    public func exchangeCodeForToken(code: String) async throws -> String {
         guard let url = URL(string: tokenEndpoint) else {
             throw NSError(domain: "AlpacaOAuthService", code: 0, userInfo: [NSLocalizedDescriptionKey: "Invalid token endpoint URL"])
         }

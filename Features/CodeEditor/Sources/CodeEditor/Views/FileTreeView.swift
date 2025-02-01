@@ -1,5 +1,6 @@
 import SwiftUI
 import Shared
+import Core
 
 public struct FileItem: Identifiable, Hashable {
     public let id = UUID()
@@ -36,7 +37,7 @@ public class FileTreeViewModel: ObservableObject {
     @Published public var selectedItem: FileItem?
     private let gitService: GitService
     
-    public init(gitService: GitService = .shared) {
+    public init(gitService: GitService = GitService.shared) {
         self.gitService = gitService
     }
     

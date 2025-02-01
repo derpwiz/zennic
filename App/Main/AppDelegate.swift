@@ -1,5 +1,6 @@
 import SwiftUI
 import DataIntegration
+import Core
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -14,7 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 @main
 struct ZennicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject private var appState = AppState()
+    @StateObject private var appState = Core.appState
     
     var body: some Scene {
         WindowGroup {

@@ -5,7 +5,7 @@ import UI
 
 public struct CodeEditorView: View {
     @StateObject private var viewModel: CodeEditorViewModel
-    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var appState: Core.AppState
     @State private var showHistory = false
     @State private var showSaveDialog = false
     @State private var showGitView = false
@@ -396,5 +396,5 @@ struct SaveFileView: View {
 
 #Preview {
     CodeEditorView(gitService: GitService.shared)
-        .environmentObject(AppState())
+        .environmentObject(appState)
 }

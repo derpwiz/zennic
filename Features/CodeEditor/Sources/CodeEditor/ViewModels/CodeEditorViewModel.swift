@@ -1,5 +1,6 @@
 import SwiftUI
 import Shared
+import Core
 
 public enum CodeEditorError: LocalizedError {
     case noFileSelected

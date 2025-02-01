@@ -224,8 +224,39 @@ public class GitService {
             throw GitError.branchFailed
         }
     }
+    
+    public func listFiles() throws -> [String] {
+        let codeDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("ZennicCode")
+        
+        if !FileManager.default.fileExists(atPath: codeDirectory.path) {
+            try FileManager.default.createDirectory(at: codeDirectory, withIntermediateDirectories: true)
+            try initRepository(at: codeDirectory.path)
+            return []
+        }
+        
+        let contents = try FileManager.default.contentsOfDirectory(atPath: codeDirectory.path)
+        return contents.filter { !$0.hasPrefix(".") } // Filter out hidden files
+    }
+    
+    public func createFile(name: String, content: String) throws {
+        try updateFile(name: name, content: content)
+    }
+    
+    public func deleteFile(name: String) throws {
+        let codeDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            .appendingPathComponent("ZennicCode")
+        let fileURL = codeDirectory.appendingPathComponent(name)
+        
+        guard FileManager.default.fileExists(atPath: fileURL.path) else {
+            throw GitError.fileNotFound
+        }
+        
+        try FileManager.default.removeItem(at: fileURL)
+        try addFile(name, at: codeDirectory.path)
+        try commit(message: "Deleted \(name)", at: codeDirectory.path)
+    }
 }
-
 public struct GitCommit {
     public let hash: String
     public let message: String

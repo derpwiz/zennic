@@ -1,11 +1,12 @@
 import SwiftUI
 import Cocoa
+import Core
 
 class AppCoordinator: ObservableObject {
     @Published var window: NSWindow?
-    @Published var appState: AppState
+    @Published var appState: Core.AppState
     
-    init(appState: AppState) {
+    init(appState: Core.AppState) {
         self.appState = appState
     }
     
