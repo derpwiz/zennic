@@ -7,6 +7,18 @@ public struct _MainView: View {
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var isShowingSettings = false
     
+    private var navigationTitle: String {
+        switch appState.selectedFeature {
+        case "CodeEditor": return "Code Editor"
+        case "DataIntegration": return "Data Integration"
+        case "Backtesting": return "Backtesting"
+        case "RealTimeMonitoring": return "Real-Time Monitoring"
+        case "Visualization": return "Visualization"
+        case "Settings": return "Settings"
+        default: return "Zennic"
+        }
+    }
+    
     public init() {}
     
     public var body: some View {
@@ -100,59 +112,62 @@ public struct _MainView: View {
                         .foregroundStyle(.secondary)
                         .fontWeight(.semibold)
                 }
+                
+                Section {
+                    NavigationLink(value: "Settings") {
+                        Label {
+                            Text("Settings")
+                                .font(.body)
+                                .foregroundStyle(.primary)
+                        } icon: {
+                            Image(systemName: "gear")
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(.gray)
+                                .fontWeight(.medium)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.vertical, 2)
+                }
             }
             .listStyle(SidebarListStyle())
             .navigationTitle("Zennic")
             .navigationSplitViewStyle(.automatic)
             .frame(minWidth: 220)
         } detail: {
-            Group {
-                switch appState.selectedFeature {
-                case "CodeEditor":
-                    Text("Code Editor")
-                        .font(.title)
-                case "DataIntegration":
-                    Text("Data Integration")
-                        .font(.title)
-                case "Backtesting":
-                    Text("Backtesting")
-                        .font(.title)
-                case "RealTimeMonitoring":
-                    Text("Real-Time Monitoring")
-                        .font(.title)
-                case "Visualization":
-                    Text("Visualization")
-                        .font(.title)
-                default:
-                    VStack(spacing: 12) {
-                        Image(systemName: "arrow.left.circle")
-                            .font(.system(size: 48))
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.secondary)
-                        Text("Select a feature from the sidebar")
-                            .font(.title3)
-                            .foregroundStyle(.secondary)
+            NavigationStack {
+                Group {
+                    switch appState.selectedFeature {
+                    case "CodeEditor":
+                        EmptyView()
+                    case "DataIntegration":
+                        EmptyView()
+                    case "Backtesting":
+                        EmptyView()
+                    case "RealTimeMonitoring":
+                        EmptyView()
+                    case "Visualization":
+                        EmptyView()
+                    case "Settings":
+                        SettingsView()
+                    default:
+                        VStack(spacing: 12) {
+                            Image(systemName: "arrow.left.circle")
+                                .font(.system(size: 48))
+                                .symbolRenderingMode(.hierarchical)
+                                .foregroundStyle(.secondary)
+                            Text("Select a feature from the sidebar")
+                                .font(.title3)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
-            }
-            .padding()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .toolbar {
-                ToolbarItem(placement: .automatic) {
-                    Button(action: { isShowingSettings = true }) {
-                        Image(systemName: "gear")
-                            .symbolRenderingMode(.hierarchical)
-                            .foregroundStyle(.primary)
-                            .font(.body)
-                    }
-                    .help("Settings")
-                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .navigationTitle(navigationTitle)
             }
         }
         .preferredColorScheme(appState.isDarkMode ? .dark : .light)
-        .sheet(isPresented: $isShowingSettings) {
-            SettingsView()
-        }
     }
 }
 

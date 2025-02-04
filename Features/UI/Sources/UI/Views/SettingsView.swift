@@ -8,27 +8,22 @@ public struct SettingsView: View {
     public init() {}
     
     public var body: some View {
-        ZStack {
-            Color.black.opacity(0.3)
-                .ignoresSafeArea()
-                .simultaneousGesture(TapGesture().onEnded {
-                    dismiss()
-                })
-            
+        VStack(alignment: .leading, spacing: 0) {
             Form {
                 Section {
-                    Toggle("Dark Mode", isOn: $appState.isDarkMode)
+                    Toggle("Use Dark Appearance", isOn: $appState.isDarkMode)
                 } header: {
-                    Text("General")
+                    Text("Appearance")
                         .font(.headline)
+                        .foregroundColor(.primary)
                 }
             }
             .formStyle(.grouped)
-            .padding()
-            .frame(width: 375, height: 200)
-            .background(Color(.windowBackgroundColor))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
+            
+            Spacer()
         }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
