@@ -1,6 +1,5 @@
 import SwiftUI
 import Foundation
-import DataIntegration
 
 public class AlpacaServiceManager: ObservableObject {
     @Published public var alpacaService: AlpacaService?
