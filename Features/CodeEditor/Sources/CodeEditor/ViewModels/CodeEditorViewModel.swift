@@ -27,10 +27,10 @@ public class CodeEditorViewModel: ObservableObject {
     @Published public var selectedFile: String?
     @Published public var error: Error?
     
-    private let gitService: GitService
+    private let gitService: Core.GitServiceType
     private var fileCounter = 0
     
-    public init(code: String, language: CodeLanguage, gitService: GitService = GitService.shared) {
+    public init(code: String, language: CodeLanguage, gitService: Core.GitServiceType = Core.shared) {
         self.code = code
         self.language = language
         self.output = ""
@@ -48,7 +48,7 @@ public class CodeEditorViewModel: ObservableObject {
             code = try gitService.readFile(name: fileName)
             selectedFile = fileName
             language = CodeLanguage(rawValue: URL(fileURLWithPath: fileName).pathExtension) ?? .python
-        } catch let error as GitError {
+        } catch let error as Core.GitErrorType {
             throw CodeEditorError.gitOperationFailed(error.localizedDescription)
         }
     }
@@ -74,7 +74,7 @@ public class CodeEditorViewModel: ObservableObject {
         do {
             try gitService.updateFile(name: fileName, content: code)
             objectWillChange.send() // Notify observers of the change
-        } catch let error as GitError {
+        } catch let error as Core.GitErrorType {
             throw CodeEditorError.gitOperationFailed(error.localizedDescription)
         }
     }

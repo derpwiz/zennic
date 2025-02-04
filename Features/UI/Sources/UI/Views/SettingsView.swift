@@ -2,7 +2,7 @@ import SwiftUI
 import Core
 
 public struct SettingsView: View {
-    @StateObject private var appState = Core.appState
+    @EnvironmentObject private var appState: Core.AppState
     @Environment(\.dismiss) private var dismiss
     
     public init() {}
@@ -30,5 +30,6 @@ public struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         SettingsView()
+            .environmentObject(Core.AppState.shared)
     }
 }

@@ -11,7 +11,7 @@ public struct CodeEditorView: View {
     @State private var showGitView = false
     @State private var saveFileName = ""
     
-    public init(gitService: GitService = GitService.shared) {
+    public init(gitService: Core.GitServiceType = Core.shared) {
         let code = UserDefaults.standard.string(forKey: "currentCode") ?? ""
         let languageString = UserDefaults.standard.string(forKey: "currentLanguage") ?? CodeLanguage.python.rawValue
         let language = CodeLanguage(rawValue: languageString) ?? .python
@@ -395,6 +395,6 @@ struct SaveFileView: View {
 }
 
 #Preview {
-    CodeEditorView(gitService: GitService.shared)
-        .environmentObject(appState)
+    CodeEditorView(gitService: Core.shared)
+        .environmentObject(Core.AppState.shared)
 }

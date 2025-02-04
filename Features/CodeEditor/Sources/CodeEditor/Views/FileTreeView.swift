@@ -35,9 +35,9 @@ public class FileTreeViewModel: ObservableObject {
     @Published public var items: [FileItem] = []
     @Published public var error: AlertItem?
     @Published public var selectedItem: FileItem?
-    private let gitService: GitService
-    
-    public init(gitService: GitService = GitService.shared) {
+    private let gitService: Core.GitServiceType
+
+    public init(gitService: Core.GitServiceType = Core.shared) {
         self.gitService = gitService
     }
     

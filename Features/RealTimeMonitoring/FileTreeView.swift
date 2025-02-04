@@ -9,7 +9,7 @@ struct FileItem: Identifiable {
 
 class FileTreeViewModel: ObservableObject {
     @Published var items: [FileItem] = []
-    private let gitService = GitService.shared
+    private let gitService = Core.shared
     
     func loadFiles() {
         do {

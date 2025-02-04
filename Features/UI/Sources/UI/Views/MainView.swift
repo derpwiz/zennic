@@ -174,6 +174,6 @@ public struct _MainView: View {
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         _MainView()
-            .environmentObject(Core.appState)
+            .environmentObject(Core.AppState.shared)
     }
 }
