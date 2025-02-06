@@ -40,7 +40,8 @@ let package = Package(
                 .linkedLibrary("git2"),
                 .linkedLibrary("iconv"),
                 .linkedLibrary("z"),
-                .unsafeFlags(["-L../../Libraries/libgit2/install/lib"])
+                .unsafeFlags(["-L../../Libraries/libgit2/install/lib"]),
+                .unsafeFlags(["-rpath", "../../Libraries/libgit2/install/lib"])
             ]
         ),
         .target(
@@ -56,7 +57,8 @@ let package = Package(
             ],
             linkerSettings: [
                 .linkedLibrary("git2"),
-                .unsafeFlags(["-L../../Libraries/libgit2/install/lib"])
+                .unsafeFlags(["-L../../Libraries/libgit2/install/lib"]),
+                .unsafeFlags(["-rpath", "../../Libraries/libgit2/install/lib"])
             ]
         ),
         .testTarget(
