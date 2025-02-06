@@ -18,15 +18,7 @@ let package = Package(
         .target(
             name: "Shared",
             dependencies: [],
-            path: "Sources",
-            swiftSettings: [
-                .define("SWIFT_PACKAGE", .when(configuration: .debug)),
-                .unsafeFlags(["-enable-objc-interop"]),
-                .unsafeFlags(["-emit-objc-header", "-emit-objc-header-path", "$(DERIVED_SOURCES_DIR)/Shared-Swift.h"])
-            ],
-            linkerSettings: [
-                .linkedFramework("Foundation")
-            ]
+            path: "Sources"
         )
     ]
 )
