@@ -19,8 +19,7 @@ let package = Package(
             dependencies: [],
             path: "Sources",
             swiftSettings: [
-                .define("SWIFT_PACKAGE", .when(configuration: .debug)),
-                .unsafeFlags(["-enable-objc-interop"])
+                .define("SWIFT_PACKAGE", .when(configuration: .debug))
             ]
         )
     ]
