@@ -19,7 +19,11 @@ public enum CodeEditorError: LocalizedError {
 public class CodeEditorViewModel: ObservableObject {
     private let codeDirectory: URL
     @Published public var code: String
-    @Published public var language: CodeLanguage
+    @Published public var language: CodeLanguage {
+        didSet {
+            saveCurrentLanguage(language)
+        }
+    }
     @Published public var output: String
     @Published public var autoCompleteSuggestions: [String]
     @Published public var showAutoComplete: Bool
@@ -41,6 +45,12 @@ public class CodeEditorViewModel: ObservableObject {
         self.gitService = gitService
         self.codeDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             .appendingPathComponent("ZennicCode")
+        
+        saveCurrentLanguage(language)
+    }
+    
+    private func saveCurrentLanguage(_ language: CodeLanguage) {
+        UserDefaults.standard.set(language.rawValue, forKey: "currentLanguage")
     }
     
     public func loadFile(_ fileName: String) throws {
