@@ -4,7 +4,7 @@
 #import <Foundation/Foundation.h>
 
 // Import all public headers of the Core module here
-#import <Shared/Cgit2.h>
+#import "Cgit2.h"
 
 // Import other necessary public headers here
 

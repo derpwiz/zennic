@@ -13,8 +13,7 @@ public struct CodeEditorView: View {
     
     public init(gitService: Core.GitServiceType = Core.shared) {
         let code = UserDefaults.standard.string(forKey: "currentCode") ?? ""
-        let languageString = UserDefaults.standard.string(forKey: "currentLanguage") ?? CodeLanguage.python.rawValue
-        let language = CodeLanguage(rawValue: languageString) ?? .python
+        let language = UserDefaults.standard.object(forKey: "currentLanguage") as? CodeLanguage ?? .python
         
         _viewModel = StateObject(wrappedValue: CodeEditorViewModel(code: code, language: language, gitService: gitService))
     }
@@ -41,7 +40,7 @@ Picker("Language", selection: $viewModel.language) {
 .pickerStyle(SegmentedPickerStyle())
 .onChange(of: viewModel.language) { newLanguage in
     withAnimation {
-        appState.currentLanguage = newLanguage.rawValue
+        appState.currentLanguage = newLanguage
     }
 }
                         .help("Select the programming language for syntax highlighting")

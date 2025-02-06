@@ -31,7 +31,6 @@
 		51520009541E03C0AE8D74BB /* Core-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 46458F15C77B9B093F1EF81F /* Core-Swift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5262166E1267423BF5738E61 /* AlpacaAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09BF6F564DA4EB514F23232 /* AlpacaAuthView.swift */; };
 		53255DF67BAF0EAE9877B340 /* CodeEditor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD1C8F1B23BA5CE2EBF0F781 /* CodeEditor.framework */; };
-		554DB085AA310A4FBD39AE54 /* Cgit2.h in Headers */ = {isa = PBXBuildFile; fileRef = 4407404841DEFFA348234A7B /* Cgit2.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		565AB7FA926F808DA374E90C /* DataIntegrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37480C4F49F82A3AF0EC6E2 /* DataIntegrationView.swift */; };
 		566FF007579C847F251A95A4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E596613E0B27953E4D51F82 /* SceneDelegate.swift */; };
 		5918A30646836E1CBA1000BD /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D8CF33C617F4A6044555DB /* Core.swift */; };
@@ -302,7 +301,6 @@
 		10D8CF33C617F4A6044555DB /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
 		1DB069AD2973B20F2780B7E7 /* DataIntegration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataIntegration.swift; sourceTree = "<group>"; };
 		2A16EA186DF108D736ADBAA5 /* DataIntegration.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataIntegration.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4407404841DEFFA348234A7B /* Cgit2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Cgit2.h; sourceTree = "<group>"; };
 		46458F15C77B9B093F1EF81F /* Core-Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Core-Swift.h"; sourceTree = "<group>"; };
 		49FE49F1AECE205F63E8ECEF /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -550,7 +548,6 @@
 		6A03D3A610F10F5ED778E15F /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				4407404841DEFFA348234A7B /* Cgit2.h */,
 				9DBAF5B7701C4044D2641F56 /* Models */,
 				F3418907CF21B3A7852754D0 /* Services */,
 			);
@@ -649,28 +646,28 @@
 			path = Features/CodeEditor/Sources/CodeEditor;
 			sourceTree = "<group>";
 		};
-		"TEMP_0F00A39D-46F5-425B-94B0-160618AC7301" /* include */ = {
+		"TEMP_3B495D5C-410C-4E8C-8C58-CF73FA699CE7" /* include */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = include;
 			sourceTree = "<group>";
 		};
-		"TEMP_6A6A84C9-359F-48D5-B3AF-544E3633F03D" /* git2 */ = {
+		"TEMP_4A71961C-22B4-43EB-B6B0-34308ED8CF29" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = git2;
 			sourceTree = "<group>";
 		};
-		"TEMP_7BC3C332-B9F9-400D-A8E4-62F23F9CB11A" /* git2 */ = {
+		"TEMP_5FA026DB-34A6-45A2-980E-00F9B3D4CDA6" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = git2;
 			sourceTree = "<group>";
 		};
-		"TEMP_828E89E8-2BD8-4527-AF9C-3BF167904574" /* Headers */ = {
+		"TEMP_DB41C599-665E-442A-8441-8619AA56BFC0" /* Headers */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -687,14 +684,6 @@
 				C77229FCB1184B30CB62D21D /* Core-Bridging-Header.h in Headers */,
 				51520009541E03C0AE8D74BB /* Core-Swift.h in Headers */,
 				B1A88182C271F8F0AF6C9F0C /* Core.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9199EE9BF9F3D76C220F59DC /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				554DB085AA310A4FBD39AE54 /* Cgit2.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -748,7 +737,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 75318E5A46142F03F2E43E0D /* Build configuration list for PBXNativeTarget "Shared" */;
 			buildPhases = (
-				9199EE9BF9F3D76C220F59DC /* Headers */,
 				8B879EB8244E375E78B47D56 /* Sources */,
 			);
 			buildRules = (

@@ -2,20 +2,16 @@ import Foundation
 import SwiftUI
 import Shared
 
-// Internal type alias to avoid exposing Shared.CodeLanguage in public interface
-private typealias SharedCodeLanguage = CodeLanguage
-
 public class AppState: ObservableObject {
     @Published public var isDarkMode: Bool = false
     @Published public var selectedFeature: String? = nil
-    @Published public var currentLanguage: String = "python"
+    @Published public var currentLanguage: CodeLanguage = .python
     @Published public var currentCode: String = ""
     public static let shared = AppState()
     
     public init() {}
     
-    public func getCodeHistory(language: String) -> [String]? {
-        let codeLanguage = SharedCodeLanguage(rawValue: language)
+    public func getCodeHistory(language: CodeLanguage) -> [String]? {
         // For now, return empty array. This can be expanded later to actually store history
         return []
     }
