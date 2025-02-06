@@ -1,3 +1,4 @@
+
 // swift-tools-version:5.9
 import PackageDescription
 
@@ -19,7 +20,11 @@ let package = Package(
             dependencies: [],
             path: "Sources",
             swiftSettings: [
-                .define("SWIFT_PACKAGE", .when(configuration: .debug))
+                .define("SWIFT_PACKAGE", .when(configuration: .debug)),
+                .unsafeFlags(["-enable-objc-interop"])
+            ],
+            linkerSettings: [
+                .linkedFramework("Foundation")
             ]
         )
     ]
