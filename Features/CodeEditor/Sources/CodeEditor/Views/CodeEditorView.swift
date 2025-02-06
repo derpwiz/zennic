@@ -33,17 +33,17 @@ public struct CodeEditorView: View {
                         }
                         .help("Create a new file")
                         
-                        Picker("Language", selection: $viewModel.language) {
-                            ForEach(CodeLanguage.allCases, id: \.self) { lang in
-                                Text(lang.rawValue).tag(lang)
-                            }
-                        }
-                        .pickerStyle(SegmentedPickerStyle())
-                        .onChange(of: viewModel.language) { newLanguage in
-                            withAnimation {
-                                appState.currentLanguage = newLanguage.rawValue
-                            }
-                        }
+Picker("Language", selection: $viewModel.language) {
+    ForEach(CodeLanguage.allCases, id: \.self) { lang in
+        Text(lang.rawValue).tag(lang)
+    }
+}
+.pickerStyle(SegmentedPickerStyle())
+.onChange(of: viewModel.language) { newLanguage in
+    withAnimation {
+        appState.currentLanguage = newLanguage.rawValue
+    }
+}
                         .help("Select the programming language for syntax highlighting")
                     }
                     
@@ -400,5 +400,5 @@ struct SaveFileView: View {
 
 #Preview {
     CodeEditorView(gitService: Core.shared)
-        .environmentObject(Core.AppState.shared)
+        .environmentObject(AppState.shared)
 }

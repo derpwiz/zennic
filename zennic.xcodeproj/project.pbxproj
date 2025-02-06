@@ -649,28 +649,28 @@
 			path = Features/CodeEditor/Sources/CodeEditor;
 			sourceTree = "<group>";
 		};
-		"TEMP_3B6A707D-FA0B-4EDC-8C91-3BED3729DE32" /* git2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = git2;
-			sourceTree = "<group>";
-		};
-		"TEMP_780658EC-E95B-49A2-9781-395A6E87AC4F" /* include */ = {
+		"TEMP_0F00A39D-46F5-425B-94B0-160618AC7301" /* include */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = include;
 			sourceTree = "<group>";
 		};
-		"TEMP_893F10FD-D070-4DE5-84D3-BEC504F68D1D" /* git2 */ = {
+		"TEMP_6A6A84C9-359F-48D5-B3AF-544E3633F03D" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = git2;
 			sourceTree = "<group>";
 		};
-		"TEMP_98A999D3-9D83-4231-9E1A-54BFB9EBF5F3" /* Headers */ = {
+		"TEMP_7BC3C332-B9F9-400D-A8E4-62F23F9CB11A" /* git2 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = git2;
+			sourceTree = "<group>";
+		};
+		"TEMP_828E89E8-2BD8-4527-AF9C-3BF167904574" /* Headers */ = {
 			isa = PBXGroup;
 			children = (
 			);

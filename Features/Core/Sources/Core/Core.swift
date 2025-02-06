@@ -1,6 +1,6 @@
 import Foundation
 import SwiftUI
-@_implementationOnly import Shared
+import Shared
 
 // Internal type alias to avoid exposing Shared.CodeLanguage in public interface
 private typealias SharedCodeLanguage = CodeLanguage
