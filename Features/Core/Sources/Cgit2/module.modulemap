@@ -1,0 +1,5 @@
+module Cgit2 [system] {
+    umbrella header "Cgit2.h"
+    export *
+    module * { export * }
+}

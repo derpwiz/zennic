@@ -8,9 +8,9 @@ targets:
     deploymentTarget: "13.0"
     sources:
       - path: Features/Core/Sources/Core
-    dependencies:
-      - target: Shared
-      - target: DataIntegration
+      - path: Features/Core/Sources/Cgit2
+        excludes:
+          - "**/*.h"
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -18,7 +18,33 @@ targets:
         CODE_SIGN_ENTITLEMENTS: ""
         GENERATE_INFOPLIST_FILE: "YES"
         PRODUCT_MODULE_NAME: "Core"
-        DEFINES_MODULE: "YES"
+        HEADER_SEARCH_PATHS:
+          - $(SRCROOT)/Libraries/libgit2/install/include
+          - $(SRCROOT)/Features/Core/Sources/Cgit2
+          - $(SRCROOT)/Features/Core/Sources/Core/include
+          - $(SRCROOT)/Features/Core/Sources/Cgit2/include
+        MODULEMAP_FILE: $(SRCROOT)/Features/Core/Sources/Core/include/module.modulemap
+        CLANG_ENABLE_MODULES: YES
+        DEFINES_MODULE: YES
+        SWIFT_INCLUDE_PATHS:
+          - $(SRCROOT)/Features/Core/Sources/Core
+          - $(SRCROOT)/Features/Core/Sources/Cgit2
+          - $(SRCROOT)/Features/Core/Sources/Cgit2/include
+        LIBRARY_SEARCH_PATHS: $(SRCROOT)/Libraries/libgit2/install/lib
+        OTHER_LDFLAGS: ["-lgit2"]
+        PUBLIC_HEADERS_FOLDER_PATH: $(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers
+        SWIFT_INSTALL_OBJC_HEADER: YES
+        SWIFT_OBJC_INTERFACE_HEADER_NAME: "Core-Swift.h"
+        SWIFT_OBJC_INTERFACE_HEADER_DIR: "$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers"
+        SWIFT_MODULE_NAME: Core
+        OBJC_BRIDGING_HEADER: "$(SRCROOT)/Features/Core/Sources/Core/Core-Bridging-Header.h"
+        OTHER_CFLAGS: ["-fmodule-map-file=$(SRCROOT)/Features/Core/Sources/Cgit2/module.modulemap"]
+    buildPhases:
+      - name: Generate Swift Interface Header
+        script: |
+          mkdir -p "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Headers"
+          touch "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Headers/Core-Swift.h"
+        runOnlyWhenInstalling: false
   
   App:
     type: framework
@@ -83,6 +109,7 @@ targets:
     sources:
       - path: Features/DataIntegration/Sources/DataIntegration
     dependencies:
+      - target: Core
       - target: Shared
     settings:
       base:
@@ -130,7 +157,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: Features/RealTimeMonitoring/Views
+      - path: Features/RealTimeMonitoring/Sources
     dependencies:
       - target: Shared
       - target: Core
@@ -142,7 +169,7 @@ targets:
         GENERATE_INFOPLIST_FILE: "YES"
         PRODUCT_MODULE_NAME: "RealTimeMonitoring"
         DEFINES_MODULE: "YES"
-        SWIFT_INCLUDE_PATHS: $(SRCROOT)/Features/RealTimeMonitoring
+        SWIFT_INCLUDE_PATHS: $(SRCROOT)/Features/RealTimeMonitoring/Sources
 
   Backtesting:
     type: framework
@@ -161,6 +188,16 @@ targets:
         GENERATE_INFOPLIST_FILE: "YES"
         PRODUCT_MODULE_NAME: "Backtesting"
         DEFINES_MODULE: "YES"
+        HEADER_SEARCH_PATHS:
+          - $(BUILT_PRODUCTS_DIR)/Core.framework/Headers
+    preBuildScripts:
+      - script: |
+          if [ ! -f "${BUILT_PRODUCTS_DIR}/Core.framework/Headers/Core-Swift.h" ]; then
+            echo "Core-Swift.h not found. Ensuring it exists."
+            mkdir -p "${BUILT_PRODUCTS_DIR}/Core.framework/Headers"
+            touch "${BUILT_PRODUCTS_DIR}/Core.framework/Headers/Core-Swift.h"
+          fi
+        name: Ensure Core-Swift.h Exists
 
   Visualization:
     type: framework

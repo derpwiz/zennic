@@ -5,7 +5,7 @@ import UI
 
 public struct CodeEditorView: View {
     @StateObject private var viewModel: CodeEditorViewModel
-    @EnvironmentObject private var appState: Core.AppState
+    @EnvironmentObject private var appState: AppState
     @State private var showHistory = false
     @State private var showSaveDialog = false
     @State private var showGitView = false
@@ -40,7 +40,9 @@ public struct CodeEditorView: View {
                         }
                         .pickerStyle(SegmentedPickerStyle())
                         .onChange(of: viewModel.language) { newLanguage in
-                            appState.currentLanguage = newLanguage.rawValue
+                            withAnimation {
+                                appState.currentLanguage = newLanguage.rawValue
+                            }
                         }
                         .help("Select the programming language for syntax highlighting")
                     }
@@ -87,7 +89,9 @@ public struct CodeEditorView: View {
                         .frame(minHeight: 300)
                         .onChange(of: viewModel.code) { newCode in
                             updateAutoCompleteSuggestions()
-                            appState.currentCode = newCode
+                            withAnimation {
+                                appState.currentCode = newCode
+                            }
                         }
                     
                     if viewModel.showAutoComplete {
@@ -199,7 +203,7 @@ public struct CodeEditorView: View {
     }
     
     private func loadCodeHistory() {
-        viewModel.codeHistory = appState.getCodeHistory(language: viewModel.language)
+        viewModel.codeHistory = appState.getCodeHistory(language: viewModel.language) ?? []
     }
     
     private func saveCurrentFile() {

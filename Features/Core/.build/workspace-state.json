@@ -1,0 +1,24 @@
+{
+  "object" : {
+    "artifacts" : [
+
+    ],
+    "dependencies" : [
+      {
+        "basedOn" : null,
+        "packageRef" : {
+          "identity" : "shared",
+          "kind" : "fileSystem",
+          "location" : "/Users/jerry/Developer/zennic/Features/Shared",
+          "name" : "Shared"
+        },
+        "state" : {
+          "name" : "fileSystem",
+          "path" : "/Users/jerry/Developer/zennic/Features/Shared"
+        },
+        "subpath" : "shared"
+      }
+    ]
+  },
+  "version" : 6
+}

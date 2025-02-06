@@ -17,7 +17,10 @@ let package = Package(
         .target(
             name: "Shared",
             dependencies: [],
-            path: "Sources"
+            path: "Sources",
+            swiftSettings: [
+                .unsafeFlags(["-disable-objc-interop"])
+            ]
         )
     ]
 )
