@@ -33,18 +33,10 @@ targets:
         LIBRARY_SEARCH_PATHS: $(SRCROOT)/Libraries/libgit2/install/lib
         OTHER_LDFLAGS: ["-lgit2"]
         PUBLIC_HEADERS_FOLDER_PATH: $(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers
-        SWIFT_INSTALL_OBJC_HEADER: YES
-        SWIFT_OBJC_INTERFACE_HEADER_NAME: "Core-Swift.h"
-        SWIFT_OBJC_INTERFACE_HEADER_DIR: "$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers"
+        SWIFT_INSTALL_OBJC_HEADER: NO
         SWIFT_MODULE_NAME: Core
         OBJC_BRIDGING_HEADER: "$(SRCROOT)/Features/Core/Sources/Core/Core-Bridging-Header.h"
         OTHER_CFLAGS: ["-fmodule-map-file=$(SRCROOT)/Features/Core/Sources/Cgit2/module.modulemap"]
-    buildPhases:
-      - name: Generate Swift Interface Header
-        script: |
-          mkdir -p "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Headers"
-          touch "${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.framework/Headers/Core-Swift.h"
-        runOnlyWhenInstalling: false
   
   App:
     type: framework
@@ -133,6 +125,7 @@ targets:
         GENERATE_INFOPLIST_FILE: "YES"
         PRODUCT_MODULE_NAME: "Shared"
         DEFINES_MODULE: "YES"
+        SWIFT_INSTALL_OBJC_HEADER: NO
   CodeEditor:
     type: framework
     platform: macOS
@@ -188,16 +181,6 @@ targets:
         GENERATE_INFOPLIST_FILE: "YES"
         PRODUCT_MODULE_NAME: "Backtesting"
         DEFINES_MODULE: "YES"
-        HEADER_SEARCH_PATHS:
-          - $(BUILT_PRODUCTS_DIR)/Core.framework/Headers
-    preBuildScripts:
-      - script: |
-          if [ ! -f "${BUILT_PRODUCTS_DIR}/Core.framework/Headers/Core-Swift.h" ]; then
-            echo "Core-Swift.h not found. Ensuring it exists."
-            mkdir -p "${BUILT_PRODUCTS_DIR}/Core.framework/Headers"
-            touch "${BUILT_PRODUCTS_DIR}/Core.framework/Headers/Core-Swift.h"
-          fi
-        name: Ensure Core-Swift.h Exists
 
   Visualization:
     type: framework
