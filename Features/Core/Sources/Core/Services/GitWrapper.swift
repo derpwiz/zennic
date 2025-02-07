@@ -38,8 +38,10 @@ public class GitWrapper {
         }
         defer { git_index_free(index) }
         
-        guard git_index_add_bypath(index, file) == 0 else {
-            throw GitError.addFailed
+        try file.withCString { cPath in
+            guard git_index_add_bypath(index, cPath) == 0 else {
+                throw GitError.addFailed
+            }
         }
         
         guard git_index_write(index) == 0 else {
@@ -89,21 +91,23 @@ public class GitWrapper {
         
         var commit_id = git_oid()
         let parents = parent_commit != nil ? 1 : 0
+        
         try withUnsafeMutablePointer(to: &commit_id) { commit_id_ptr in
             try "HEAD".withCString { head_ref in
                 try message.withCString { message_str in
-                    guard git_commit_create(
+                    let result = git_commit_create(
                         commit_id_ptr,
                         repo,
                         head_ref,
-                        UnsafePointer(signature),
-                        UnsafePointer(signature),
+                        signature,
+                        signature,
                         "UTF-8",
                         message_str,
                         tree,
                         parents,
                         parent_commit
-                    ) == 0 else {
+                    )
+                    guard result == 0 else {
                         throw GitError.commitFailed
                     }
                 }
@@ -210,8 +214,10 @@ public class GitWrapper {
         defer { git_commit_free(commit) }
         
         var branch: OpaquePointer?
-        guard git_branch_create(&branch, repo, name, commit, 0) == 0 else {
-            throw GitError.branchFailed
+        try name.withCString { name_str in
+            guard git_branch_create(&branch, repo, name_str, commit, 0) == 0 else {
+                throw GitError.branchFailed
+            }
         }
         git_reference_free(branch)
     }
@@ -220,8 +226,10 @@ public class GitWrapper {
         guard let repo = repo else { throw GitError.branchFailed }
         
         var reference: OpaquePointer?
-        guard git_branch_lookup(&reference, repo, name, GIT_BRANCH_LOCAL) == 0 else {
-            throw GitError.branchFailed
+        try name.withCString { name_str in
+            guard git_branch_lookup(&reference, repo, name_str, GIT_BRANCH_LOCAL) == 0 else {
+                throw GitError.branchFailed
+            }
         }
         defer { git_reference_free(reference) }
         
@@ -268,16 +276,24 @@ public class GitWrapper {
                 var diffOpts = git_diff_options()
                 git_diff_init_options(&diffOpts, UInt32(GIT_DIFF_OPTIONS_VERSION))
                 diffOpts.pathspec.count = 1
+                
                 try file.withCString { cPath in
-                    var paths = [UnsafePointer<Int8>(cPath)]
-                    diffOpts.pathspec.strings = UnsafeMutablePointer(mutating: &paths)
-                    diffOpts.pathspec.count = 1
+                    let pathPtr = UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>.allocate(capacity: 1)
+                    defer { pathPtr.deallocate() }
+                    
+                    let strPtr = UnsafeMutablePointer<Int8>.allocate(capacity: Int(strlen(cPath)) + 1)
+                    strcpy(strPtr, cPath)
+                    pathPtr.initialize(to: strPtr)
+                    diffOpts.pathspec.strings = pathPtr
                     
                     guard let oldTree = git_commit_tree(parent),
                           let newTree = git_commit_tree(commit),
                           git_diff_tree_to_tree(&diff, repo, oldTree, newTree, &diffOpts) == 0 else {
+                        strPtr.deallocate()
                         throw GitError.diffFailed
                     }
+                    strPtr.deallocate()
+                    
                     defer { git_diff_free(diff) }
                     
                     if git_diff_num_deltas(diff) > 0 {
@@ -322,16 +338,24 @@ public class GitWrapper {
         var opts = git_diff_options()
         git_diff_init_options(&opts, UInt32(GIT_DIFF_OPTIONS_VERSION))
         opts.pathspec.count = 1
+        
         var diffResult = ""
         try file.withCString { cPath in
-            var paths = [UnsafePointer<Int8>(cPath)]
-            opts.pathspec.strings = UnsafeMutablePointer(mutating: &paths)
-            opts.pathspec.count = 1
+            let pathPtr = UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>.allocate(capacity: 1)
+            defer { pathPtr.deallocate() }
+            
+            let strPtr = UnsafeMutablePointer<Int8>.allocate(capacity: Int(strlen(cPath)) + 1)
+            strcpy(strPtr, cPath)
+            pathPtr.initialize(to: strPtr)
+            opts.pathspec.strings = pathPtr
             
             guard let tree = git_commit_tree(commit),
                   git_diff_tree_to_workdir_with_index(&diff, repo, tree, &opts) == 0 else {
+                strPtr.deallocate()
                 throw GitError.diffFailed
             }
+            strPtr.deallocate()
+            
             defer { git_diff_free(diff) }
             
             let callback: git_diff_line_cb = { delta, hunk, line, payload in
