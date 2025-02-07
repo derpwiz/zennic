@@ -123,6 +123,16 @@ import Cgit2
         try addFile(name, at: codeDirectory.path)
         try commit(message: "Deleted \(name)", at: codeDirectory.path)
     }
+    
+    @objc public func getFileHistory(file: String, at path: String) throws -> [GitCommit] {
+        let repo = try getRepository(at: path)
+        return try repo.getFileHistory(file: file)
+    }
+    
+    @objc public func getDiff(file: String, at path: String) throws -> String {
+        let repo = try getRepository(at: path)
+        return try repo.getDiff(file: file)
+    }
 }
 @objc public class GitCommit: NSObject {
     @objc public let commitHash: String
