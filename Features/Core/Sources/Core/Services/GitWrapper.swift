@@ -1,11 +1,11 @@
 import Foundation
 import Cgit2
 
-class GitWrapper {
+public class GitWrapper {
     private var repo: OpaquePointer?
     private let path: String
     
-    init(path: String) throws {
+    public init(path: String) throws {
         self.path = path
         var repo: OpaquePointer?
         
@@ -29,7 +29,7 @@ class GitWrapper {
         }
     }
     
-    func add(file: String) throws {
+    public func add(file: String) throws {
         guard let repo = repo else { throw GitError.addFailed }
         
         var index: OpaquePointer?
@@ -47,7 +47,7 @@ class GitWrapper {
         }
     }
     
-    func commit(message: String) throws {
+    public func commit(message: String) throws {
         guard let repo = repo else { throw GitError.commitFailed }
         
         var index: OpaquePointer?
@@ -104,7 +104,7 @@ class GitWrapper {
         }
     }
     
-    func getStatus() throws -> [(String, String)] {
+    public func getStatus() throws -> [(String, String)] {
         guard let repo = repo else { throw GitError.statusFailed }
         
         var options = git_status_options()
@@ -152,7 +152,7 @@ class GitWrapper {
         return results
     }
     
-    func getCurrentBranch() throws -> String {
+    public func getCurrentBranch() throws -> String {
         guard let repo = repo else { throw GitError.branchFailed }
         
         var reference: OpaquePointer?
@@ -168,7 +168,7 @@ class GitWrapper {
         return String(cString: name)
     }
     
-    func getBranches() throws -> [String] {
+    public func getBranches() throws -> [String] {
         guard let repo = repo else { throw GitError.branchFailed }
         
         var branches: OpaquePointer?
@@ -191,7 +191,7 @@ class GitWrapper {
         return results
     }
     
-    func createBranch(name: String) throws {
+    public func createBranch(name: String) throws {
         guard let repo = repo else { throw GitError.branchFailed }
         
         var commit: OpaquePointer?
@@ -209,7 +209,7 @@ class GitWrapper {
         git_reference_free(branch)
     }
     
-    func checkoutBranch(name: String) throws {
+    public func checkoutBranch(name: String) throws {
         guard let repo = repo else { throw GitError.branchFailed }
         
         var reference: OpaquePointer?
@@ -227,7 +227,7 @@ class GitWrapper {
         }
     }
     
-    func getFileHistory(file: String) throws -> [GitCommit] {
+    public func getFileHistory(file: String) throws -> [GitCommit] {
         guard let repo = repo else { throw GitError.historyFailed }
         
         var revwalk: OpaquePointer?
@@ -291,7 +291,7 @@ class GitWrapper {
         return commits
     }
     
-    func getDiff(file: String) throws -> String {
+    public func getDiff(file: String) throws -> String {
         guard let repo = repo else { throw GitError.diffFailed }
         
         var head = git_oid()
