@@ -172,17 +172,34 @@ import Foundation
     }
 }
 
+/// Errors that can occur during Git operations
 @objc public enum GitError: Int, Error {
+    /// Failed to initialize git repository
     case initFailed
+    /// Failed to add file to git
     case addFailed
+    /// Failed to commit changes
     case commitFailed
+    /// Failed to retrieve file history
     case historyFailed
+    /// Failed to get git status
     case statusFailed
+    /// Failed to get file diff
     case diffFailed
+    /// Failed to perform branch operation
     case branchFailed
+    /// Failed to read file contents
     case fileReadFailed
+    /// Failed to write file contents
     case fileWriteFailed
+    /// File not found
     case fileNotFound
+    /// Failed to lookup tree in repository
+    case treeLookupFailed
+    /// Failed to create or manipulate diff
+    case diffCreationFailed
+    /// Failed to properly handle memory during git operations
+    case memoryError
 }
 
 extension GitError: LocalizedError {
@@ -208,6 +225,12 @@ extension GitError: LocalizedError {
             return "Failed to write file contents"
         case .fileNotFound:
             return "File not found"
+        case .treeLookupFailed:
+            return "Failed to lookup or access git tree"
+        case .diffCreationFailed:
+            return "Failed to create or manipulate git diff"
+        case .memoryError:
+            return "Failed to properly handle memory during git operations"
         }
     }
 }
