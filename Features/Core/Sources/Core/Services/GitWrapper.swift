@@ -1,10 +1,21 @@
 import Foundation
 import Cgit2
 
+/// A wrapper around libgit2 functionality providing Git operations with proper memory management and error handling.
+/// This class manages the lifecycle of a Git repository and provides high-level operations while ensuring proper
+/// cleanup of resources.
 public class GitWrapper {
+    /// The underlying libgit2 repository pointer. This is managed internally and freed in deinit.
     private var repo: OpaquePointer?
+    
+    /// The filesystem path to the Git repository
     private let path: String
     
+    /// Initialize a Git wrapper for the repository at the given path.
+    /// If the repository doesn't exist, it will be created.
+    ///
+    /// - Parameter path: The filesystem path where the repository exists or should be created
+    /// - Throws: GitError.initFailed if the repository cannot be opened or created
     public init(path: String) throws {
         self.path = path
         var repo: OpaquePointer?
@@ -29,6 +40,11 @@ public class GitWrapper {
         }
     }
     
+    /// Add a file to the Git index (staging area).
+    /// This is equivalent to `git add <file>`.
+    ///
+    /// - Parameter file: The path to the file to add, relative to the repository root
+    /// - Throws: GitError.addFailed if the file cannot be added to the index
     public func add(file: String) throws {
         guard let repo = repo else { throw GitError.addFailed }
         
@@ -49,6 +65,12 @@ public class GitWrapper {
         }
     }
     
+    /// Create a new commit with the current staged changes.
+    /// This is equivalent to `git commit -m <message>`.
+    ///
+    /// - Parameter message: The commit message
+    /// - Throws: GitError.commitFailed if the commit cannot be created
+    /// - Note: This method handles memory management for trees, signatures, and other Git objects internally
     public func commit(message: String) throws {
         guard let repo = repo else { throw GitError.commitFailed }
         
@@ -247,6 +269,16 @@ public class GitWrapper {
         }
     }
     
+    /// Get the commit history for a specific file.
+    /// This returns a list of commits that modified the specified file.
+    ///
+    /// - Parameter file: The path to the file, relative to the repository root
+    /// - Returns: An array of GitCommit objects representing the file's history
+    /// - Throws: 
+    ///   - GitError.historyFailed if the history cannot be retrieved
+    ///   - GitError.treeLookupFailed if a commit's tree cannot be accessed
+    ///   - GitError.diffCreationFailed if the diff between commits cannot be created
+    /// - Note: This method handles proper cleanup of Git objects including trees, commits, and diffs
     public func getFileHistory(file: String) throws -> [GitCommit] {
         guard let repo = repo else { throw GitError.historyFailed }
         
@@ -340,6 +372,16 @@ public class GitWrapper {
         return commits
     }
     
+    /// Get the diff for a specific file.
+    /// This shows the changes between the working directory and HEAD.
+    ///
+    /// - Parameter file: The path to the file, relative to the repository root
+    /// - Returns: A string containing the unified diff output
+    /// - Throws:
+    ///   - GitError.diffFailed if the diff operation fails
+    ///   - GitError.treeLookupFailed if the commit's tree cannot be accessed
+    ///   - GitError.diffCreationFailed if the diff cannot be created
+    /// - Note: This method ensures proper cleanup of Git objects including trees and diffs
     public func getDiff(file: String) throws -> String {
         guard let repo = repo else { throw GitError.diffFailed }
         
