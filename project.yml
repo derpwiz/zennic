@@ -137,7 +137,6 @@ targets:
         PRODUCT_MODULE_NAME: "Shared"
         DEFINES_MODULE: "YES"
         SWIFT_INSTALL_OBJC_HEADER: NO
-        MODULEMAP_FILE: $(SRCROOT)/Features/Shared/Sources/Shared/include/module.modulemap
 
   CodeEditor:
     type: framework
