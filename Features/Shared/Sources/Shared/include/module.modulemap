@@ -1,4 +1,0 @@
-module Shared {
-    export *
-    module * { export * }
-}
