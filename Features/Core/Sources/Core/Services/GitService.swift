@@ -2,22 +2,22 @@ import Foundation
 
 @objc public class GitService: NSObject {
     @objc public static let shared = GitService()
-    private var repositories: [String: GitWrapper] = [:]
+    private var repositories: [String: GitWrapperType] = [:]
     
     private override init() {}
     
-    private func getRepository(at path: String) throws -> GitWrapper {
+    private func getRepository(at path: String) throws -> GitWrapperType {
         if let repo = repositories[path] {
             return repo
         }
         
-        let repo = try GitWrapper(path: path)
+        let repo = try GitWrapperType(path: path)
         repositories[path] = repo
         return repo
     }
     
     @objc public func initRepository(at path: String) throws {
-        _ = try GitWrapper(path: path)
+        _ = try GitWrapperType(path: path)
     }
     
     @objc public func addFile(_ file: String, at path: String) throws {

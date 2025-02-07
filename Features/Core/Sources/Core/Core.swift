@@ -27,4 +27,5 @@ public enum Core {
     public typealias GitErrorType = GitError
     public typealias GitCommitType = GitCommit
     public typealias GitStatusType = GitStatus
+    public typealias GitWrapperType = GitWrapper
 }
