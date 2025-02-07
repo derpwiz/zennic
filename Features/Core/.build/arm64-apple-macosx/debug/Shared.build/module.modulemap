@@ -1,4 +1,0 @@
-module Shared {
-    header "/Users/jerry/Developer/zennic/Features/Core/.build/arm64-apple-macosx/debug/Shared.build/Shared-Swift.h"
-    requires objc
-}

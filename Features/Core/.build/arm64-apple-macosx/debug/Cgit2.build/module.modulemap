@@ -1,4 +1,0 @@
-module Cgit2 {
-    umbrella "/Users/jerry/Developer/zennic/Features/Core/Sources/Cgit2/include"
-    export *
-}

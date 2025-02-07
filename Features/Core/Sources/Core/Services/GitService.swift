@@ -1,4 +1,5 @@
 import Foundation
+import Cgit2
 
 @objc public class GitService: NSObject {
     @objc public static let shared = GitService()
@@ -133,6 +134,7 @@ import Foundation
         return try repo.getDiff(file: file)
     }
 }
+
 @objc public class GitCommit: NSObject {
     @objc public let commitHash: String
     @objc public let message: String

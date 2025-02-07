@@ -1,0 +1,23 @@
+{
+  "": {
+    "swift-dependencies": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/master.swiftdeps"
+  },
+  "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Models/CodeLanguage.swift": {
+    "dependencies": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeLanguage.d",
+    "object": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeLanguage.swift.o",
+    "swiftmodule": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeLanguage~partial.swiftmodule",
+    "swift-dependencies": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeLanguage.swiftdeps"
+  },
+  "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/CodeAssistant.swift": {
+    "dependencies": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeAssistant.d",
+    "object": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeAssistant.swift.o",
+    "swiftmodule": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeAssistant~partial.swiftmodule",
+    "swift-dependencies": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeAssistant.swiftdeps"
+  },
+  "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/SyntaxHighlighter.swift": {
+    "dependencies": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/SyntaxHighlighter.d",
+    "object": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/SyntaxHighlighter.swift.o",
+    "swiftmodule": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/SyntaxHighlighter~partial.swiftmodule",
+    "swift-dependencies": "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/SyntaxHighlighter.swiftdeps"
+  }
+}

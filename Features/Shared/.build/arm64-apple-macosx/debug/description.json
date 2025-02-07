@@ -1,0 +1,241 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.Shared-arm64-apple-macosx15.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/sources",
+      "importPath" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Models/CodeLanguage.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/CodeAssistant.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/SyntaxHighlighter.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "Shared",
+      "moduleOutputPath" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Modules/Shared.swiftmodule",
+      "objects" : [
+        "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeLanguage.swift.o",
+        "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeAssistant.swift.o",
+        "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/SyntaxHighlighter.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx13.0",
+        "-enable-batch-mode",
+        "-index-store-path",
+        "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j12",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-module-cache-path",
+        "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/Shared-Swift.h",
+        "-color-diagnostics",
+        "-swift-version",
+        "5",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "shared"
+      ],
+      "outputFileMapPath" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeLanguage.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/CodeAssistant.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/SyntaxHighlighter.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Modules/Shared.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Models/CodeLanguage.swift",
+        "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/CodeAssistant.swift",
+        "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/SyntaxHighlighter.swift"
+      ],
+      "tempsPath" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "Shared" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "Shared",
+      "-package-name",
+      "shared",
+      "-incremental",
+      "-c",
+      "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Models/CodeLanguage.swift",
+      "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/CodeAssistant.swift",
+      "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/SyntaxHighlighter.swift",
+      "-I",
+      "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx13.0",
+      "-enable-batch-mode",
+      "-index-store-path",
+      "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j12",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-module-cache-path",
+      "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/Shared-Swift.h",
+      "-color-diagnostics",
+      "-swift-version",
+      "5",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "shared",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "Shared" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "writeCommands" : {
+    "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Models/CodeLanguage.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/CodeAssistant.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/SyntaxHighlighter.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/Shared.build/sources"
+    },
+    "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/jerry/Developer/zennic/Features/Shared/.build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+    }
+  }
+}
