@@ -18,7 +18,7 @@ let package = Package(
         .target(
             name: "Shared",
             dependencies: [],
-            path: "Sources"
+            path: "Sources/Shared"
         )
     ]
 )
