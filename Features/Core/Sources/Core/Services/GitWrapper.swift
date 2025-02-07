@@ -114,28 +114,32 @@ public class GitWrapper {
         var commit_id = git_oid()
         let parents = parent_commit != nil ? 1 : 0
         
-        try withUnsafeMutablePointer(to: &commit_id) { commit_id_ptr in
-            try "HEAD".withCString { head_ref in
-                try message.withCString { message_str in
-                    try "UTF-8".withCString { encoding in
-                        let result = git_commit_create(
-                            commit_id_ptr,
-                            repo,
-                            head_ref,
-                            signature,
-                            signature,
-                            encoding,
-                            message_str,
-                            tree,
-                            parents,
-                            parent_commit
-                        )
-                        guard result == 0 else {
-                            throw GitError.commitFailed
-                        }
-                    }
-                }
+        var result: Int32 = -1
+        withUnsafeMutablePointer(to: &commit_id) { commit_id_ptr in
+            let head_ref = "HEAD".cString(using: .utf8)
+            let message_str = message.cString(using: .utf8)
+            let encoding = "UTF-8".cString(using: .utf8)
+            
+            if let head_ref = head_ref,
+               let message_str = message_str,
+               let encoding = encoding {
+                result = git_commit_create(
+                    commit_id_ptr,
+                    repo,
+                    head_ref,
+                    signature,
+                    signature,
+                    encoding,
+                    message_str,
+                    tree,
+                    parents,
+                    parent_commit
+                )
             }
+        }
+        
+        guard result == 0 else {
+            throw GitError.commitFailed
         }
     }
     
@@ -433,9 +437,9 @@ public class GitWrapper {
                 guard let line = line else { return 0 }
                 let content = String(cString: line.pointee.content)
                 let prefix: String
-                switch git_diff_line_t(line.pointee.origin) {
-                case GIT_DIFF_LINE_ADDITION: prefix = "+"
-                case GIT_DIFF_LINE_DELETION: prefix = "-"
+                switch UInt32(line.pointee.origin) {
+                case GIT_DIFF_LINE_ADDITION.rawValue: prefix = "+"
+                case GIT_DIFF_LINE_DELETION.rawValue: prefix = "-"
                 default: prefix = " "
                 }
                 if let buffer = UnsafeMutablePointer<String>(OpaquePointer(payload)) {
