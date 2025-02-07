@@ -1,0 +1,38 @@
+{
+  "" : {
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/Shared-master.dia",
+    "emit-module-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/Shared-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/Shared-master-emit-module.dia",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/Shared-master.swiftdeps"
+  },
+  "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Models/CodeLanguage.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeLanguage.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeLanguage.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeLanguage.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeLanguage.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeLanguage.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeLanguage.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeLanguage.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeLanguage~partial.swiftmodule"
+  },
+  "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/CodeAssistant.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeAssistant.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeAssistant.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeAssistant.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeAssistant.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeAssistant.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeAssistant.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeAssistant.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/CodeAssistant~partial.swiftmodule"
+  },
+  "/Users/jerry/Developer/zennic/Features/Shared/Sources/Shared/Services/SyntaxHighlighter.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/SyntaxHighlighter.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/SyntaxHighlighter.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/SyntaxHighlighter.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Shared.build/Objects-normal/arm64/SyntaxHighlighter.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/SyntaxHighlighter.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/SyntaxHighlighter.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/SyntaxHighlighter.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Shared.build/Objects-normal/arm64/SyntaxHighlighter~partial.swiftmodule"
+  }
+}

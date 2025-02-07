@@ -646,32 +646,32 @@
 			path = Features/CodeEditor/Sources/CodeEditor;
 			sourceTree = "<group>";
 		};
-		"TEMP_3B495D5C-410C-4E8C-8C58-CF73FA699CE7" /* include */ = {
+		"TEMP_38BEE62F-FA71-4D8A-BD00-8FDE87084B03" /* include */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = include;
 			sourceTree = "<group>";
 		};
-		"TEMP_4A71961C-22B4-43EB-B6B0-34308ED8CF29" /* git2 */ = {
+		"TEMP_60FFDD78-536A-4F6B-8162-DDE310F642BB" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = git2;
 			sourceTree = "<group>";
 		};
-		"TEMP_5FA026DB-34A6-45A2-980E-00F9B3D4CDA6" /* git2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = git2;
-			sourceTree = "<group>";
-		};
-		"TEMP_DB41C599-665E-442A-8441-8619AA56BFC0" /* Headers */ = {
+		"TEMP_AC666CFC-E052-47B9-AD7B-448A5F1D850E" /* Headers */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Headers;
+			sourceTree = "<group>";
+		};
+		"TEMP_F12C9A15-BC6B-4E8D-92B3-B5998ED95BB5" /* git2 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = git2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -827,7 +827,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 82568155C30227CEF9363AFB /* Build configuration list for PBXNativeTarget "Backtesting" */;
 			buildPhases = (
-				55C3561EC3956827F30A039C /* Ensure Core-Swift.h Exists */,
 				FEAC1FF10875B4EDD30BF48E /* Sources */,
 				BE337ECB3DFF163DCC6B30C7 /* Frameworks */,
 			);
@@ -914,27 +913,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		55C3561EC3956827F30A039C /* Ensure Core-Swift.h Exists */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Ensure Core-Swift.h Exists";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ ! -f \"${BUILT_PRODUCTS_DIR}/Core.framework/Headers/Core-Swift.h\" ]; then\n  echo \"Core-Swift.h not found. Ensuring it exists.\"\n  mkdir -p \"${BUILT_PRODUCTS_DIR}/Core.framework/Headers\"\n  touch \"${BUILT_PRODUCTS_DIR}/Core.framework/Headers/Core-Swift.h\"\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		12ADDE14BFF4F48A789EFAC5 /* Sources */ = {
@@ -1412,10 +1390,8 @@
 					"$(SRCROOT)/Features/Core/Sources/Cgit2",
 					"$(SRCROOT)/Features/Core/Sources/Cgit2/include",
 				);
-				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_MODULE_NAME = Core;
-				SWIFT_OBJC_INTERFACE_HEADER_DIR = "$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers";
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Core-Swift.h";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1609,10 +1585,8 @@
 					"$(SRCROOT)/Features/Core/Sources/Cgit2",
 					"$(SRCROOT)/Features/Core/Sources/Cgit2/include",
 				);
-				SWIFT_INSTALL_OBJC_HEADER = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_MODULE_NAME = Core;
-				SWIFT_OBJC_INTERFACE_HEADER_DIR = "$(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers";
-				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Core-Swift.h";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -1695,6 +1669,7 @@
 				PRODUCT_MODULE_NAME = Shared;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1740,9 +1715,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(BUILT_PRODUCTS_DIR)/Core.framework/Headers",
-				);
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1797,9 +1769,6 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				GENERATE_INFOPLIST_FILE = YES;
-				HEADER_SEARCH_PATHS = (
-					"$(BUILT_PRODUCTS_DIR)/Core.framework/Headers",
-				);
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1864,6 +1833,7 @@
 				PRODUCT_MODULE_NAME = Shared;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

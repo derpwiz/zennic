@@ -24,39 +24,31 @@ let package = Package(
                 "Shared"
             ],
             path: "Sources/Core",
-            publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("../Cgit2/include"),
-                .headerSearchPath("../Cgit2/include/git2"),
-                .headerSearchPath("../Cgit2/include/git2/sys"),
                 .headerSearchPath("../../Libraries/libgit2/include")
             ],
             swiftSettings: [
                 .unsafeFlags(["-Xfrontend", "-enable-implicit-dynamic"]),
-                .unsafeFlags(["-Xfrontend", "-disable-objc-attr-requires-foundation-module"]),
                 .define("SWIFT_PACKAGE")
             ],
             linkerSettings: [
-                .linkedLibrary("git2"),
+                .unsafeFlags(["-force_load", "../../Libraries/libgit2/install/lib/libgit2.a"]),
                 .linkedLibrary("iconv"),
                 .linkedLibrary("z"),
-                .unsafeFlags(["-L../../Libraries/libgit2/install/lib"]),
-                .unsafeFlags(["-rpath", "../../Libraries/libgit2/install/lib"])
+                .linkedLibrary("git2"),
+                .unsafeFlags(["-L../../Libraries/libgit2/install/lib"])
             ]
         ),
         .target(
             name: "Cgit2",
             path: "Sources/Cgit2",
-            publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("."),
                 .headerSearchPath("include"),
-                .headerSearchPath("include/git2"),
-                .headerSearchPath("include/git2/sys"),
                 .headerSearchPath("../../Libraries/libgit2/include")
             ],
             linkerSettings: [
-                .linkedLibrary("git2"),
                 .unsafeFlags(["-L../../Libraries/libgit2/install/lib"]),
                 .unsafeFlags(["-rpath", "../../Libraries/libgit2/install/lib"])
             ]
