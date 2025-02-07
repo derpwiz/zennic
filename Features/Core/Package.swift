@@ -24,6 +24,8 @@ let package = Package(
                 "Shared"
             ],
             path: "Sources/Core",
+            exclude: ["include/Core-Swift.h"],
+            publicHeadersPath: "include",
             cSettings: [
                 .headerSearchPath("../Cgit2/include"),
                 .headerSearchPath("../../Libraries/libgit2/include")
