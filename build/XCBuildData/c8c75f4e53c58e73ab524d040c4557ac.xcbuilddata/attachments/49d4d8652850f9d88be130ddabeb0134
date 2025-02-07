@@ -1,0 +1,28 @@
+{
+  "" : {
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoring-master.dia",
+    "emit-module-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoring-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoring-master-emit-module.dia",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoring-master.swiftdeps"
+  },
+  "/Users/jerry/Developer/zennic/Features/RealTimeMonitoring/Sources/FileTreeView.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/FileTreeView.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/FileTreeView.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/FileTreeView.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/FileTreeView.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/FileTreeView.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/FileTreeView.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/FileTreeView.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/FileTreeView~partial.swiftmodule"
+  },
+  "/Users/jerry/Developer/zennic/Features/RealTimeMonitoring/Sources/RealTimeMonitoringView.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoringView.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoringView.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoringView.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoringView.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoringView.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoringView.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoringView.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/RealTimeMonitoring.build/Objects-normal/x86_64/RealTimeMonitoringView~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,4 @@
+framework module DataIntegration {
+  header "DataIntegration-Swift.h"
+  requires objc
+}

@@ -1,0 +1,4 @@
+framework module Backtesting {
+  header "Backtesting-Swift.h"
+  requires objc
+}

@@ -1,0 +1,18 @@
+{
+  "" : {
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/Backtesting-master.dia",
+    "emit-module-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/Backtesting-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/Backtesting-master-emit-module.dia",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/Backtesting-master.swiftdeps"
+  },
+  "/Users/jerry/Developer/zennic/Features/Backtesting/Views/BacktestingView.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/BacktestingView.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/BacktestingView.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/BacktestingView.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/BacktestingView.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/BacktestingView.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/BacktestingView.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/BacktestingView.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Backtesting.build/Objects-normal/arm64/BacktestingView~partial.swiftmodule"
+  }
+}

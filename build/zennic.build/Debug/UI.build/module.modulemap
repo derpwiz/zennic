@@ -1,0 +1,4 @@
+framework module UI {
+  header "UI-Swift.h"
+  requires objc
+}

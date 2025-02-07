@@ -1,0 +1,83 @@
+{
+  "main_library": {
+    "exported_symbols": [
+      {
+        "data": {
+          "global": [
+            "_SharedVersionNumber",
+            "_$s6Shared13CodeAssistantCACyc33_B27FB09CEA99A0A851C882D62C5F5264LlfC",
+            "_$s6Shared13CodeAssistantC17pythonSuggestions33_B27FB09CEA99A0A851C882D62C5F5264LLSaySSGvpfi",
+            "_$s6Shared12CodeLanguageO8allCasesSayACGvgZ",
+            "_$s6Shared13CodeAssistantC03getB7Snippet3for8languageSSSgSS_AA0B8LanguageOtF",
+            "_$s6Shared13CodeAssistantC6sharedACvpZ",
+            "_$s6Shared12CodeLanguageO8rawValueSSvg",
+            "_$s6Shared12CodeLanguageOMn",
+            "_$s6Shared13CodeAssistantC26getAutoCompleteSuggestions3for8languageSaySSGSS_AA0B8LanguageOtF",
+            "_$s6Shared12CodeLanguageO8rawValueACSgSS_tcfC",
+            "_$s6Shared13CodeAssistantC14sqlSuggestions33_B27FB09CEA99A0A851C882D62C5F5264LLSaySSGvpfi",
+            "_$s6Shared13CodeAssistantC6sharedACvau",
+            "_$s6Shared13CodeAssistantCMa",
+            "_$s6Shared13CodeAssistantCMn",
+            "_$s6Shared17SyntaxHighlighterVMa",
+            "_SharedVersionString",
+            "_$s6Shared13CodeAssistantCfD",
+            "_$s6Shared12CodeLanguageOSQAAMc",
+            "_$s6Shared13CodeAssistantC12rSuggestions33_B27FB09CEA99A0A851C882D62C5F5264LLSaySSGvpfi",
+            "_$s6Shared17SyntaxHighlighterVMn",
+            "_$s6Shared17SyntaxHighlighterV9highlight_8language10isDarkModeSo18NSAttributedStringCSS_AA12CodeLanguageOSbtFZ",
+            "_$s6Shared13CodeAssistantCfd",
+            "_$s6Shared13CodeAssistantC14getSnippetKeys3forSaySSGAA0B8LanguageO_tF",
+            "_$s6Shared12CodeLanguageOMa",
+            "_$s6Shared13CodeAssistantCMm",
+            "_$s6Shared13CodeAssistantC26getAutoCompleteSuggestions3for8languageSaySSGSS_AA0B8LanguageOtFTq",
+            "_$s6Shared12CodeLanguageOSYAAMc",
+            "_$s6Shared13CodeAssistantCN",
+            "_$s6Shared13CodeAssistantC9rSnippets33_B27FB09CEA99A0A851C882D62C5F5264LLSDyS2SGvpfi",
+            "_$s6Shared13CodeAssistantC14getSnippetKeys3forSaySSGAA0B8LanguageO_tFTq",
+            "_$s6Shared12CodeLanguageOSHAAMc",
+            "_$s6Shared13CodeAssistantC03getB7Snippet3for8languageSSSgSS_AA0B8LanguageOtFTq",
+            "_$s6Shared12CodeLanguageO11snippetKeysSaySSGvpMV",
+            "_$s6Shared13CodeAssistantC11sqlSnippets33_B27FB09CEA99A0A851C882D62C5F5264LLSDyS2SGvpfi",
+            "_$s6Shared17SyntaxHighlighterVACycfC",
+            "_$s6Shared13CodeAssistantC14pythonSnippets33_B27FB09CEA99A0A851C882D62C5F5264LLSDyS2SGvpfi",
+            "_$s6Shared17SyntaxHighlighterVN",
+            "_$s6Shared12CodeLanguageO8rawValueSSvpMV",
+            "_$s6Shared13CodeAssistantC6sharedACvgZ",
+            "_$sSo18NSAttributedStringC6SharedE012toAttributedB010Foundation0eB0VyF",
+            "_$s6Shared12CodeLanguageOs12CaseIterableAAMc",
+            "_$s6Shared12CodeLanguageO11snippetKeysSaySSGvg",
+            "_$s6Shared12CodeLanguageON"
+          ]
+        }
+      }
+    ],
+    "flags": [
+      {
+        "attributes": [
+          "not_app_extension_safe"
+        ]
+      }
+    ],
+    "install_names": [
+      {
+        "name": "@rpath/Shared.framework/Versions/A/Shared"
+      }
+    ],
+    "swift_abi": [
+      {
+        "abi": 7
+      }
+    ],
+    "target_info": [
+      {
+        "min_deployment": "13",
+        "target": "x86_64-macos"
+      },
+      {
+        "min_deployment": "13",
+        "target": "arm64-macos"
+      }
+    ]
+  },
+  "tapi_tbd_version": 5
+}

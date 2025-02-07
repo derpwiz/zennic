@@ -1,0 +1,4 @@
+framework module RealTimeMonitoring {
+  header "RealTimeMonitoring-Swift.h"
+  requires objc
+}

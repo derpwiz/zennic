@@ -1,0 +1,48 @@
+{
+  "" : {
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core-master.dia",
+    "emit-module-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core-master-emit-module.dia",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core-master.swiftdeps"
+  },
+  "/Users/jerry/Developer/zennic/Features/Core/Sources/Core/Core.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Core.build/Objects-normal/arm64/Core.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/Core~partial.swiftmodule"
+  },
+  "/Users/jerry/Developer/zennic/Features/Core/Sources/Core/GitWrapper.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitWrapper.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitWrapper.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitWrapper.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Core.build/Objects-normal/arm64/GitWrapper.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitWrapper.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitWrapper.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitWrapper.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitWrapper~partial.swiftmodule"
+  },
+  "/Users/jerry/Developer/zennic/Features/Core/Sources/Core/Services/GitService.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitService.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitService.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitService.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Core.build/Objects-normal/arm64/GitService.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitService.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitService.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitService.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/GitService~partial.swiftmodule"
+  },
+  "/Users/jerry/Developer/zennic/Features/Core/Sources/Core/Services/SettingsManager.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/SettingsManager.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/SettingsManager.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/SettingsManager.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Core.build/Objects-normal/arm64/SettingsManager.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/SettingsManager.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/SettingsManager.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/SettingsManager.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Core.build/Objects-normal/arm64/SettingsManager~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,4 @@
+framework module Visualization {
+  header "Visualization-Swift.h"
+  requires objc
+}

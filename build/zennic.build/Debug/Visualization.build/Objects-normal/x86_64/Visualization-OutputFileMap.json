@@ -1,0 +1,18 @@
+{
+  "" : {
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/Visualization-master.dia",
+    "emit-module-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/Visualization-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/Visualization-master-emit-module.dia",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/Visualization-master.swiftdeps"
+  },
+  "/Users/jerry/Developer/zennic/Features/Visualization/Views/VisualizationView.swift" : {
+    "const-values" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/VisualizationView.swiftconstvalues",
+    "dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/VisualizationView.d",
+    "diagnostics" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/VisualizationView.dia",
+    "index-unit-output-path" : "/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/VisualizationView.o",
+    "llvm-bc" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/VisualizationView.bc",
+    "object" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/VisualizationView.o",
+    "swift-dependencies" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/VisualizationView.swiftdeps",
+    "swiftmodule" : "/Users/jerry/Developer/zennic/build/zennic.build/Debug/Visualization.build/Objects-normal/x86_64/VisualizationView~partial.swiftmodule"
+  }
+}
