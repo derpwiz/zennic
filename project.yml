@@ -11,7 +11,8 @@ targets:
       - path: Features/Core/Sources/Cgit2
         excludes:
           - "**/*.h"
-    dependencies: []
+    dependencies:
+      - target: Shared
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -31,21 +32,40 @@ targets:
           - $(SRCROOT)/Features/Core/Sources/Core
           - $(SRCROOT)/Features/Core/Sources/Cgit2
           - $(SRCROOT)/Features/Core/Sources/Cgit2/include
+          - $(SRCROOT)/Features/Shared/Sources/Shared
         LIBRARY_SEARCH_PATHS: $(SRCROOT)/Libraries/libgit2/install/lib
-        OTHER_LDFLAGS: [
-          "-force_load", "$(SRCROOT)/Libraries/libgit2/install/lib/libgit2.a",
-          "-lz",
-          "-liconv",
-          "-lSystem",
-          "-framework", "GSS",
-          "-framework", "CoreFoundation"
-        ]
+        OTHER_LDFLAGS:
+          - "-force_load"
+          - "$(SRCROOT)/Libraries/libgit2/install/lib/libgit2.a"
+          - "-lz"
+          - "-liconv"
+          - "-lSystem"
+          - "-framework"
+          - "GSS"
+          - "-framework"
+          - "CoreFoundation"
         PUBLIC_HEADERS_FOLDER_PATH: $(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers
         SWIFT_INSTALL_OBJC_HEADER: NO
         SWIFT_MODULE_NAME: Core
         OBJC_BRIDGING_HEADER: "$(SRCROOT)/Features/Core/Sources/Core/Core-Bridging-Header.h"
-        OTHER_CFLAGS: ["-fmodule-map-file=$(SRCROOT)/Features/Core/Sources/Cgit2/module.modulemap"]
-  
+        OTHER_CFLAGS:
+          - "-fmodule-map-file=$(SRCROOT)/Features/Core/Sources/Cgit2/module.modulemap"
+
+  Shared:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/Shared/Sources/Shared
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "Shared"
+        DEFINES_MODULE: "YES"
+
   App:
     type: framework
     platform: macOS
@@ -69,7 +89,7 @@ targets:
         PRODUCT_MODULE_NAME: "App"
         DEFINES_MODULE: "YES"
         SWIFT_INCLUDE_PATHS: "$(SRCROOT)/App $(SRCROOT)/Features/RealTimeMonitoring/Sources/RealTimeMonitoring/include"
-  
+
   zennic:
     type: application
     platform: macOS
