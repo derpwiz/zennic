@@ -33,10 +33,13 @@ let package = Package(
                 .define("SWIFT_PACKAGE")
             ],
             linkerSettings: [
+                .linkedLibrary("git2"),
                 .unsafeFlags(["-force_load", "../../Libraries/libgit2/install/lib/libgit2.a"]),
                 .linkedLibrary("iconv"),
                 .linkedLibrary("z"),
-                .linkedLibrary("git2"),
+                .linkedFramework("Security"),
+                .linkedFramework("GSS"),
+                .linkedFramework("CoreFoundation"),
                 .unsafeFlags(["-L../../Libraries/libgit2/install/lib"])
             ]
         ),
@@ -49,6 +52,13 @@ let package = Package(
                 .headerSearchPath("../../Libraries/libgit2/include")
             ],
             linkerSettings: [
+                .linkedLibrary("git2"),
+                .unsafeFlags(["-force_load", "../../Libraries/libgit2/install/lib/libgit2.a"]),
+                .linkedLibrary("iconv"),
+                .linkedLibrary("z"),
+                .linkedFramework("Security"),
+                .linkedFramework("GSS"),
+                .linkedFramework("CoreFoundation"),
                 .unsafeFlags(["-L../../Libraries/libgit2/install/lib"]),
                 .unsafeFlags(["-rpath", "../../Libraries/libgit2/install/lib"])
             ]
@@ -56,7 +66,7 @@ let package = Package(
         .testTarget(
             name: "CoreTests",
             dependencies: ["Core"],
-            path: "Tests/CoreTests"
+            path: "Tests"
         ),
     ]
 )
