@@ -21,14 +21,16 @@ public class GitWrapper {
         var repo: OpaquePointer?
         
         // Try to open existing repository
-        if git_repository_open(&repo, path) == 0 {
-            self.repo = repo
-            return
-        }
-        
-        // If repository doesn't exist, initialize a new one
-        if git_repository_init(&repo, path, 0) != 0 {
-            throw GitError.initFailed
+        try path.withCString { cPath in
+            if git_repository_open(&repo, cPath) == 0 {
+                self.repo = repo
+                return
+            }
+            
+            // If repository doesn't exist, initialize a new one
+            if git_repository_init(&repo, cPath, 0) != 0 {
+                throw GitError.initFailed
+            }
         }
         
         self.repo = repo
@@ -112,29 +114,44 @@ public class GitWrapper {
         defer { git_signature_free(signature) }
         
         var commit_id = git_oid()
-        let parents = parent_commit != nil ? 1 : 0
         
-        var result: Int32 = -1
-        withUnsafeMutablePointer(to: &commit_id) { commit_id_ptr in
-            let head_ref = "HEAD".cString(using: .utf8)
-            let message_str = message.cString(using: .utf8)
-            let encoding = "UTF-8".cString(using: .utf8)
-            
-            if let head_ref = head_ref,
-               let message_str = message_str,
-               let encoding = encoding {
-                result = git_commit_create(
-                    commit_id_ptr,
-                    repo,
-                    head_ref,
-                    signature,
-                    signature,
-                    encoding,
-                    message_str,
-                    tree,
-                    parents,
-                    parent_commit
-                )
+        let result = withUnsafeMutablePointer(to: &commit_id) { commit_id_ptr in
+            "HEAD".withCString { head_ref in
+                message.withCString { message_str in
+                    "UTF-8".withCString { encoding_str in
+                        if let parentCommit = parent_commit {
+                            let parentsPtr = UnsafeMutablePointer<OpaquePointer?>.allocate(capacity: 1)
+                            defer { parentsPtr.deallocate() }
+                            parentsPtr.initialize(to: parentCommit)
+                            
+                            return git_commit_create(
+                                commit_id_ptr,
+                                repo,
+                                head_ref,
+                                signature,
+                                signature,
+                                encoding_str,
+                                message_str,
+                                tree,
+                                1,
+                                parentsPtr
+                            )
+                        } else {
+                            return git_commit_create(
+                                commit_id_ptr,
+                                repo,
+                                head_ref,
+                                signature,
+                                signature,
+                                encoding_str,
+                                message_str,
+                                tree,
+                                0,
+                                nil
+                            )
+                        }
+                    }
+                }
             }
         }
         
@@ -171,9 +188,17 @@ public class GitWrapper {
             if status.rawValue & GIT_STATUS_INDEX_NEW.rawValue != 0 ||
                status.rawValue & GIT_STATUS_INDEX_MODIFIED.rawValue != 0 ||
                status.rawValue & GIT_STATUS_INDEX_DELETED.rawValue != 0 {
-                path = String(cString: entry.pointee.head_to_index?.pointee.new_file.path ?? "")
+                if let cPath = entry.pointee.head_to_index?.pointee.new_file.path {
+                    path = String(cString: cPath)
+                } else {
+                    path = ""
+                }
             } else {
-                path = String(cString: entry.pointee.index_to_workdir?.pointee.new_file.path ?? "")
+                if let cPath = entry.pointee.index_to_workdir?.pointee.new_file.path {
+                    path = String(cString: cPath)
+                } else {
+                    path = ""
+                }
             }
             
             let state: String
@@ -267,8 +292,12 @@ public class GitWrapper {
         git_checkout_init_options(&opts, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
         
         guard let ref_name = git_reference_name(reference),
-              git_checkout_tree(repo, nil, &opts) == 0,
-              git_repository_set_head(repo, ref_name) == 0 else {
+              git_checkout_tree(repo, nil, &opts) == 0 else {
+            throw GitError.branchFailed
+        }
+        
+        // ref_name is a C string owned by libgit2 and valid for the lifetime of the reference object
+        guard git_repository_set_head(repo, ref_name) == 0 else {
             throw GitError.branchFailed
         }
     }
@@ -334,15 +363,21 @@ public class GitWrapper {
                         if let tree = newTree { git_tree_free(tree) }
                     }
                     
-                    guard git_commit_tree(&oldTree, parent) == 0 else {
+                    // Get the tree for the parent commit
+                    var parentTree: OpaquePointer?
+                    guard git_commit_tree(&parentTree, parent) == 0 else {
                         strPtr.deallocate()
                         throw GitError.treeLookupFailed
                     }
+                    oldTree = parentTree
                     
-                    guard git_commit_tree(&newTree, commit) == 0 else {
+                    // Get the tree for the current commit
+                    var commitTree: OpaquePointer?
+                    guard git_commit_tree(&commitTree, commit) == 0 else {
                         strPtr.deallocate()
                         throw GitError.treeLookupFailed
                     }
+                    newTree = commitTree
                     
                     guard git_diff_tree_to_tree(&diff, repo, oldTree, newTree, &diffOpts) == 0 else {
                         strPtr.deallocate()
@@ -415,17 +450,18 @@ public class GitWrapper {
             pathPtr.initialize(to: strPtr)
             opts.pathspec.strings = pathPtr
             
-            var tree: OpaquePointer?
+            var commitTree: OpaquePointer?
             defer {
-                if let t = tree { git_tree_free(t) }
+                if let t = commitTree { git_tree_free(t) }
             }
             
-            guard git_commit_tree(&tree, commit) == 0 else {
+            // Get the tree for the current commit
+            guard git_commit_tree(&commitTree, commit) == 0 else {
                 strPtr.deallocate()
                 throw GitError.treeLookupFailed
             }
             
-            guard git_diff_tree_to_workdir_with_index(&diff, repo, tree, &opts) == 0 else {
+            guard git_diff_tree_to_workdir_with_index(&diff, repo, commitTree, &opts) == 0 else {
                 strPtr.deallocate()
                 throw GitError.diffCreationFailed
             }
