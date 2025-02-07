@@ -33,7 +33,14 @@ targets:
           - $(SRCROOT)/Features/Core/Sources/Cgit2
           - $(SRCROOT)/Features/Core/Sources/Cgit2/include
         LIBRARY_SEARCH_PATHS: $(SRCROOT)/Libraries/libgit2/install/lib
-        OTHER_LDFLAGS: ["-force_load", "$(SRCROOT)/Libraries/libgit2/install/lib/libgit2.a"]
+        OTHER_LDFLAGS: [
+          "-force_load", "$(SRCROOT)/Libraries/libgit2/install/lib/libgit2.a",
+          "-lz",
+          "-liconv",
+          "-lSystem",
+          "-framework", "GSS",
+          "-framework", "CoreFoundation"
+        ]
         PUBLIC_HEADERS_FOLDER_PATH: $(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers
         SWIFT_INSTALL_OBJC_HEADER: NO
         SWIFT_MODULE_NAME: Core
