@@ -1,5 +1,4 @@
 import Foundation
-import Cgit2
 
 @objc public class GitService: NSObject {
     @objc public static let shared = GitService()
