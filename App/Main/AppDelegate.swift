@@ -15,7 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 @main
 struct ZennicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    @StateObject private var appState = Core.appState
+    private var appState = Core.appState
     
     var body: some Scene {
         WindowGroup {
