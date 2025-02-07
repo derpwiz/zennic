@@ -3,7 +3,7 @@ import Core
 import UI
 
 struct ContentView: View {
-    @EnvironmentObject private var appState: Core.AppState
+    @EnvironmentObject private var appState: AppState
     
     var body: some View {
         MainView()

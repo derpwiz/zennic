@@ -4,9 +4,9 @@ import Core
 
 class AppCoordinator: ObservableObject {
     @Published var window: NSWindow?
-    @Published var appState: Core.AppState
+    @Published var appState: AppState
     
-    init(appState: Core.AppState) {
+    init(appState: AppState) {
         self.appState = appState
     }
     

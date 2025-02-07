@@ -20,6 +20,7 @@ public class AppState: ObservableObject {
 // Export Core module's public interface
 public enum Core {
     public static let shared = GitService.shared
+    public static let appState = AppState.shared
     
     // Re-export Git types from module scope
     public typealias GitServiceType = GitService
