@@ -138,9 +138,6 @@ targets:
         DEFINES_MODULE: "YES"
         SWIFT_INSTALL_OBJC_HEADER: NO
         MODULEMAP_FILE: $(SRCROOT)/Features/Shared/Sources/Shared/include/module.modulemap
-        HEADER_SEARCH_PATHS:
-          - $(SRCROOT)/Features/Shared/Sources/Shared/include
-        PUBLIC_HEADERS_FOLDER_PATH: $(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers
 
   CodeEditor:
     type: framework
