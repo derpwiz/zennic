@@ -11,8 +11,7 @@ targets:
       - path: Features/Core/Sources/Cgit2
         excludes:
           - "**/*.h"
-    dependencies:
-      - target: Shared
+    dependencies: []
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -80,7 +79,6 @@ targets:
       - path: Features/UI/Sources/UI
     dependencies:
       - target: DataIntegration
-      - target: Shared
       - target: CodeEditor
       - target: RealTimeMonitoring
       - target: Backtesting
@@ -112,7 +110,6 @@ targets:
       - path: Features/DataIntegration/Sources/DataIntegration
     dependencies:
       - target: Core
-      - target: Shared
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -122,22 +119,6 @@ targets:
         PRODUCT_MODULE_NAME: "DataIntegration"
         DEFINES_MODULE: "YES"
 
-  Shared:
-    type: framework
-    platform: macOS
-    deploymentTarget: "13.0"
-    sources:
-      - path: Features/Shared/Sources/Shared
-    settings:
-      base:
-        CODE_SIGN_IDENTITY: "-"
-        CODE_SIGNING_REQUIRED: "NO"
-        CODE_SIGN_ENTITLEMENTS: ""
-        GENERATE_INFOPLIST_FILE: "YES"
-        PRODUCT_MODULE_NAME: "Shared"
-        DEFINES_MODULE: "YES"
-        SWIFT_INSTALL_OBJC_HEADER: NO
-
   CodeEditor:
     type: framework
     platform: macOS
@@ -145,7 +126,6 @@ targets:
     sources:
       - path: Features/CodeEditor/Sources/CodeEditor
     dependencies:
-      - target: Shared
       - target: Core
       - target: UI
     settings:
@@ -164,7 +144,6 @@ targets:
     sources:
       - path: Features/RealTimeMonitoring/Sources
     dependencies:
-      - target: Shared
       - target: Core
     settings:
       base:
@@ -183,7 +162,6 @@ targets:
     sources:
       - path: Features/Backtesting/Views
     dependencies:
-      - target: Shared
       - target: Core
     settings:
       base:
@@ -201,7 +179,6 @@ targets:
     sources:
       - path: Features/Visualization/Views
     dependencies:
-      - target: Shared
       - target: Core
     settings:
       base:
@@ -219,7 +196,6 @@ targets:
     sources:
       - path: Features/UI/Sources/UI
     dependencies:
-      - target: Shared
       - target: Core
     settings:
       base:
