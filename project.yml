@@ -103,6 +103,7 @@ targets:
         CODE_SIGN_IDENTITY: "-"
         CODE_SIGNING_REQUIRED: "NO"
         CODE_SIGN_ENTITLEMENTS: ""
+
   DataIntegration:
     type: framework
     platform: macOS
@@ -120,6 +121,7 @@ targets:
         GENERATE_INFOPLIST_FILE: "YES"
         PRODUCT_MODULE_NAME: "DataIntegration"
         DEFINES_MODULE: "YES"
+
   Shared:
     type: framework
     platform: macOS
@@ -135,6 +137,11 @@ targets:
         PRODUCT_MODULE_NAME: "Shared"
         DEFINES_MODULE: "YES"
         SWIFT_INSTALL_OBJC_HEADER: NO
+        MODULEMAP_FILE: $(SRCROOT)/Features/Shared/Sources/Shared/include/module.modulemap
+        HEADER_SEARCH_PATHS:
+          - $(SRCROOT)/Features/Shared/Sources/Shared/include
+        PUBLIC_HEADERS_FOLDER_PATH: $(BUILT_PRODUCTS_DIR)/$(PRODUCT_NAME).framework/Headers
+
   CodeEditor:
     type: framework
     platform: macOS
