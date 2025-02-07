@@ -33,8 +33,9 @@ let package = Package(
                 .define("SWIFT_PACKAGE")
             ],
             linkerSettings: [
-                .linkedLibrary("git2"),
                 .unsafeFlags(["-force_load", "../../Libraries/libgit2/install/lib/libgit2.a"]),
+                .linkedLibrary("git2"),
+                .linkedLibrary("System"),
                 .linkedLibrary("iconv"),
                 .linkedLibrary("z"),
                 .linkedFramework("Security"),
@@ -52,8 +53,9 @@ let package = Package(
                 .headerSearchPath("../../Libraries/libgit2/include")
             ],
             linkerSettings: [
-                .linkedLibrary("git2"),
                 .unsafeFlags(["-force_load", "../../Libraries/libgit2/install/lib/libgit2.a"]),
+                .linkedLibrary("git2"),
+                .linkedLibrary("System"),
                 .linkedLibrary("iconv"),
                 .linkedLibrary("z"),
                 .linkedFramework("Security"),
