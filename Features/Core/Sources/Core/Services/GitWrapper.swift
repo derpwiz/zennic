@@ -291,11 +291,26 @@ public class GitWrapper {
                     pathPtr.initialize(to: strPtr)
                     diffOpts.pathspec.strings = pathPtr
                     
-                    guard let oldTree = git_commit_tree(parent),
-                          let newTree = git_commit_tree(commit),
-                          git_diff_tree_to_tree(&diff, repo, oldTree, newTree, &diffOpts) == 0 else {
+                    var oldTree: OpaquePointer?
+                    var newTree: OpaquePointer?
+                    defer {
+                        if let tree = oldTree { git_tree_free(tree) }
+                        if let tree = newTree { git_tree_free(tree) }
+                    }
+                    
+                    guard git_commit_tree(&oldTree, parent) == 0 else {
                         strPtr.deallocate()
-                        throw GitError.diffFailed
+                        throw GitError.treeLookupFailed
+                    }
+                    
+                    guard git_commit_tree(&newTree, commit) == 0 else {
+                        strPtr.deallocate()
+                        throw GitError.treeLookupFailed
+                    }
+                    
+                    guard git_diff_tree_to_tree(&diff, repo, oldTree, newTree, &diffOpts) == 0 else {
+                        strPtr.deallocate()
+                        throw GitError.diffCreationFailed
                     }
                     strPtr.deallocate()
                     
