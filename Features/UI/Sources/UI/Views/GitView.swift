@@ -5,16 +5,16 @@ public struct GitView: View {
     @State private var selectedTab = 0
     @State private var branches: [String] = []
     @State private var currentBranch = ""
-    @State private var status: [Core.GitStatusType] = []
+    @State private var status: [GitStatus] = []
     @State private var selectedFile: String?
     @State private var diff: String = ""
-    @State private var history: [Core.GitCommitType] = []
+    @State private var history: [GitCommit] = []
     @State private var commitMessage = ""
     @State private var showNewBranchSheet = false
     @State private var newBranchName = ""
     @State private var error: Error?
     
-    private let gitService = Core.shared
+    private let gitService = GitService.shared
     private let path: String
     
     public init(path: String) {
@@ -127,7 +127,7 @@ public struct GitView: View {
                         Text(commit.message)
                             .font(.headline)
                         HStack {
-                            Text(commit.hash)
+                             Text(commit.commitHash)
                                 .font(.system(.caption, design: .monospaced))
                             Text("•")
                             Text(commit.author)
@@ -200,10 +200,10 @@ public struct GitView: View {
                 history = try gitService.getFileHistory(file: file, at: path)
             }
             updateDiff()
-        } catch let error as Core.GitErrorType {
+        } catch let error as GitError {
             self.error = error
         } catch {
-            self.error = Core.GitErrorType.statusFailed
+            self.error = GitError.statusFailed
         }
     }
     
@@ -211,10 +211,10 @@ public struct GitView: View {
         guard let file = selectedFile else { return }
         do {
             diff = try gitService.getDiff(file: file, at: path)
-        } catch let error as Core.GitErrorType {
+        } catch let error as GitError {
             self.error = error
         } catch {
-            self.error = Core.GitErrorType.diffFailed
+            self.error = GitError.diffFailed
         }
     }
     
@@ -222,10 +222,10 @@ public struct GitView: View {
         do {
             try gitService.checkoutBranch(name: branch, at: path)
             refresh()
-        } catch let error as Core.GitErrorType {
+        } catch let error as GitError {
             self.error = error
         } catch {
-            self.error = Core.GitErrorType.branchFailed
+            self.error = GitError.branchFailed
         }
     }
     
@@ -234,10 +234,10 @@ public struct GitView: View {
             try gitService.createBranch(name: newBranchName, at: path)
             newBranchName = ""
             refresh()
-        } catch let error as Core.GitErrorType {
+        } catch let error as GitError {
             self.error = error
         } catch {
-            self.error = Core.GitErrorType.branchFailed
+            self.error = GitError.branchFailed
         }
     }
     
@@ -246,10 +246,10 @@ public struct GitView: View {
             try gitService.commit(message: commitMessage, at: path)
             commitMessage = ""
             refresh()
-        } catch let error as Core.GitErrorType {
+        } catch let error as GitError {
             self.error = error
         } catch {
-            self.error = Core.GitErrorType.commitFailed
+            self.error = GitError.commitFailed
         }
     }
     
