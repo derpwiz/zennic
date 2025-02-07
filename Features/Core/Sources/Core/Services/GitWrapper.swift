@@ -95,20 +95,22 @@ public class GitWrapper {
         try withUnsafeMutablePointer(to: &commit_id) { commit_id_ptr in
             try "HEAD".withCString { head_ref in
                 try message.withCString { message_str in
-                    let result = git_commit_create(
-                        commit_id_ptr,
-                        repo,
-                        head_ref,
-                        signature,
-                        signature,
-                        "UTF-8",
-                        message_str,
-                        tree,
-                        parents,
-                        parent_commit
-                    )
-                    guard result == 0 else {
-                        throw GitError.commitFailed
+                    try "UTF-8".withCString { encoding in
+                        let result = git_commit_create(
+                            commit_id_ptr,
+                            repo,
+                            head_ref,
+                            signature,
+                            signature,
+                            encoding,
+                            message_str,
+                            tree,
+                            parents,
+                            parent_commit
+                        )
+                        guard result == 0 else {
+                            throw GitError.commitFailed
+                        }
                     }
                 }
             }
@@ -219,7 +221,9 @@ public class GitWrapper {
                 throw GitError.branchFailed
             }
         }
-        git_reference_free(branch)
+        if let branch = branch {
+            git_reference_free(branch)
+        }
     }
     
     public func checkoutBranch(name: String) throws {
@@ -236,8 +240,9 @@ public class GitWrapper {
         var opts = git_checkout_options()
         git_checkout_init_options(&opts, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
         
-        guard git_checkout_tree(repo, nil, &opts) == 0,
-              git_repository_set_head(repo, git_reference_name(reference)) == 0 else {
+        guard let ref_name = git_reference_name(reference),
+              git_checkout_tree(repo, nil, &opts) == 0,
+              git_repository_set_head(repo, ref_name) == 0 else {
             throw GitError.branchFailed
         }
     }
