@@ -122,7 +122,7 @@ public struct GitView: View {
                 .tag(1)
                 
                 // History tab
-                List(history, id: \.hash) { commit in
+                List(history, id: \.commitHash) { commit in
                     VStack(alignment: .leading, spacing: 4) {
                         Text(commit.message)
                             .font(.headline)
