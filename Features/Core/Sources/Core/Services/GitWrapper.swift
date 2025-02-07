@@ -89,19 +89,25 @@ public class GitWrapper {
         
         var commit_id = git_oid()
         let parents = parent_commit != nil ? 1 : 0
-        guard git_commit_create(
-            &commit_id,
-            repo,
-            "HEAD",
-            UnsafePointer(signature),
-            UnsafePointer(signature),
-            "UTF-8",
-            message,
-            tree,
-            parents,
-            parent_commit
-        ) == 0 else {
-            throw GitError.commitFailed
+        try withUnsafeMutablePointer(to: &commit_id) { commit_id_ptr in
+            try "HEAD".withCString { head_ref in
+                try message.withCString { message_str in
+                    guard git_commit_create(
+                        commit_id_ptr,
+                        repo,
+                        head_ref,
+                        UnsafePointer(signature),
+                        UnsafePointer(signature),
+                        "UTF-8",
+                        message_str,
+                        tree,
+                        parents,
+                        parent_commit
+                    ) == 0 else {
+                        throw GitError.commitFailed
+                    }
+                }
+            }
         }
     }
     
@@ -262,12 +268,16 @@ public class GitWrapper {
                 var diffOpts = git_diff_options()
                 git_diff_init_options(&diffOpts, UInt32(GIT_DIFF_OPTIONS_VERSION))
                 diffOpts.pathspec.count = 1
-                let cPath = strdup(file)
-                var cPaths = [UnsafeMutablePointer<Int8>(mutating: cPath)]
-                diffOpts.pathspec.strings = &cPaths
-                defer { free(cPath) }
-                
-                if git_diff_tree_to_tree(&diff, repo, git_commit_tree(parent), git_commit_tree(commit), &diffOpts) == 0 {
+                try file.withCString { cPath in
+                    var paths = [UnsafePointer<Int8>(cPath)]
+                    diffOpts.pathspec.strings = UnsafeMutablePointer(mutating: &paths)
+                    diffOpts.pathspec.count = 1
+                    
+                    guard let oldTree = git_commit_tree(parent),
+                          let newTree = git_commit_tree(commit),
+                          git_diff_tree_to_tree(&diff, repo, oldTree, newTree, &diffOpts) == 0 else {
+                        throw GitError.diffFailed
+                    }
                     defer { git_diff_free(diff) }
                     
                     if git_diff_num_deltas(diff) > 0 {
@@ -312,34 +322,36 @@ public class GitWrapper {
         var opts = git_diff_options()
         git_diff_init_options(&opts, UInt32(GIT_DIFF_OPTIONS_VERSION))
         opts.pathspec.count = 1
-                let cPath = strdup(file)
-                var cPaths = [UnsafeMutablePointer<Int8>(mutating: cPath)]
-                opts.pathspec.strings = &cPaths
-                defer { free(cPath) }
-        
-        guard git_diff_tree_to_workdir_with_index(&diff, repo, git_commit_tree(commit), &opts) == 0 else {
-            throw GitError.diffFailed
-        }
-        defer { git_diff_free(diff) }
-        
         var diffResult = ""
-        let callback: git_diff_line_cb = { delta, hunk, line, payload in
-            guard let line = line else { return 0 }
-            let content = String(cString: line.pointee.content)
-            let prefix: String
-            switch line.pointee.origin {
-            case GIT_DIFF_LINE_ADDITION.rawValue: prefix = "+"
-            case GIT_DIFF_LINE_DELETION.rawValue: prefix = "-"
-            default: prefix = " "
+        try file.withCString { cPath in
+            var paths = [UnsafePointer<Int8>(cPath)]
+            opts.pathspec.strings = UnsafeMutablePointer(mutating: &paths)
+            opts.pathspec.count = 1
+            
+            guard let tree = git_commit_tree(commit),
+                  git_diff_tree_to_workdir_with_index(&diff, repo, tree, &opts) == 0 else {
+                throw GitError.diffFailed
             }
-            if let buffer = UnsafeMutablePointer<String>(OpaquePointer(payload)) {
-                buffer.pointee += prefix + content
+            defer { git_diff_free(diff) }
+            
+            let callback: git_diff_line_cb = { delta, hunk, line, payload in
+                guard let line = line else { return 0 }
+                let content = String(cString: line.pointee.content)
+                let prefix: String
+                switch git_diff_line_t(line.pointee.origin) {
+                case GIT_DIFF_LINE_ADDITION: prefix = "+"
+                case GIT_DIFF_LINE_DELETION: prefix = "-"
+                default: prefix = " "
+                }
+                if let buffer = UnsafeMutablePointer<String>(OpaquePointer(payload)) {
+                    buffer.pointee += prefix + content
+                }
+                return 0
             }
-            return 0
-        }
-        
-        _ = withUnsafeMutablePointer(to: &diffResult) { buffer in
-            git_diff_print(diff, GIT_DIFF_FORMAT_PATCH, callback, buffer)
+            
+            _ = withUnsafeMutablePointer(to: &diffResult) { buffer in
+                git_diff_print(diff, GIT_DIFF_FORMAT_PATCH, callback, buffer)
+            }
         }
         
         return diffResult
