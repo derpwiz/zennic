@@ -369,10 +369,19 @@ public class GitWrapper {
             pathPtr.initialize(to: strPtr)
             opts.pathspec.strings = pathPtr
             
-            guard let tree = git_commit_tree(commit),
-                  git_diff_tree_to_workdir_with_index(&diff, repo, tree, &opts) == 0 else {
+            var tree: OpaquePointer?
+            defer {
+                if let t = tree { git_tree_free(t) }
+            }
+            
+            guard git_commit_tree(&tree, commit) == 0 else {
                 strPtr.deallocate()
-                throw GitError.diffFailed
+                throw GitError.treeLookupFailed
+            }
+            
+            guard git_diff_tree_to_workdir_with_index(&diff, repo, tree, &opts) == 0 else {
+                strPtr.deallocate()
+                throw GitError.diffCreationFailed
             }
             strPtr.deallocate()
             
