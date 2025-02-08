@@ -1,8 +1,8 @@
 import SwiftUI
 import DataIntegration
 import Core
-import CodeEditor
 import CodeEditorInterface
+import CodeEditor
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
