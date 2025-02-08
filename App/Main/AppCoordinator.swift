@@ -1,6 +1,7 @@
 import SwiftUI
 import Cocoa
 import Core
+import UI
 
 class AppCoordinator: ObservableObject {
     @Published var window: NSWindow?

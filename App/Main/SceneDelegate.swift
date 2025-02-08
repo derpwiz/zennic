@@ -1,5 +1,6 @@
 import Cocoa
 import SwiftUI
+import UI
 
 class SceneDelegate: NSObject, NSWindowDelegate {
     weak var coordinator: AppCoordinator?
