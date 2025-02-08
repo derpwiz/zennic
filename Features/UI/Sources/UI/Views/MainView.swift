@@ -144,8 +144,15 @@ public struct _MainView: View {
                             if !appState[keyPath: \.workspacePath].isEmpty {
                                 CodeEditorFactory.makeEditor(workspacePath: appState[keyPath: \.workspacePath])
                             } else {
-                                Text("Please select a workspace path")
-                                    .foregroundStyle(.secondary)
+                                VStack(spacing: 12) {
+                                    Image(systemName: "folder.badge.plus")
+                                        .font(.system(size: 48))
+                                        .symbolRenderingMode(.hierarchical)
+                                        .foregroundStyle(.secondary)
+                                    Text("Please select a workspace path")
+                                        .font(.title3)
+                                        .foregroundStyle(.secondary)
+                                }
                             }
                         }
                     case "DataIntegration":
