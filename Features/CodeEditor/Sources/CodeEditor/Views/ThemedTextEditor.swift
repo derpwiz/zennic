@@ -1,12 +1,18 @@
 import SwiftUI
 import Shared
 
-struct ThemedTextEditor: NSViewRepresentable {
-    @Binding var text: String
-    let theme: Theme
-    let isEditable: Bool
+public struct ThemedTextEditor: NSViewRepresentable {
+    @Binding public var text: String
+    public let theme: Theme
+    public let isEditable: Bool
     
-    func makeNSView(context: Context) -> NSScrollView {
+    public init(text: Binding<String>, theme: Theme, isEditable: Bool) {
+        self._text = text
+        self.theme = theme
+        self.isEditable = isEditable
+    }
+    
+    public func makeNSView(context: Context) -> NSScrollView {
         let scrollView = NSTextView.scrollableTextView()
         let textView = scrollView.documentView as! NSTextView
         
@@ -38,7 +44,7 @@ struct ThemedTextEditor: NSViewRepresentable {
         return scrollView
     }
     
-    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+    public func updateNSView(_ scrollView: NSScrollView, context: Context) {
         let textView = scrollView.documentView as! NSTextView
         
         // Only update text if it's different to avoid cursor jumping
@@ -62,18 +68,18 @@ struct ThemedTextEditor: NSViewRepresentable {
         }
     }
     
-    func makeCoordinator() -> Coordinator {
+    public func makeCoordinator() -> Coordinator {
         Coordinator(text: $text)
     }
     
-    class Coordinator: NSObject, NSTextViewDelegate {
+    public class Coordinator: NSObject, NSTextViewDelegate {
         var text: Binding<String>
         
         init(text: Binding<String>) {
             self.text = text
         }
         
-        func textDidChange(_ notification: Notification) {
+        public func textDidChange(_ notification: Notification) {
             guard let textView = notification.object as? NSTextView else { return }
             text.wrappedValue = textView.string
         }
