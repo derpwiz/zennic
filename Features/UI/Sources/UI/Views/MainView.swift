@@ -141,8 +141,8 @@ public struct _MainView: View {
                     switch appState.selectedFeature {
                     case "CodeEditor":
                         Group {
-                            if !appState[keyPath: \.workspacePath].isEmpty {
-                                CodeEditorFactory.makeEditor(workspacePath: appState[keyPath: \.workspacePath])
+                            if !appState.workspacePath.isEmpty {
+                                CodeEditorFactory.makeEditor(workspacePath: appState.workspacePath)
                             } else {
                                 VStack(spacing: 12) {
                                     Image(systemName: "folder.badge.plus")
