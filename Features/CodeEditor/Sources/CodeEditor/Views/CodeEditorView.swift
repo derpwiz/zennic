@@ -48,14 +48,12 @@ public struct CodeEditorView: View {
                 .background(EffectView(.titlebar))
                 
                 // Editor content
-                ScrollView([.horizontal, .vertical]) {
-                    TextEditor(text: $viewModel.content)
-                        .font(.system(.body, design: .monospaced))
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .disabled(!isEditable)
-                        .foregroundColor(currentTheme.editor.text)
-                }
-                .background(currentTheme.editor.background)
+                ThemedTextEditor(
+                    text: $viewModel.content,
+                    theme: currentTheme,
+                    isEditable: isEditable
+                )
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 // Status bar
                 HStack {
