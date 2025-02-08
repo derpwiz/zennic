@@ -7,7 +7,7 @@ import CodeEditor
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Initialize the CodeEditor implementation
-        CodeEditor.CodeEditorFactory.initialize()
+        CodeEditorFactory.initialize()
         print("Application did finish launching")
     }
 
