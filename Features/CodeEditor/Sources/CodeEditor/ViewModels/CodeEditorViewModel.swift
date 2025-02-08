@@ -5,12 +5,13 @@ import Core
 
 /// Manages the state and business logic for the code editor
 public class CodeEditorViewModel: ObservableObject {
-    public let gitWrapper: GitWrapper
+    public let gitWrapper: GitWrapper?
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Published Properties
     
     @Published public var content: String = ""
+    @Published public var error: String?
     @Published public var currentBranch: String?
     @Published public var fileStatus: String?
     @Published public var selectedFile: String?
@@ -43,8 +44,17 @@ public class CodeEditorViewModel: ObservableObject {
     
     // MARK: - Initialization
     
-    public init(gitWrapper: GitWrapper) {
-        self.gitWrapper = gitWrapper
+    public init(workspacePath: String) {
+        do {
+            self.gitWrapper = try GitWrapper(path: workspacePath)
+            // Create directory if it doesn't exist
+            if !FileManager.default.fileExists(atPath: workspacePath) {
+                try FileManager.default.createDirectory(at: URL(fileURLWithPath: workspacePath), withIntermediateDirectories: true)
+            }
+        } catch {
+            self.gitWrapper = nil
+            self.error = "Failed to initialize Git repository: \(error.localizedDescription)"
+        }
         setupGitObservers()
     }
     
@@ -61,6 +71,7 @@ public class CodeEditorViewModel: ObservableObject {
     }
     
     private func updateGitStatus() {
+        guard let gitWrapper = gitWrapper else { return }
         do {
             currentBranch = try gitWrapper.getCurrentBranch()
             
@@ -90,6 +101,10 @@ public class CodeEditorViewModel: ObservableObject {
     /// Save content to a file
     /// - Parameter path: Path to save the file
     public func saveFile(to path: String) {
+        guard let gitWrapper = gitWrapper else {
+            print("Error: Git repository not initialized")
+            return
+        }
         do {
             try content.write(toFile: path, atomically: true, encoding: .utf8)
             try gitWrapper.add(file: path)
@@ -102,6 +117,10 @@ public class CodeEditorViewModel: ObservableObject {
     /// Commit changes with a message
     /// - Parameter message: Commit message
     public func commit(message: String) {
+        guard let gitWrapper = gitWrapper else {
+            print("Error: Git repository not initialized")
+            return
+        }
         do {
             try gitWrapper.commit(message: message)
             updateGitStatus()
@@ -114,13 +133,19 @@ public class CodeEditorViewModel: ObservableObject {
     /// - Parameter path: Path to the file
     /// - Returns: Array of commits that modified the file
     public func getHistory(for path: String) throws -> [GitCommit] {
-        try gitWrapper.getFileHistory(file: path)
+        guard let gitWrapper = gitWrapper else {
+            throw GitError.initFailed
+        }
+        return try gitWrapper.getFileHistory(file: path)
     }
     
     /// Get diff for a file
     /// - Parameter path: Path to the file
     /// - Returns: String containing the unified diff
     public func getDiff(for path: String) throws -> String {
+        guard let gitWrapper = gitWrapper else {
+            throw GitError.initFailed
+        }
         return try gitWrapper.getDiff(file: path)
     }
 }
