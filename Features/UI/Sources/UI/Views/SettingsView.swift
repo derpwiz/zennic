@@ -2,6 +2,27 @@ import SwiftUI
 import Core
 import Shared
 
+/// A view that wraps NSVisualEffectView for different material effects
+struct EffectView: NSViewRepresentable {
+    let material: NSVisualEffectView.Material
+    
+    init(_ material: NSVisualEffectView.Material) {
+        self.material = material
+    }
+    
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.material = material
+        view.blendingMode = .behindWindow
+        view.state = .active
+        return view
+    }
+    
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+        nsView.material = material
+    }
+}
+
 public struct SettingsView: View {
     @EnvironmentObject private var appState: AppState
     @ObservedObject private var themeModel: ThemeModel = .shared
