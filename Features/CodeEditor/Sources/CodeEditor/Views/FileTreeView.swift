@@ -1,89 +1,44 @@
 import SwiftUI
 import Foundation
 import Core
+import Shared
 
-/// A view that displays a hierarchical file tree with Git status indicators
+/// A view that displays a hierarchical file tree
 public struct FileTreeView: View {
     @ObservedObject private var viewModel: CodeEditorViewModel
+    @ObservedObject private var themeModel: ThemeModel = .shared
     @Environment(\.colorScheme) private var colorScheme
     
     public init(viewModel: CodeEditorViewModel) {
         self.viewModel = viewModel
     }
     
+    private var currentTheme: Theme {
+        themeModel.selectedTheme ?? (colorScheme == .dark ? .darkDefault : .lightDefault)
+    }
+    
     public var body: some View {
         List {
             ForEach(viewModel.files, id: \.path) { file in
-                FileTreeItemView(
-                    path: file.path,
-                    isDirectory: file.isDirectory,
-                    isSelected: viewModel.selectedFile == file.path,
-                    gitStatus: getGitStatus(for: file.path)
-                )
-                .onTapGesture {
-                    if !file.isDirectory {
-                        viewModel.loadFile(at: file.path)
-                    }
-                }
+                FileRow(file: file, viewModel: viewModel, theme: currentTheme)
             }
         }
-        .listStyle(SidebarListStyle())
-    }
-    
-    private func getGitStatus(for file: String) -> String? {
-        guard let gitWrapper = viewModel.gitWrapper else { return nil }
-        do {
-            let status = try gitWrapper.getStatus()
-            return status.first { $0.1 == file }?.0
-        } catch {
-            print("Error getting Git status: \(error)")
-            return nil
-        }
+        .listStyle(.sidebar)
+        .background(EffectView(.sidebar))
     }
 }
 
-/// A view representing a single item in the file tree
-private struct FileTreeItemView: View {
-    let path: String
-    let isDirectory: Bool
-    let isSelected: Bool
-    let gitStatus: String?
-    
-    var body: some View {
-        HStack {
-            // Icon
-            Image(systemName: iconName)
-                .foregroundColor(iconColor)
-            
-            // Name
-            Text(path.components(separatedBy: "/").last ?? path)
-                .lineLimit(1)
-                .truncationMode(.middle)
-            
-            Spacer()
-            
-            // Git status indicator
-            if let status = gitStatus {
-                Text(status)
-                    .font(.caption)
-                    .foregroundColor(statusColor)
-                    .padding(.horizontal, 4)
-                    .padding(.vertical, 2)
-                    .background(statusColor.opacity(0.1))
-                    .cornerRadius(4)
-            }
-        }
-        .padding(.vertical, 2)
-        .background(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
-    }
+private struct FileRow: View {
+    let file: (path: String, isDirectory: Bool)
+    @ObservedObject var viewModel: CodeEditorViewModel
+    let theme: Theme
     
     private var iconName: String {
-        if isDirectory {
+        if file.isDirectory {
             return "folder.fill"
         }
         
-        // Determine icon based on file extension
-        let ext = (path as NSString).pathExtension.lowercased()
+        let ext = (file.path as NSString).pathExtension.lowercased()
         switch ext {
         case "swift": return "swift"
         case "md": return "doc.text"
@@ -96,28 +51,26 @@ private struct FileTreeItemView: View {
     }
     
     private var iconColor: Color {
-        if isDirectory {
+        if file.isDirectory {
             return .blue
         }
-        if let status = gitStatus {
-            switch status {
-            case "M": return .yellow
-            case "A": return .green
-            case "D": return .red
-            case "??": return .gray
-            default: return .primary
-            }
-        }
-        return .primary
+        return theme.editor.text
     }
     
-    private var statusColor: Color {
-        switch gitStatus {
-        case "M": return .yellow
-        case "A": return .green
-        case "D": return .red
-        case "??": return .gray
-        default: return .primary
+    var body: some View {
+        HStack {
+            Image(systemName: iconName)
+                .foregroundColor(iconColor)
+            Text(file.path.components(separatedBy: "/").last ?? file.path)
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .foregroundColor(theme.editor.text)
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if !file.isDirectory {
+                viewModel.loadFile(at: file.path)
+            }
         }
     }
 }
