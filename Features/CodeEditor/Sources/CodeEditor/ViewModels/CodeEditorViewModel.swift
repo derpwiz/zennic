@@ -1,91 +1,125 @@
 import SwiftUI
-import Shared
-import Core
+import Foundation
+import Combine
 
-public enum CodeEditorError: LocalizedError {
-    case noFileSelected
-    case gitOperationFailed(String)
-    
-    public var errorDescription: String? {
-        switch self {
-        case .noFileSelected:
-            return "No file is currently selected"
-        case .gitOperationFailed(let message):
-            return message
-        }
-    }
-}
-
+/// Manages the state and business logic for the code editor
 public class CodeEditorViewModel: ObservableObject {
-    private let codeDirectory: URL
-    @Published public var code: String
-    @Published public var language: CodeLanguage {
-        didSet {
-            saveCurrentLanguage(language)
-        }
-    }
-    @Published public var output: String
-    @Published public var autoCompleteSuggestions: [String]
-    @Published public var showAutoComplete: Bool
-    @Published public var codeHistory: [String]
+    public let gitWrapper: GitWrapper
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Published Properties
+    
+    @Published public var content: String = ""
+    @Published public var currentBranch: String?
+    @Published public var fileStatus: String?
     @Published public var selectedFile: String?
-    @Published public var error: Error?
+    @Published public var files: [(path: String, isDirectory: Bool)] = []
     
-    private let gitService: Core.GitServiceType
-    private var fileCounter = 0
-    
-    public init(code: String, language: CodeLanguage, gitService: Core.GitServiceType = Core.shared) {
-        self.code = code
-        self.language = language
-        self.output = ""
-        self.autoCompleteSuggestions = []
-        self.showAutoComplete = false
-        self.codeHistory = []
-        self.selectedFile = nil
-        self.gitService = gitService
-        self.codeDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("ZennicCode")
-        
-        saveCurrentLanguage(language)
-    }
-    
-    private func saveCurrentLanguage(_ language: CodeLanguage) {
-        UserDefaults.standard.set(language.rawValue, forKey: "currentLanguage")
-    }
-    
-    public func loadFile(_ fileName: String) throws {
+    /// Scan directory for files
+    /// - Parameter path: Directory path to scan
+    public func scanDirectory(path: String) {
         do {
-            code = try gitService.readFile(name: fileName)
-            selectedFile = fileName
-            language = CodeLanguage(rawValue: URL(fileURLWithPath: fileName).pathExtension) ?? .python
-        } catch let error as Core.GitErrorType {
-            throw CodeEditorError.gitOperationFailed(error.localizedDescription)
+            let fileManager = FileManager.default
+            let contents = try fileManager.contentsOfDirectory(atPath: path)
+            
+            files = try contents.map { item in
+                let fullPath = (path as NSString).appendingPathComponent(item)
+                var isDirectory: ObjCBool = false
+                fileManager.fileExists(atPath: fullPath, isDirectory: &isDirectory)
+                return (path: fullPath, isDirectory: isDirectory.boolValue)
+            }.sorted { lhs, rhs in
+                // Directories first, then alphabetically
+                if lhs.isDirectory != rhs.isDirectory {
+                    return lhs.isDirectory
+                }
+                return lhs.path < rhs.path
+            }
+        } catch {
+            print("Error scanning directory: \(error)")
+            files = []
         }
     }
     
-    public func getDefaultFileName() -> String {
-        fileCounter += 1
-        return "untitled\(fileCounter)"
+    // MARK: - Initialization
+    
+    public init(gitWrapper: GitWrapper) {
+        self.gitWrapper = gitWrapper
+        setupGitObservers()
     }
     
-    public func createNewFile() {
-        let fileExtension = language.rawValue.lowercased()
-        selectedFile = "\(getDefaultFileName()).\(fileExtension)"
-        code = ""
+    // MARK: - Private Methods
+    
+    private func setupGitObservers() {
+        // Update branch info
+        Timer.publish(every: 1.0, on: .main, in: .common)
+            .autoconnect()
+            .sink { [weak self] _ in
+                self?.updateGitStatus()
+            }
+            .store(in: &cancellables)
     }
     
-    public func saveCurrentFile() throws {
-        if selectedFile == nil {
-            createNewFile()
-        }
-        
-        guard let fileName = selectedFile else { throw CodeEditorError.noFileSelected }
-        
+    private func updateGitStatus() {
         do {
-            try gitService.updateFile(name: fileName, content: code)
-            objectWillChange.send() // Notify observers of the change
-        } catch let error as Core.GitErrorType {
-            throw CodeEditorError.gitOperationFailed(error.localizedDescription)
+            currentBranch = try gitWrapper.getCurrentBranch()
+            
+            if let selectedFile = selectedFile {
+                let status = try gitWrapper.getStatus()
+                fileStatus = status.first { $0.1 == selectedFile }?.0
+            }
+        } catch {
+            print("Error updating Git status: \(error)")
         }
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Load content from a file
+    /// - Parameter path: Path to the file
+    public func loadFile(at path: String) {
+        do {
+            content = try String(contentsOfFile: path, encoding: .utf8)
+            selectedFile = path
+            updateGitStatus()
+        } catch {
+            print("Error loading file: \(error)")
+        }
+    }
+    
+    /// Save content to a file
+    /// - Parameter path: Path to save the file
+    public func saveFile(to path: String) {
+        do {
+            try content.write(toFile: path, atomically: true, encoding: .utf8)
+            try gitWrapper.add(file: path)
+            updateGitStatus()
+        } catch {
+            print("Error saving file: \(error)")
+        }
+    }
+    
+    /// Commit changes with a message
+    /// - Parameter message: Commit message
+    public func commit(message: String) {
+        do {
+            try gitWrapper.commit(message: message)
+            updateGitStatus()
+        } catch {
+            print("Error committing changes: \(error)")
+        }
+    }
+    
+    /// Get file history
+    /// - Parameter path: Path to the file
+    /// - Returns: Array of commits that modified the file
+    public func getHistory(for path: String) throws -> [GitCommit] {
+        return try gitWrapper.getFileHistory(file: path)
+    }
+    
+    /// Get diff for a file
+    /// - Parameter path: Path to the file
+    /// - Returns: String containing the unified diff
+    public func getDiff(for path: String) throws -> String {
+        return try gitWrapper.getDiff(file: path)
     }
 }

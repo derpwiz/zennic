@@ -1,6 +1,7 @@
 import SwiftUI
 import Shared
 import Core
+import CodeEditorInterface
 
 public struct _MainView: View {
     @EnvironmentObject var appState: AppState
@@ -139,7 +140,7 @@ public struct _MainView: View {
                 Group {
                     switch appState.selectedFeature {
                     case "CodeEditor":
-                        EmptyView()
+                        CodeEditorFactory.makeEditor(workspacePath: appState.workspacePath)
                     case "DataIntegration":
                         EmptyView()
                     case "Backtesting":

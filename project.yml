@@ -138,6 +138,23 @@ targets:
         PRODUCT_MODULE_NAME: "DataIntegration"
         DEFINES_MODULE: "YES"
 
+  CodeEditorInterface:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/CodeEditor/Sources/CodeEditorInterface
+    dependencies:
+      - target: Core
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "CodeEditorInterface"
+        DEFINES_MODULE: "YES"
+
   CodeEditor:
     type: framework
     platform: macOS
@@ -146,7 +163,7 @@ targets:
       - path: Features/CodeEditor/Sources/CodeEditor
     dependencies:
       - target: Core
-      - target: UI
+      - target: CodeEditorInterface
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -216,6 +233,7 @@ targets:
       - path: Features/UI/Sources/UI
     dependencies:
       - target: Core
+      - target: CodeEditorInterface
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
