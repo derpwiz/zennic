@@ -3,7 +3,7 @@ import Core
 import UI
 
 struct ContentView: View {
-    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var appState: Core.AppState
     
     var body: some View {
         MainView()
@@ -14,6 +14,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(Core.appState)
+            .environmentObject(Core.AppState.shared)
     }
 }

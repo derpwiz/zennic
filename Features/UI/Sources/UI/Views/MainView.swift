@@ -4,7 +4,7 @@ import Core
 import CodeEditorInterface
 
 public struct _MainView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var appState: Core.AppState
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var isShowingSettings = false
     
@@ -141,8 +141,8 @@ public struct _MainView: View {
                     switch appState.selectedFeature {
                     case "CodeEditor":
                         Group {
-                            if !appState.workspacePath.isEmpty {
-                                CodeEditorFactory.makeEditor(workspacePath: appState.workspacePath)
+                            if !appState[keyPath: \.workspacePath].isEmpty {
+                                CodeEditorFactory.makeEditor(workspacePath: appState[keyPath: \.workspacePath])
                             } else {
                                 Text("Please select a workspace path")
                                     .foregroundStyle(.secondary)
@@ -182,6 +182,6 @@ public struct _MainView: View {
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         _MainView()
-            .environmentObject(AppState.shared)
+            .environmentObject(Core.AppState.shared)
     }
 }
