@@ -140,12 +140,13 @@ public struct _MainView: View {
                 Group {
                     switch appState.selectedFeature {
                     case "CodeEditor":
-                        let path = appState.workspacePath
-                        if !path.isEmpty {
-                            CodeEditorFactory.makeEditor(workspacePath: path)
-                        } else {
-                            Text("Please select a workspace path")
-                                .foregroundStyle(.secondary)
+                        Group {
+                            if !appState.workspacePath.isEmpty {
+                                CodeEditorFactory.makeEditor(workspacePath: appState.workspacePath)
+                            } else {
+                                Text("Please select a workspace path")
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     case "DataIntegration":
                         EmptyView()
