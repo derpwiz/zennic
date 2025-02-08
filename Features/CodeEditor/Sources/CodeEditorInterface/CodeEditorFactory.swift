@@ -11,10 +11,6 @@ public enum CodeEditorFactory {
         current.makeEditor(workspacePath: workspacePath)
     }
     
-    public static func initialize() {
-        // This will be implemented by the CodeEditor module
-    }
-    
     private enum DefaultFactory: CodeEditorFactoryType {
         public static func makeEditor(workspacePath: String) -> AnyView {
             AnyView(EmptyView())
