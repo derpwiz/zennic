@@ -49,7 +49,14 @@ public struct CodeEditorView: View {
                 
                 // Status bar
                 HStack {
-                    if let branch = viewModel.currentBranch {
+                    if viewModel.gitWrapper == nil {
+                        Button(action: {
+                            viewModel.initializeGit()
+                        }) {
+                            Label("Initialize Git", systemImage: "plus.circle")
+                        }
+                        .buttonStyle(.borderless)
+                    } else if let branch = viewModel.currentBranch {
                         Image(systemName: "arrow.triangle.branch")
                         Text(branch)
                     }

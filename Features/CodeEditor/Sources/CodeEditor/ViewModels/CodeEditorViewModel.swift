@@ -44,18 +44,30 @@ public class CodeEditorViewModel: ObservableObject {
     
     // MARK: - Initialization
     
+    private let workspacePath: String
+    
     public init(workspacePath: String) {
-        do {
-            self.gitWrapper = try GitWrapper(path: workspacePath)
-            // Create directory if it doesn't exist
-            if !FileManager.default.fileExists(atPath: workspacePath) {
-                try FileManager.default.createDirectory(at: URL(fileURLWithPath: workspacePath), withIntermediateDirectories: true)
-            }
-        } catch {
-            self.gitWrapper = nil
-            self.error = "Failed to initialize Git repository: \(error.localizedDescription)"
+        self.workspacePath = workspacePath
+        self.gitWrapper = nil
+        
+        // Create directory if it doesn't exist
+        if !FileManager.default.fileExists(atPath: workspacePath) {
+            try? FileManager.default.createDirectory(at: URL(fileURLWithPath: workspacePath), withIntermediateDirectories: true)
         }
         setupGitObservers()
+    }
+    
+    /// Initialize Git repository in the workspace
+    /// - Returns: True if initialization was successful
+    @discardableResult
+    public func initializeGit() -> Bool {
+        do {
+            self.gitWrapper = try GitWrapper(path: workspacePath)
+            return true
+        } catch {
+            self.error = "Failed to initialize Git repository: \(error.localizedDescription)"
+            return false
+        }
     }
     
     // MARK: - Private Methods
