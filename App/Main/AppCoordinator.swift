@@ -5,10 +5,9 @@ import UI
 
 class AppCoordinator: ObservableObject {
     @Published var window: NSWindow?
-    @Published var appState: AppState
+    @Published var appState = AppState.shared
     
-    init(appState: AppState) {
-        self.appState = appState
+    init() {
     }
     
     func createMainWindow() {
