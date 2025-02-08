@@ -1,32 +1,19 @@
 import SwiftUI
-import Core
 
-/// Protocol defining the interface for code editor views
-public protocol CodeEditorViewProtocol: View {
+public protocol CodeEditor {
     var workspacePath: String { get }
+    var selectedFile: String? { get set }
+    var fileContent: String { get set }
+    
+    func loadFile(_ path: String) async throws
+    func saveFile() async throws
 }
 
-/// A type-erased wrapper for code editor views
-public struct AnyCodeEditorView: View {
-    private let content: AnyView
-    public let workspacePath: String
+public protocol CodeEditorViewModel: ObservableObject {
+    var editor: CodeEditor { get }
+    var selectedFile: String? { get set }
+    var fileContent: String { get set }
     
-    public init<V: CodeEditorViewProtocol>(_ view: V) {
-        self.content = AnyView(view)
-        self.workspacePath = view.workspacePath
-    }
-    
-    public var body: some View {
-        content
-    }
-}
-
-/// Factory for creating code editor views
-public enum CodeEditorFactory {
-    public static func makeEditor(workspacePath: String) -> AnyCodeEditorView {
-        // This will be implemented by the CodeEditor module
-        AnyCodeEditorView(
-            CodeEditorContainerView(workspacePath: workspacePath)
-        )
-    }
+    func loadFile(_ path: String) async
+    func saveFile() async
 }

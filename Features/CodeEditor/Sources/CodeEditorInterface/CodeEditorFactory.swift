@@ -4,9 +4,16 @@ public protocol CodeEditorFactoryType {
     static func makeEditor(workspacePath: String) -> AnyView
 }
 
-public enum CodeEditorFactory: CodeEditorFactoryType {
+public enum CodeEditorFactory {
+    public static var current: CodeEditorFactoryType.Type = DefaultFactory.self
+    
     public static func makeEditor(workspacePath: String) -> AnyView {
-        // This will be implemented by the CodeEditor module
-        AnyView(EmptyView())
+        current.makeEditor(workspacePath: workspacePath)
+    }
+    
+    private enum DefaultFactory: CodeEditorFactoryType {
+        public static func makeEditor(workspacePath: String) -> AnyView {
+            AnyView(EmptyView())
+        }
     }
 }

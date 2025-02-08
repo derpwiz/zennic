@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+import Core
 
 /// A view that displays a hierarchical file tree with Git status indicators
 public struct FileTreeView: View {

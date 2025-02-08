@@ -1,6 +1,7 @@
 import SwiftUI
 import Foundation
 import Combine
+import Core
 
 /// Manages the state and business logic for the code editor
 public class CodeEditorViewModel: ObservableObject {

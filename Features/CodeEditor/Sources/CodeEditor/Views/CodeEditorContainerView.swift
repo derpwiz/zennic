@@ -3,7 +3,7 @@ import Core
 import CodeEditorInterface
 
 /// A container view that manages the code editor and its state
-public struct CodeEditorContainerView: CodeEditorViewProtocol {
+public struct CodeEditorContainerView: View {
     @StateObject private var viewModel: CodeEditorViewModel
     public let workspacePath: String
     

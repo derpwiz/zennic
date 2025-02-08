@@ -15,27 +15,25 @@ let package = Package(
         ),
         .library(
             name: "CodeEditorInterface",
-            type: .dynamic,
-            targets: ["CodeEditorInterface", "CodeEditor"]
+            targets: ["CodeEditorInterface"]
         ),
     ],
     dependencies: [
-        // Core module contains GitWrapper and other shared functionality
         .package(path: "../Core")
     ],
     targets: [
         .target(
             name: "CodeEditorInterface",
             dependencies: [
-                .product(name: "Core", package: "Core"),
-                "CodeEditor"
+                .product(name: "Core", package: "Core")
             ],
             path: "Sources/CodeEditorInterface"
         ),
         .target(
             name: "CodeEditor",
             dependencies: [
-                .product(name: "Core", package: "Core")
+                .product(name: "Core", package: "Core"),
+                "CodeEditorInterface"
             ],
             path: "Sources/CodeEditor"
         ),

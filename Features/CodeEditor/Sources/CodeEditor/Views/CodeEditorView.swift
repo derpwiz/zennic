@@ -1,5 +1,6 @@
 import SwiftUI
 import Foundation
+import Core
 
 /// A view that provides code editing functionality with Git integration
 public struct CodeEditorView: View {

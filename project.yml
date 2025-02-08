@@ -95,14 +95,10 @@ targets:
     deploymentTarget: "13.0"
     sources: 
       - path: App/Main
-      - path: Features/UI/Sources/UI
     dependencies:
-      - target: DataIntegration
-      - target: CodeEditor
-      - target: RealTimeMonitoring
-      - target: Backtesting
-      - target: Visualization
+      - target: App
       - target: UI
+      - target: CodeEditor
     scheme:
       environmentVariables:
         ALPACA_ACCESS_TOKEN: ${ALPACA_ACCESS_TOKEN}

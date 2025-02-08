@@ -1,8 +1,8 @@
 import SwiftUI
-import CodeEditor
+import CodeEditorInterface
 
-public enum CodeEditorFactory {
+public enum CodeEditorFactory: CodeEditorFactoryType {
     public static func makeEditor(workspacePath: String) -> AnyView {
-        AnyView(CodeEditorContainerView(workspacePath: workspacePath))
+        CodeEditorInterface.CodeEditorFactory.makeEditor(workspacePath: workspacePath)
     }
 }
