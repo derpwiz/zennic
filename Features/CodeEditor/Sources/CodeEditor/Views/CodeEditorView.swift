@@ -69,7 +69,7 @@ public struct CodeEditorView: View {
 
 #Preview {
     CodeEditorView(
-        viewModel: CodeEditorViewModel(gitWrapper: try! GitWrapper(path: "/")),
+        viewModel: CodeEditorViewModel(workspacePath: NSTemporaryDirectory()),
         filePath: "example.swift"
     )
 }

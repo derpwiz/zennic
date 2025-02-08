@@ -31,8 +31,9 @@ public struct FileTreeView: View {
     }
     
     private func getGitStatus(for file: String) -> String? {
+        guard let gitWrapper = viewModel.gitWrapper else { return nil }
         do {
-            let status = try viewModel.gitWrapper.getStatus()
+            let status = try gitWrapper.getStatus()
             return status.first { $0.1 == file }?.0
         } catch {
             print("Error getting Git status: \(error)")
@@ -122,6 +123,6 @@ private struct FileTreeItemView: View {
 }
 
 #Preview {
-    FileTreeView(viewModel: CodeEditorViewModel(gitWrapper: try! GitWrapper(path: "/")))
+    FileTreeView(viewModel: CodeEditorViewModel(workspacePath: NSTemporaryDirectory()))
         .frame(width: 250)
 }
