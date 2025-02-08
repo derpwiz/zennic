@@ -2,6 +2,25 @@ import SwiftUI
 
 /// A theme that defines colors and styles for the editor
 public struct Theme: Codable, Equatable {
+    enum CodingKeys: String, CodingKey {
+        case name, appearance, editor
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(name, forKey: .name)
+        try container.encode(appearance == .light ? 0 : 1, forKey: .appearance)
+        try container.encode(editor, forKey: .editor)
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        name = try container.decode(String.self, forKey: .name)
+        let appearanceRaw = try container.decode(Int.self, forKey: .appearance)
+        appearance = appearanceRaw == 0 ? .light : .dark
+        editor = try container.decode(Editor.self, forKey: .editor)
+    }
+    
     /// Editor-specific theme settings
     public struct Editor: Codable, Equatable {
         /// Text colors
