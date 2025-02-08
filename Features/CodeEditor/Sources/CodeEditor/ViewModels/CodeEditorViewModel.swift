@@ -5,7 +5,7 @@ import Core
 
 /// Manages the state and business logic for the code editor
 public class CodeEditorViewModel: ObservableObject {
-    public let gitWrapper: GitWrapper?
+    public var gitWrapper: GitWrapper?
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Published Properties
