@@ -4,7 +4,7 @@ import Core
 import CodeEditorInterface
 
 public struct _MainView: View {
-    @EnvironmentObject var appState: Core.AppState
+    @EnvironmentObject var appState: AppState
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var isShowingSettings = false
     
@@ -182,6 +182,6 @@ public struct _MainView: View {
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         _MainView()
-            .environmentObject(Core.AppState.shared)
+            .environmentObject(AppState.shared)
     }
 }

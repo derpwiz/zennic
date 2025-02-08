@@ -19,7 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 @main
 struct ZennicApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    private var appState = Core.AppState.shared
+    private var appState = AppState.shared
     
     var body: some Scene {
         WindowGroup {
