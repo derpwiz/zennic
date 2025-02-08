@@ -114,7 +114,7 @@ public class CodeEditorViewModel: ObservableObject {
     /// - Parameter path: Path to the file
     /// - Returns: Array of commits that modified the file
     public func getHistory(for path: String) throws -> [GitCommit] {
-        try gitWrapper.getFileHistory(file: path)
+        gitWrapper.getFileHistory(file: path)
     }
     
     /// Get diff for a file
