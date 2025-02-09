@@ -12,14 +12,15 @@ public struct SplitViewReader<Content: View>: View {
     }
     
     public var body: some View {
-        content(viewController)
-            .environment(\.splitViewController, viewController)
+        @Environment(\.splitViewController) var splitViewController
+        return content(splitViewController)
+            .environment(\.splitViewController, splitViewController)
     }
     
     /// The parent split view controller
     private var viewController: SplitViewController? {
-        let value = _traits[SplitViewControllerLayoutValueKey.self]
-        return value()
+        @Environment(\.splitViewController) var splitViewController
+        return splitViewController
     }
 }
 
