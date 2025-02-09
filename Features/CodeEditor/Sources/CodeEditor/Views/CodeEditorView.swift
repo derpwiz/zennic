@@ -65,7 +65,16 @@ public struct CodeEditorView: View {
                     ThemedTextEditor(
                         text: $viewModel.content,
                         theme: currentTheme,
-                        isEditable: isEditable
+                        isEditable: isEditable,
+                        onCursorChange: { line, column, offset in
+                            viewModel.cursorLine = line
+                            viewModel.cursorColumn = column
+                            viewModel.characterOffset = offset
+                        },
+                        onSelectionChange: { length, lines in
+                            viewModel.selectedLength = length
+                            viewModel.selectedLines = lines
+                        }
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
