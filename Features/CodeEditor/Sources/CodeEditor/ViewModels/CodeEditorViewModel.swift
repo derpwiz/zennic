@@ -17,6 +17,14 @@ public class CodeEditorViewModel: ObservableObject {
     @Published public var selectedFile: String?
     @Published public var files: [(path: String, isDirectory: Bool)] = []
     
+    // Status bar properties
+    @Published public var cursorLine: Int = 1
+    @Published public var cursorColumn: Int = 1
+    @Published public var characterOffset: Int = 0
+    @Published public var selectedLength: Int = 0
+    @Published public var selectedLines: Int = 0
+    @Published public var fileSize: Int?
+    
     /// Scan directory for files
     /// - Parameter path: Directory path to scan
     public func scanDirectory(path: String) {
@@ -55,6 +63,34 @@ public class CodeEditorViewModel: ObservableObject {
             try? FileManager.default.createDirectory(at: URL(fileURLWithPath: workspacePath), withIntermediateDirectories: true)
         }
         setupGitObservers()
+        setupContentObserver()
+    }
+    
+    /// Sets up an observer for content changes to update cursor information
+    private func setupContentObserver() {
+        $content
+            .sink { [weak self] _ in
+                self?.updateCursorInfo()
+            }
+            .store(in: &cancellables)
+    }
+    
+    /// Updates cursor position and selection information
+    private func updateCursorInfo() {
+        // TODO: Implement cursor position tracking
+        // This would typically be done through a NSTextView delegate
+        // or similar mechanism that can track the selection range
+    }
+    
+    /// Updates file size information
+    private func updateFileInfo() {
+        guard let selectedFile = selectedFile else { return }
+        do {
+            let attributes = try FileManager.default.attributesOfItem(atPath: selectedFile)
+            fileSize = attributes[.size] as? Int
+        } catch {
+            print("Error getting file size: \(error)")
+        }
     }
     
     /// Initialize Git repository in the workspace
@@ -105,6 +141,7 @@ public class CodeEditorViewModel: ObservableObject {
             content = try String(contentsOfFile: path, encoding: .utf8)
             selectedFile = path
             updateGitStatus()
+            updateFileInfo()
         } catch {
             print("Error loading file: \(error)")
         }
