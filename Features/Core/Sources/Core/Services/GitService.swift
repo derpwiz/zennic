@@ -6,10 +6,14 @@ public class GitService: Loggable {
     /// The Git wrapper
     private let gitWrapper: GitWrapper
     
+    /// The path to the Git repository
+    private let path: String
+    
     /// Creates a new Git service
     /// - Parameter path: The path to the Git repository
     /// - Throws: GitError if initialization fails
     public init(path: String) throws {
+        self.path = path
         self.gitWrapper = try GitWrapper(path: path)
         logger.info("Initializing Git service for: \(path)")
     }
@@ -130,5 +134,41 @@ public class GitService: Loggable {
         }
         
         return hasChanges
+    }
+    
+    /// Lists all files in the repository
+    /// - Returns: Array of file paths
+    /// - Throws: GitError if the operation fails
+    public func listFiles() throws -> [String] {
+        logger.info("Listing files in repository")
+        let fileManager = FileManager.default
+        let contents = try fileManager.contentsOfDirectory(atPath: path)
+        logger.info("Found \(contents.count) files")
+        return contents
+    }
+    
+    /// Creates a new file with content
+    /// - Parameters:
+    ///   - name: The file name
+    ///   - content: The file content
+    /// - Throws: GitError if the operation fails
+    public func createFile(name: String, content: String) throws {
+        logger.info("Creating file: \(name)")
+        let filePath = (path as NSString).appendingPathComponent(name)
+        try content.write(toFile: filePath, atomically: true, encoding: .utf8)
+        try add(file: name)
+        try commit(message: "Create \(name)")
+        logger.info("Created and committed file: \(name)")
+    }
+    
+    /// Deletes a file
+    /// - Parameter name: The file name
+    /// - Throws: GitError if the operation fails
+    public func deleteFile(name: String) throws {
+        logger.info("Deleting file: \(name)")
+        let filePath = (path as NSString).appendingPathComponent(name)
+        try FileManager.default.removeItem(atPath: filePath)
+        try stageAndCommit(file: name, message: "Delete \(name)")
+        logger.info("Deleted and committed file: \(name)")
     }
 }

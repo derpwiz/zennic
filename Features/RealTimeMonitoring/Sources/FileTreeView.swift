@@ -10,10 +10,17 @@ struct FileItem: Identifiable {
 
 class FileTreeViewModel: ObservableObject {
     @Published var items: [FileItem] = []
-    private let gitService = Core.shared
+    @EnvironmentObject private var appState: AppState
+    private var gitService: Core.GitServiceType?
+    
+    private func initializeGitService() {
+        gitService = try? Core.GitServiceType(path: appState.workspacePath)
+    }
     
     func loadFiles() {
+        initializeGitService()
         do {
+            guard let gitService = gitService else { return }
             let files = try gitService.listFiles()
             items = files.map { FileItem(name: $0) }
         } catch {
@@ -22,7 +29,9 @@ class FileTreeViewModel: ObservableObject {
     }
     
     func createFile(name: String, content: String) {
+        initializeGitService()
         do {
+            guard let gitService = gitService else { return }
             try gitService.createFile(name: name, content: content)
             loadFiles()
         } catch {
@@ -31,7 +40,9 @@ class FileTreeViewModel: ObservableObject {
     }
     
     func deleteFile(name: String) {
+        initializeGitService()
         do {
+            guard let gitService = gitService else { return }
             try gitService.deleteFile(name: name)
             loadFiles()
         } catch {
