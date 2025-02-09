@@ -16,7 +16,12 @@ public struct SplitViewReader<Content: View>: View {
     
     public var body: some View {
         let controller = baseController.map { base in
-            SplitViewController(parent: base.parentView, content: AnyView(base.content), axis: base.axis)
+            // Create a new controller with the same properties
+            SplitViewController(
+                parent: base.parentView,
+                content: base.content as! Content,  // Safe cast since we control the type
+                axis: base.axis
+            )
         }
         content(controller)
             .environment(\.splitViewController, baseController)
