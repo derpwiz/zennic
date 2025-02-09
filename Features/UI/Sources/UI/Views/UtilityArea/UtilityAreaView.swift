@@ -58,7 +58,7 @@ public struct UtilityAreaView: View {
                 Group {
                     switch viewModel.selectedTab {
                     case .output:
-                        EmptyView() // TODO: Implement output view
+                        OutputView(text: $viewModel.outputViewModel.text)
                     case .debug:
                         EmptyView() // TODO: Implement debug view
                     case .terminal:
