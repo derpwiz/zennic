@@ -1,4 +1,5 @@
 import SwiftUI
+import Shared
 
 /// Manages the state of the utility area.
 public final class UtilityAreaViewModel: ObservableObject {
@@ -25,6 +26,9 @@ public final class UtilityAreaViewModel: ObservableObject {
     
     /// The height before maximizing
     private var previousHeight: CGFloat = defaultHeight
+    
+    /// The cancellables
+    private var cancellables = Set<AnyCancellable>()
     
     /// Toggles the collapsed state of the utility area
     public func togglePanel() {
@@ -66,7 +70,22 @@ public final class UtilityAreaViewModel: ObservableObject {
     @Published public var debugViewModel = DebugViewModel()
     
     /// Creates a new utility area view model
-    public init() {}
+    public init() {
+        // Subscribe to logging service
+        LoggingService.shared.outputPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] text in
+                self?.outputViewModel.append(text)
+            }
+            .store(in: &cancellables)
+        
+        LoggingService.shared.debugPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] text, level in
+                self?.debugViewModel.log(text, level: level)
+            }
+            .store(in: &cancellables)
+    }
 }
 
 /// A key for accessing the utility area view model in the environment.
