@@ -9,15 +9,20 @@ public final class SplitViewController: NSSplitViewController {
     let axis: Axis
     
     /// Reference to the parent view for updating the view controller binding
-    private var parentView: SplitViewControllerView
+    private var parentView: Any
+    
+    /// The content to display in the split view
+    private var content: AnyView
     
     /// Initializes a new split view controller
     /// - Parameters:
     ///   - parent: The parent view that created this controller
+    ///   - content: The content to display in the split view
     ///   - axis: The axis along which to split items
-    init(parent: SplitViewControllerView, axis: Axis = .horizontal) {
-        self.axis = axis
+    init<V: View>(parent: Any, content: V, axis: Axis = .horizontal) {
         self.parentView = parent
+        self.content = AnyView(content)
+        self.axis = axis
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -25,7 +30,7 @@ public final class SplitViewController: NSSplitViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         // Configure the split view
@@ -40,7 +45,7 @@ public final class SplitViewController: NSSplitViewController {
         }
     }
     
-    override func splitView(
+    public override func splitView(
         _ splitView: NSSplitView,
         shouldHideDividerAt dividerIndex: Int
     ) -> Bool {
@@ -77,26 +82,14 @@ public final class SplitViewController: NSSplitViewController {
     /// - Returns: Whether any items were added or removed
     @discardableResult
     func updateItems() -> Bool {
-        
         var hasChanged = false
         
-        // Update existing items and add new ones
-        items = parentView.children.map { child in
-            if let existingItem = items.first(where: { $0.id == child.id }) {
-                existingItem.update(child: child)
-                return existingItem
-            } else {
-                hasChanged = true
-                return SplitViewItem(child: child)
-            }
-        }
-        
-        // Update the split view items
-        splitViewItems = items.map(\.item)
-        
-        // Update divider positions if needed
-        if hasChanged && splitViewItems.count > 1 {
-            updateDividerPositions(splitView: splitView, itemCount: items.count)
+        // Create a single item for the content if needed
+        if items.isEmpty {
+            hasChanged = true
+            let item = SplitViewItem(content: content)
+            items = [item]
+            splitViewItems = [item.item]
         }
         
         return hasChanged
