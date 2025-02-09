@@ -38,9 +38,11 @@ public final class SplitViewController: NSSplitViewController {
         splitView.dividerStyle = .thin
         
         // Update the parent's view controller reference
-        DispatchQueue.main.async { [weak self] in
-            self?.parentView.viewController = { [weak self] in
-                self
+        if let parent = parentView as? SplitViewControllerView<Any> {
+            DispatchQueue.main.async { [weak self] in
+                parent.viewController = { [weak self] in
+                    self
+                }
             }
         }
     }
