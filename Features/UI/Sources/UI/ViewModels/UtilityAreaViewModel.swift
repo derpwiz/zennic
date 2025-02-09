@@ -2,32 +2,64 @@ import SwiftUI
 
 /// Manages the state of the utility area.
 public final class UtilityAreaViewModel: ObservableObject {
-    /// Whether the utility area is collapsed.
+    /// The default height of the utility area
+    public static let defaultHeight: CGFloat = 300
+    
+    /// The minimum height of the utility area
+    public static let minHeight: CGFloat = 100
+    
+    /// The maximum height of the utility area
+    public static let maxHeight: CGFloat = 800
+    
+    /// Whether the utility area is collapsed
     @Published public var isCollapsed = true
     
-    /// Whether the utility area is maximized.
+    /// Whether the utility area is maximized
     @Published public var isMaximized = false
     
-    /// The currently selected tab.
+    /// The currently selected tab
     @Published public var selectedTab: UtilityAreaTab = .terminal
     
-    /// Toggles the collapsed state of the utility area.
-    public func toggleCollapsed() {
+    /// The current height of the utility area
+    @Published public var height: CGFloat = defaultHeight
+    
+    /// The height before maximizing
+    private var previousHeight: CGFloat = defaultHeight
+    
+    /// Toggles the collapsed state of the utility area
+    public func togglePanel() {
         if isMaximized {
             isMaximized = false
+            height = previousHeight
         }
         isCollapsed.toggle()
     }
     
-    /// Toggles the maximized state of the utility area.
+    /// Toggles the maximized state of the utility area
     public func toggleMaximized() {
         if isCollapsed {
             isCollapsed = false
         }
+        
+        if isMaximized {
+            height = previousHeight
+        } else {
+            previousHeight = height
+            height = maxHeight
+        }
+        
         isMaximized.toggle()
     }
     
-    /// Creates a new utility area view model.
+    /// Updates the height of the utility area
+    /// - Parameter newHeight: The new height
+    public func updateHeight(_ newHeight: CGFloat) {
+        if !isMaximized {
+            height = min(max(newHeight, minHeight), maxHeight)
+        }
+    }
+    
+    /// Creates a new utility area view model
     public init() {}
 }
 

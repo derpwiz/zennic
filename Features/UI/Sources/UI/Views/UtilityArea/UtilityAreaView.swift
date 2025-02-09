@@ -1,10 +1,15 @@
 import SwiftUI
 
 /// The main view for the utility area.
+/// A view that displays the utility area with tabs and resizable content
 public struct UtilityAreaView: View {
+    /// The current color scheme
     @Environment(\.colorScheme) private var colorScheme
+    
+    /// The utility area view model
     @EnvironmentObject private var viewModel: UtilityAreaViewModel
     
+    /// Creates a new utility area view
     public init() {}
     
     public var body: some View {
@@ -33,7 +38,7 @@ public struct UtilityAreaView: View {
                         systemImage: viewModel.isCollapsed ? "chevron.up" : "chevron.down",
                         isActive: !viewModel.isCollapsed
                     ) {
-                        viewModel.toggleCollapsed()
+                        viewModel.togglePanel()
                     }
                     
                     UtilityAreaToolbarButton(
@@ -63,7 +68,36 @@ public struct UtilityAreaView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .frame(height: viewModel.isCollapsed ? 29 : viewModel.height)
         .background(EffectView(.contentBackground))
+    }
+}
+
+/// A view that wraps the utility area in a split view
+public struct UtilityAreaSplitView<Content: View>: View {
+    /// The content to display above the utility area
+    private let content: Content
+    
+    /// The utility area view model
+    @StateObject private var viewModel = UtilityAreaViewModel()
+    
+    /// Creates a new utility area split view
+    /// - Parameter content: The content to display above the utility area
+    public init(@ViewBuilder content: () -> Content) {
+        self.content = content()
+    }
+    
+    public var body: some View {
+        SplitView.vertical {
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            UtilityAreaView()
+                .frame(height: viewModel.isCollapsed ? 29 : viewModel.height)
+                .animation(.spring(), value: viewModel.isCollapsed)
+                .animation(.spring(), value: viewModel.isMaximized)
+        }
+        .environmentObject(viewModel)
     }
 }
 
