@@ -9,7 +9,7 @@ final class SplitViewController: NSSplitViewController {
     let axis: Axis
     
     /// Reference to the parent view for updating the view controller binding
-    private weak var parentView: SplitViewControllerView?
+    private var parentView: SplitViewControllerView
     
     /// Initializes a new split view controller
     /// - Parameters:
@@ -34,7 +34,7 @@ final class SplitViewController: NSSplitViewController {
         
         // Update the parent's view controller reference
         DispatchQueue.main.async { [weak self] in
-            self?.parentView?.viewController = { [weak self] in
+            self?.parentView.viewController = { [weak self] in
                 self
             }
         }
@@ -76,7 +76,6 @@ final class SplitViewController: NSSplitViewController {
     /// Updates the split view items and their positions
     /// - Returns: Whether any items were added or removed
     func updateItems() -> Bool {
-        guard let parentView = parentView else { return false }
         
         var hasChanged = false
         
