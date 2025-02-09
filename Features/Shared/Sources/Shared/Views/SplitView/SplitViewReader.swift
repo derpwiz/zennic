@@ -6,7 +6,7 @@ public struct SplitViewReader<Content: View>: View {
     private let content: (SplitViewController<Content>?) -> Content
     
     /// The current split view controller from the environment
-    @Environment(\.splitViewController) private var controller: SplitViewController<Content>?
+    @Environment(\.splitViewController) private var baseController
     
     /// Creates a new split view reader
     /// - Parameter content: A closure that takes a split view controller and returns a view
@@ -15,8 +15,11 @@ public struct SplitViewReader<Content: View>: View {
     }
     
     public var body: some View {
+        let controller = baseController.map { base in
+            SplitViewController(parent: base.parentView, content: AnyView(base.content), axis: base.axis)
+        }
         content(controller)
-            .environment(\.splitViewController, controller)
+            .environment(\.splitViewController, baseController)
     }
 }
 
