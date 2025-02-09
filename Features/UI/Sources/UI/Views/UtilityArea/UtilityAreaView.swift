@@ -61,6 +61,7 @@ public struct UtilityAreaView: View {
                         OutputView(text: $viewModel.outputViewModel.text)
                     case .debug:
                         DebugView()
+                            .environmentObject(viewModel.debugViewModel)
                     case .terminal:
                         TerminalView(workingDirectory: FileManager.default.currentDirectoryPath)
                     }
