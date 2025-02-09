@@ -315,10 +315,12 @@ public class GitWrapper: Loggable {
         }
         var parentsArray = [OpaquePointer?](repeating: unwrappedParent, count: 1)
         
+        let head = "HEAD"
+        let encoding = "UTF-8"
         result = parentsArray.withUnsafeMutableBufferPointer { parentsPtr in
             message.withCString { cMessage in
-                "HEAD".withCString { cHead in
-                    "UTF-8".withCString { cEncoding in
+                head.withCString { cHead in
+                    encoding.withCString { cEncoding in
                         git_commit_create(
                             &commitId,
                             repo,
