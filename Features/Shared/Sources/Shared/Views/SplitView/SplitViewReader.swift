@@ -18,7 +18,7 @@ public struct SplitViewReader<Content: View>: View {
     
     /// The parent split view controller
     private var viewController: SplitViewController? {
-        let value = self[SplitViewControllerLayoutValueKey.self]
+        let value = _traits[SplitViewControllerLayoutValueKey.self]
         return value()
     }
 }
@@ -71,7 +71,8 @@ private struct CollapsedModifier: ViewModifier {
     }
 }
 
-#Preview {
+struct SplitViewReader_Previews: PreviewProvider {
+    static var previews: some View {
     SplitView.horizontal {
         Color.red
             .frame(minWidth: 200, maxWidth: 300)

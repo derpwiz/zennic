@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// A view controller that manages a split view and its items
-final class SplitViewController: NSSplitViewController {
+public final class SplitViewController: NSSplitViewController {
     /// The items managed by this split view controller
     var items: [SplitViewItem] = []
     
