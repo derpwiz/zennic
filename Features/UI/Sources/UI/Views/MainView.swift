@@ -7,6 +7,12 @@ public struct _MainView: View {
     @EnvironmentObject var appState: AppState
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var isShowingSettings = false
+    @State private var utilityAreaCollapsed = true
+    @State private var utilityAreaMaximized = false
+    @State private var editorsHeight: CGFloat = 0
+    @State private var drawerHeight: CGFloat = 0
+    
+    private let statusbarHeight: CGFloat = 29
     
     private var navigationTitle: String {
         switch appState.selectedFeature {
@@ -137,52 +143,111 @@ public struct _MainView: View {
             .frame(minWidth: 220)
         } detail: {
             NavigationStack {
-                Group {
-                    switch appState.selectedFeature {
-                    case "CodeEditor":
-                        Group {
-                            if !appState.workspacePath.isEmpty {
-                                CodeEditorFactory.makeEditor(workspacePath: appState.workspacePath)
-                            } else {
-                                VStack(spacing: 12) {
-                                    Image(systemName: "folder.badge.plus")
-                                        .font(.system(size: 48))
-                                        .symbolRenderingMode(.hierarchical)
-                                        .foregroundStyle(.secondary)
-                                    Text("Please select a workspace path")
-                                        .font(.title3)
-                                        .foregroundStyle(.secondary)
+                SplitViewReader { proxy in
+                    SplitView(axis: .vertical) {
+                        ZStack {
+                            GeometryReader { geo in
+                                Group {
+                                    switch appState.selectedFeature {
+                                    case "CodeEditor":
+                                        Group {
+                                            if !appState.workspacePath.isEmpty {
+                                                CodeEditorFactory.makeEditor(workspacePath: appState.workspacePath)
+                                            } else {
+                                                VStack(spacing: 12) {
+                                                    Image(systemName: "folder.badge.plus")
+                                                        .font(.system(size: 48))
+                                                        .symbolRenderingMode(.hierarchical)
+                                                        .foregroundStyle(.secondary)
+                                                    Text("Please select a workspace path")
+                                                        .font(.title3)
+                                                        .foregroundStyle(.secondary)
+                                                }
+                                            }
+                                        }
+                                    case "DataIntegration":
+                                        EmptyView()
+                                    case "Backtesting":
+                                        EmptyView()
+                                    case "RealTimeMonitoring":
+                                        EmptyView()
+                                    case "Visualization":
+                                        EmptyView()
+                                    case "Settings":
+                                        SettingsView()
+                                    default:
+                                        VStack(spacing: 12) {
+                                            Image(systemName: "arrow.left.circle")
+                                                .font(.system(size: 48))
+                                                .symbolRenderingMode(.hierarchical)
+                                                .foregroundStyle(.secondary)
+                                            Text("Select a feature from the sidebar")
+                                                .font(.title3)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                }
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                .onChange(of: geo.size.height) { newHeight in
+                                    editorsHeight = newHeight
+                                }
+                                .onAppear {
+                                    editorsHeight = geo.size.height
                                 }
                             }
                         }
-                    case "DataIntegration":
-                        EmptyView()
-                    case "Backtesting":
-                        EmptyView()
-                    case "RealTimeMonitoring":
-                        EmptyView()
-                    case "Visualization":
-                        EmptyView()
-                    case "Settings":
-                        SettingsView()
-                    default:
-                        VStack(spacing: 12) {
-                            Image(systemName: "arrow.left.circle")
-                                .font(.system(size: 48))
-                                .symbolRenderingMode(.hierarchical)
-                                .foregroundStyle(.secondary)
-                            Text("Select a feature from the sidebar")
-                                .font(.title3)
-                                .foregroundStyle(.secondary)
+                        .frame(minHeight: 170 + statusbarHeight + statusbarHeight)
+                        .collapsable()
+                        .collapsed($utilityAreaMaximized)
+                        
+                        Rectangle()
+                            .collapsable()
+                            .collapsed($utilityAreaCollapsed)
+                            .opacity(0)
+                            .frame(idealHeight: 260)
+                            .frame(minHeight: 100)
+                            .background {
+                                GeometryReader { geo in
+                                    Rectangle()
+                                        .opacity(0)
+                                        .onChange(of: geo.size.height) { newHeight in
+                                            drawerHeight = newHeight
+                                        }
+                                        .onAppear {
+                                            drawerHeight = geo.size.height
+                                        }
+                                }
+                            }
+                            .accessibilityHidden(true)
+                    }
+                    .edgesIgnoringSafeArea(.top)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .overlay(alignment: .top) {
+                        ZStack(alignment: .top) {
+                            Rectangle()
+                                .fill(Color.clear)
+                                .frame(height: utilityAreaMaximized ? nil : drawerHeight)
+                                .frame(maxHeight: utilityAreaMaximized ? .infinity : nil)
+                                .padding(.top, utilityAreaMaximized ? statusbarHeight + 1 : 0)
+                                .offset(y: utilityAreaMaximized ? 0 : editorsHeight + 1)
+                            VStack(spacing: 0) {
+                                Rectangle()
+                                    .fill(Color.clear)
+                                    .frame(height: statusbarHeight)
+                                if utilityAreaMaximized {
+                                    PanelDivider()
+                                }
+                            }
+                            .offset(y: utilityAreaMaximized ? 0 : editorsHeight - statusbarHeight)
                         }
+                        .accessibilityElement(children: .contain)
                     }
                 }
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .navigationTitle(navigationTitle)
             }
         }
         .preferredColorScheme(appState.isDarkMode ? .dark : .light)
+        .background(EffectView(.contentBackground))
     }
 }
 
