@@ -3,37 +3,36 @@ import SwiftUI
 /// A view that provides access to the parent split view controller
 public struct SplitViewReader<Content: View>: View {
     /// The content to display
-    private let content: (SplitViewController?) -> Content
+    private let content: (SplitViewController<Content>?) -> Content
     
     /// Creates a new split view reader
     /// - Parameter content: A closure that takes a split view controller and returns a view
-    public init(@ViewBuilder content: @escaping (SplitViewController?) -> Content) {
+    public init(@ViewBuilder content: @escaping (SplitViewController<Content>?) -> Content) {
         self.content = content
     }
     
     public var body: some View {
-        @Environment(\.splitViewController) var splitViewController
-        return content(splitViewController)
-            .environment(\.splitViewController, splitViewController)
+        content(viewController)
+            .environment(\.splitViewController, viewController)
     }
     
     /// The parent split view controller
-    private var viewController: SplitViewController? {
-        @Environment(\.splitViewController) var splitViewController
-        return splitViewController
+    private var viewController: SplitViewController<Content>? {
+        @Environment(\.splitViewController) var controller
+        return controller
     }
 }
 
 /// Environment key for accessing the split view controller
-private struct SplitViewControllerKey: EnvironmentKey {
-    static let defaultValue: SplitViewController? = nil
+private struct SplitViewControllerKey<Content: View>: EnvironmentKey {
+    static var defaultValue: SplitViewController<Content>? { nil }
 }
 
 extension EnvironmentValues {
     /// The current split view controller
-    var splitViewController: SplitViewController? {
-        get { self[SplitViewControllerKey.self] }
-        set { self[SplitViewControllerKey.self] = newValue }
+    var splitViewController<Content: View>: SplitViewController<Content>? {
+        get { self[SplitViewControllerKey<Content>.self] }
+        set { self[SplitViewControllerKey<Content>.self] = newValue }
     }
 }
 
@@ -48,9 +47,9 @@ public extension View {
 }
 
 /// A view modifier that handles collapsing/expanding views
-private struct CollapsedModifier: ViewModifier {
+private struct CollapsedModifier<Content: View>: ViewModifier {
     /// The environment's split view controller
-    @Environment(\.splitViewController) private var splitViewController
+    @Environment(\.splitViewController) private var splitViewController: SplitViewController<Content>?
     
     /// Whether the view should be collapsed
     let isCollapsed: Bool
