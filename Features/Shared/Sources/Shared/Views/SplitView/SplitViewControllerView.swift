@@ -29,6 +29,6 @@ struct SplitViewControllerView<Content: View>: NSViewControllerRepresentable {
     }
     
     func makeCoordinator() -> SplitViewController {
-        SplitViewController(parent: self, axis: axis)
+        SplitViewController(parent: self, content: content, axis: axis)
     }
 }
