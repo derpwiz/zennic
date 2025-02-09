@@ -73,24 +73,25 @@ private struct CollapsedModifier: ViewModifier {
 
 struct SplitViewReader_Previews: PreviewProvider {
     static var previews: some View {
-    SplitView.horizontal {
-        Color.red
-            .frame(minWidth: 200, maxWidth: 300)
-        
-        SplitViewReader { controller in
-            Color.blue
-                .frame(maxWidth: .infinity)
-                .overlay(alignment: .topLeading) {
-                    Button("Toggle Left") {
-                        controller?.collapse(for: "split-view-item-true", enabled: true)
+        SplitView.horizontal {
+            Color.red
+                .frame(minWidth: 200, maxWidth: 300)
+            
+            SplitViewReader { controller in
+                Color.blue
+                    .frame(maxWidth: .infinity)
+                    .overlay(alignment: .topLeading) {
+                        Button("Toggle Left") {
+                            controller?.collapse(for: "split-view-item-true", enabled: true)
+                        }
+                        .padding()
                     }
-                    .padding()
-                }
+            }
+            
+            Color.green
+                .frame(width: 200)
+                .collapsed(true)
         }
-        
-        Color.green
-            .frame(width: 200)
-            .collapsed(true)
+        .frame(width: 800, height: 400)
     }
-    .frame(width: 800, height: 400)
 }
