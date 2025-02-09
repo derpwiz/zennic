@@ -2,6 +2,7 @@ import SwiftUI
 import Foundation
 import Core
 import Shared
+import UI
 
 /// A view that provides code editing functionality with Git integration
 public struct CodeEditorView: View {
@@ -81,27 +82,6 @@ public struct CodeEditorView: View {
         .onChange(of: colorScheme) { newValue in
             themeModel.updateTheme(for: newValue)
         }
-    }
-}
-
-/// A view that wraps NSVisualEffectView for different material effects
-struct EffectView: NSViewRepresentable {
-    let material: NSVisualEffectView.Material
-    
-    init(_ material: NSVisualEffectView.Material) {
-        self.material = material
-    }
-    
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        view.material = material
-        view.blendingMode = .behindWindow
-        view.state = .active
-        return view
-    }
-    
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-        nsView.material = material
     }
 }
 
