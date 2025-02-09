@@ -9,7 +9,7 @@ public struct SplitView<Content: View>: View {
     private let content: Content
     
     /// Reference to the split view controller
-    @State private var viewController: SplitViewController<Content>? = nil
+    @State private var viewController: SplitViewController<AnyView>? = nil
     
     /// Creates a new split view
     /// - Parameters:
@@ -57,12 +57,12 @@ private struct SplitViewModifier<Content: View>: ViewModifier {
     let axis: Axis
     
     /// Binding to the split view controller
-    @Binding var viewController: SplitViewController<Content>?
+    @Binding var viewController: SplitViewController<AnyView>?
     
     func body(content: Content) -> some View {
         SplitViewControllerView(
             axis: axis,
-            content: content,
+            content: AnyView(content),
             viewController: Binding(
                 get: { { viewController } },
                 set: { viewController = $0() }
