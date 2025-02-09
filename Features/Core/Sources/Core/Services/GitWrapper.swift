@@ -77,6 +77,104 @@ public class GitWrapper: Loggable {
         return name
     }
     
+    /// Gets all local branches
+    /// - Returns: Array of branch names
+    /// - Throws: GitError if the operation fails
+    public func getBranches() throws -> [String] {
+        guard let repo = repo else {
+            logger.error(GitError.notInitialized)
+            throw GitError.notInitialized
+        }
+        
+        var branches: OpaquePointer?
+        guard git_branch_iterator_new(&branches, repo, GIT_BRANCH_LOCAL) == 0 else {
+            logger.error(GitError.branchFailed)
+            throw GitError.branchFailed
+        }
+        defer { git_branch_iterator_free(branches) }
+        
+        var results: [String] = []
+        var ref: OpaquePointer?
+        var type = git_branch_t(0)
+        
+        while git_branch_next(&ref, &type, branches) == 0 {
+            defer { git_reference_free(ref) }
+            
+            guard let name = git_reference_shorthand(ref) else { continue }
+            results.append(String(cString: name))
+        }
+        
+        logger.info("Retrieved \(results.count) branches")
+        return results
+    }
+    
+    /// Creates a new branch
+    /// - Parameter name: The branch name
+    /// - Throws: GitError if the operation fails
+    public func createBranch(name: String) throws {
+        guard let repo = repo else {
+            logger.error(GitError.notInitialized)
+            throw GitError.notInitialized
+        }
+        
+        var commit: OpaquePointer?
+        var head = git_oid()
+        guard git_reference_name_to_id(&head, repo, "HEAD") == 0,
+              git_commit_lookup(&commit, repo, &head) == 0 else {
+            logger.error(GitError.branchFailed)
+            throw GitError.branchFailed
+        }
+        defer { git_commit_free(commit) }
+        
+        var branch: OpaquePointer?
+        try name.withCString { name_str in
+            guard git_branch_create(&branch, repo, name_str, commit, 0) == 0 else {
+                logger.error(GitError.branchFailed)
+                throw GitError.branchFailed
+            }
+        }
+        if let branch = branch {
+            git_reference_free(branch)
+        }
+        
+        logger.info("Created branch: \(name)")
+    }
+    
+    /// Checks out a branch
+    /// - Parameter name: The branch name
+    /// - Throws: GitError if the operation fails
+    public func checkoutBranch(name: String) throws {
+        guard let repo = repo else {
+            logger.error(GitError.notInitialized)
+            throw GitError.notInitialized
+        }
+        
+        var reference: OpaquePointer?
+        try name.withCString { name_str in
+            guard git_branch_lookup(&reference, repo, name_str, GIT_BRANCH_LOCAL) == 0 else {
+                logger.error(GitError.branchFailed)
+                throw GitError.branchFailed
+            }
+        }
+        defer { git_reference_free(reference) }
+        
+        var opts = git_checkout_options()
+        git_checkout_init_options(&opts, UInt32(GIT_CHECKOUT_OPTIONS_VERSION))
+        
+        guard let ref_name = git_reference_name(reference),
+              git_checkout_tree(repo, nil, &opts) == 0 else {
+            logger.error(GitError.branchFailed)
+            throw GitError.branchFailed
+        }
+        
+        guard git_repository_set_head(repo, ref_name) == 0 else {
+            logger.error(GitError.branchFailed)
+            throw GitError.branchFailed
+        }
+        
+        logger.info("Checked out branch: \(name)")
+    }
+    
     /// Gets the status of a file
     /// - Parameter file: The file path
     /// - Returns: The file status
