@@ -21,12 +21,10 @@ public struct SplitView<Content: View>: View {
     }
     
     public var body: some View {
-        VStack {
-            ViewBuilder.buildBlock(content).modifier(SplitViewModifier(
-                axis: axis,
-                viewController: $viewController
-            ))
-        }
+        content.modifier(SplitViewModifier(
+            axis: axis,
+            viewController: $viewController
+        ))
         ._trait(SplitViewControllerLayoutValueKey.self, viewController)
         .accessibilityElement(children: .contain)
     }
