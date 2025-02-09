@@ -21,7 +21,9 @@ public class GitWrapper: Loggable {
         
         // Open or create repository
         var repo: OpaquePointer?
-        let result = git_repository_open(&repo, path)
+        let result = path.withCString { cPath in
+            git_repository_open(&repo, cPath)
+        }
         
         if result == GIT_ENOTFOUND.rawValue {
             // Repository doesn't exist, create it
@@ -40,7 +42,9 @@ public class GitWrapper: Loggable {
     /// Creates a new Git repository
     private func createRepository() throws {
         var repo: OpaquePointer?
-        let result = git_repository_init(&repo, path, 0)
+        let result = path.withCString { cPath in
+            git_repository_init(&repo, cPath, 0)
+        }
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
@@ -112,8 +116,10 @@ public class GitWrapper: Loggable {
         
         var commit: OpaquePointer?
         var head = git_oid()
-        guard git_reference_name_to_id(&head, repo, "HEAD") == 0,
-              git_commit_lookup(&commit, repo, &head) == 0 else {
+        guard "HEAD".withCString({ cHead in
+            git_reference_name_to_id(&head, repo, cHead)
+        }) == 0,
+        git_commit_lookup(&commit, repo, &head) == 0 else {
             throw GitError.branchFailed
         }
         defer { git_commit_free(commit) }
@@ -121,7 +127,7 @@ public class GitWrapper: Loggable {
         var branch: OpaquePointer?
         try name.withCString { name_str in
             guard git_branch_create(&branch, repo, name_str, commit, 0) == 0 else {
-            throw GitError.branchFailed
+                throw GitError.branchFailed
             }
         }
         if let branch = branch {
@@ -142,7 +148,7 @@ public class GitWrapper: Loggable {
         var reference: OpaquePointer?
         try name.withCString { name_str in
             guard git_branch_lookup(&reference, repo, name_str, GIT_BRANCH_LOCAL) == 0 else {
-            throw GitError.branchFailed
+                throw GitError.branchFailed
             }
         }
         defer { git_reference_free(reference) }
@@ -155,7 +161,10 @@ public class GitWrapper: Loggable {
             throw GitError.branchFailed
         }
         
-        guard git_repository_set_head(repo, ref_name) == 0 else {
+        let result = String(cString: ref_name).withCString { cRef in
+            git_repository_set_head(repo, cRef)
+        }
+        guard result == 0 else {
             throw GitError.branchFailed
         }
         
@@ -222,7 +231,9 @@ public class GitWrapper: Loggable {
         
         defer { git_index_free(index) }
         
-        result = git_index_add_bypath(index, file)
+        result = file.withCString { cFile in
+            git_index_add_bypath(index, cFile)
+        }
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
@@ -276,7 +287,7 @@ public class GitWrapper: Loggable {
         
         defer { git_tree_free(tree) }
         
-        var signature: OpaquePointer?
+        var signature: UnsafeMutablePointer<git_signature>?
         result = git_signature_default(&signature, repo)
         
         if result != 0 {
@@ -309,18 +320,26 @@ public class GitWrapper: Loggable {
         var commitId = git_oid()
         let parents = [parent]
         
-        result = git_commit_create(
-            &commitId,
-            repo,
-            "HEAD",
-            signature,
-            signature,
-            "UTF-8",
-            message,
-            tree,
-            1,
-            parents
-        )
+        result = parents.withUnsafeBufferPointer { parentsPtr in
+            message.withCString { cMessage in
+                "HEAD".withCString { cHead in
+                    "UTF-8".withCString { cEncoding in
+                        git_commit_create(
+                            &commitId,
+                            repo,
+                            cHead,
+                            signature,
+                            signature,
+                            cEncoding,
+                            cMessage,
+                            tree,
+                            1,
+                            parentsPtr.baseAddress
+                        )
+                    }
+                }
+            }
+        }
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
@@ -361,7 +380,7 @@ public class GitWrapper: Loggable {
             
             if result != 0 {
                 let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            throw GitError.historyFailed
+                throw GitError.historyFailed
             }
             
             defer { git_commit_free(commit) }
@@ -404,7 +423,7 @@ public class GitWrapper: Loggable {
         defer { git_diff_free(diff) }
         
         var buffer = git_buf()
-        result = git_diff_to_buf(&buffer, diff, GIT_DIFF_FORMAT_PATCH.rawValue)
+        result = git_diff_to_buf(&buffer, diff, git_diff_format_t(GIT_DIFF_FORMAT_PATCH))
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
