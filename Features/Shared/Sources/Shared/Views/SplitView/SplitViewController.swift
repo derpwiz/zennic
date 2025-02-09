@@ -75,6 +75,7 @@ public final class SplitViewController: NSSplitViewController {
     
     /// Updates the split view items and their positions
     /// - Returns: Whether any items were added or removed
+    @discardableResult
     func updateItems() -> Bool {
         
         var hasChanged = false
