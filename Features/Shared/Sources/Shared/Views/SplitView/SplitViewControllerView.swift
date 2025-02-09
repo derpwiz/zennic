@@ -9,13 +9,13 @@ struct SplitViewControllerView<Content: View>: NSViewControllerRepresentable {
     let content: Content
     
     /// Binding to the view controller reference
-    @Binding var viewController: () -> SplitViewController?
+    @Binding var viewController: () -> SplitViewController<Content>?
     
-    func makeNSViewController(context: Context) -> SplitViewController {
+    func makeNSViewController(context: Context) -> SplitViewController<Content> {
         context.coordinator
     }
     
-    func updateNSViewController(_ controller: SplitViewController, context: Context) {
+    func updateNSViewController(_ controller: SplitViewController<Content>, context: Context) {
         // Update items and their positions
         let hasChanged = controller.updateItems()
         
@@ -28,7 +28,7 @@ struct SplitViewControllerView<Content: View>: NSViewControllerRepresentable {
         }
     }
     
-    func makeCoordinator() -> SplitViewController {
+    func makeCoordinator() -> SplitViewController<Content> {
         SplitViewController(parent: self, content: content, axis: axis)
     }
 }

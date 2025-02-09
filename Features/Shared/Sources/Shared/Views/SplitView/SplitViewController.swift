@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// A view controller that manages a split view and its items
-public final class SplitViewController: NSSplitViewController {
+public final class SplitViewController<Content: View>: NSSplitViewController {
     /// The items managed by this split view controller
     var items: [SplitViewItem] = []
     
@@ -9,19 +9,19 @@ public final class SplitViewController: NSSplitViewController {
     let axis: Axis
     
     /// Reference to the parent view for updating the view controller binding
-    private var parentView: Any
+    private var parentView: SplitViewControllerView<Content>
     
     /// The content to display in the split view
-    private var content: AnyView
+    private var content: Content
     
     /// Initializes a new split view controller
     /// - Parameters:
     ///   - parent: The parent view that created this controller
     ///   - content: The content to display in the split view
     ///   - axis: The axis along which to split items
-    init<V: View>(parent: Any, content: V, axis: Axis = .horizontal) {
+    init(parent: SplitViewControllerView<Content>, content: Content, axis: Axis = .horizontal) {
         self.parentView = parent
-        self.content = AnyView(content)
+        self.content = content
         self.axis = axis
         super.init(nibName: nil, bundle: nil)
     }
@@ -38,11 +38,9 @@ public final class SplitViewController: NSSplitViewController {
         splitView.dividerStyle = .thin
         
         // Update the parent's view controller reference
-        if let parent = parentView as? SplitViewControllerView<Any> {
-            DispatchQueue.main.async { [weak self] in
-                parent.viewController = { [weak self] in
-                    self
-                }
+        DispatchQueue.main.async { [weak self] in
+            self?.parentView.viewController = { [weak self] in
+                self
             }
         }
     }
@@ -89,7 +87,7 @@ public final class SplitViewController: NSSplitViewController {
         // Create a single item for the content if needed
         if items.isEmpty {
             hasChanged = true
-            let item = SplitViewItem(content: content)
+            let item = SplitViewItem(content: AnyView(content))
             items = [item]
             splitViewItems = [item.item]
         }
