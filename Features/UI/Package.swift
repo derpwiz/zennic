@@ -14,16 +14,14 @@ let package = Package(
     ],
     dependencies: [
         .package(path: "../Core"),
-        .package(path: "../Shared"),
-        .package(path: "../CodeEditor")
+        .package(path: "../Shared")
     ],
     targets: [
         .target(
             name: "UI",
             dependencies: [
                 .product(name: "Core", package: "Core"),
-                "Shared",
-                .product(name: "CodeEditorInterface", package: "CodeEditor")
+                "Shared"
             ],
             path: "Sources"
         )
