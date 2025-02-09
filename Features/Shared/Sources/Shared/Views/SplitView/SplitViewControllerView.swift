@@ -1,21 +1,21 @@
 import SwiftUI
 
 /// A SwiftUI wrapper for NSSplitViewController that manages split view items
-struct SplitViewControllerView<Content: View>: NSViewControllerRepresentable {
+struct SplitViewControllerView: NSViewControllerRepresentable {
     /// The axis along which to split the views
     let axis: Axis
     
     /// The content to display in the split view
-    let content: Content
+    let content: AnyView
     
     /// Binding to the view controller reference
-    @Binding var viewController: () -> SplitViewController<Content>?
+    @Binding var viewController: () -> SplitViewController<AnyView>?
     
-    func makeNSViewController(context: Context) -> SplitViewController<Content> {
+    func makeNSViewController(context: Context) -> SplitViewController<AnyView> {
         context.coordinator
     }
     
-    func updateNSViewController(_ controller: SplitViewController<Content>, context: Context) {
+    func updateNSViewController(_ controller: SplitViewController<AnyView>, context: Context) {
         // Update items and their positions
         let hasChanged = controller.updateItems()
         
@@ -28,7 +28,7 @@ struct SplitViewControllerView<Content: View>: NSViewControllerRepresentable {
         }
     }
     
-    func makeCoordinator() -> SplitViewController<Content> {
+    func makeCoordinator() -> SplitViewController<AnyView> {
         SplitViewController(parent: self, content: content, axis: axis)
     }
 }
