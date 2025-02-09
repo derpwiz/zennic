@@ -57,7 +57,7 @@ private struct SplitViewModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         Group {
-            if let children = (content as? _VariadicView_Children)?.children {
+            if let children = content as? _VariadicView_Children {
                 SplitViewControllerView(
                     axis: axis,
                     children: children,
