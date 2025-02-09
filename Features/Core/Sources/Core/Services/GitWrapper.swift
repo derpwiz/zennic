@@ -313,9 +313,9 @@ public class GitWrapper: Loggable {
         guard let unwrappedParent = parent else {
             throw GitError.commitFailed
         }
-        var parentsArray = [OpaquePointer](repeating: unwrappedParent, count: 1)
+        var parentsArray = [OpaquePointer?](repeating: unwrappedParent, count: 1)
         
-        result = withUnsafeMutablePointer(to: &parentsArray[0]) { parentsPtr in
+        result = parentsArray.withUnsafeMutableBufferPointer { parentsPtr in
             message.withCString { cMessage in
                 "HEAD".withCString { cHead in
                     "UTF-8".withCString { cEncoding in
@@ -329,7 +329,7 @@ public class GitWrapper: Loggable {
                             cMessage,
                             tree,
                             1,
-                            parentsPtr
+                            parentsPtr.baseAddress
                         )
                     }
                 }
