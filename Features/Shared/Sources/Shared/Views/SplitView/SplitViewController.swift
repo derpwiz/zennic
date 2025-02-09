@@ -12,7 +12,7 @@ public final class SplitViewController<Content: View>: NSSplitViewController {
     var parentView: SplitViewControllerView<Content>
     
     /// The content to display in the split view
-    private var content: Content
+    var content: Content
     
     /// Initializes a new split view controller
     /// - Parameters:
