@@ -1,4 +1,0 @@
-framework module CodeEditor {
-  header "CodeEditor-Swift.h"
-  requires objc
-}
