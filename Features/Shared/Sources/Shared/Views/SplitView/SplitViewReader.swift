@@ -5,6 +5,9 @@ public struct SplitViewReader<Content: View>: View {
     /// The content to display
     private let content: (SplitViewController<Content>?) -> Content
     
+    /// The current split view controller from the environment
+    @Environment(\.splitViewController) private var controller
+    
     /// Creates a new split view reader
     /// - Parameter content: A closure that takes a split view controller and returns a view
     public init(@ViewBuilder content: @escaping (SplitViewController<Content>?) -> Content) {
@@ -12,7 +15,6 @@ public struct SplitViewReader<Content: View>: View {
     }
     
     public var body: some View {
-        let controller = EnvironmentValues.splitViewController(for: Content.self)
         content(controller)
             .environment(\.splitViewController, controller)
     }
@@ -20,15 +22,10 @@ public struct SplitViewReader<Content: View>: View {
 
 /// Environment key for accessing the split view controller
 private struct SplitViewControllerKey<T: View>: EnvironmentKey {
-    static var defaultValue: SplitViewController<T>? { nil }
+    static var defaultValue: SplitViewController<T>? = nil
 }
 
 extension EnvironmentValues {
-    /// Gets the split view controller for a specific view type
-    static func splitViewController<T: View>(for type: T.Type) -> SplitViewController<T>? {
-        self[SplitViewControllerKey<T>.self]
-    }
-    
     /// The current split view controller
     var splitViewController<T: View>: SplitViewController<T>? {
         get { self[SplitViewControllerKey<T>.self] }
@@ -49,7 +46,7 @@ public extension View {
 /// A view modifier that handles collapsing/expanding views
 private struct CollapsedModifier<T: View>: ViewModifier {
     /// The environment's split view controller
-    @Environment(\.splitViewController) private var splitViewController: SplitViewController<T>?
+    @Environment(\.splitViewController) private var controller
     
     /// Whether the view should be collapsed
     let isCollapsed: Bool
@@ -57,13 +54,13 @@ private struct CollapsedModifier<T: View>: ViewModifier {
     func body(content: T) -> some View {
         content.id("split-view-item-\(isCollapsed)")
             .onAppear {
-                splitViewController?.collapse(
+                controller?.collapse(
                     for: "split-view-item-\(isCollapsed)",
                     enabled: isCollapsed
                 )
             }
             .onChange(of: isCollapsed) { newValue in
-                splitViewController?.collapse(
+                controller?.collapse(
                     for: "split-view-item-\(isCollapsed)",
                     enabled: newValue
                 )
