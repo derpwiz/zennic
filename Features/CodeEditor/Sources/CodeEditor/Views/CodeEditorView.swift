@@ -4,6 +4,13 @@ import Core
 import Shared
 import UI
 
+// MARK: - Constants
+private enum Constants {
+    static let sidebarWidth: ClosedRange<CGFloat> = 200...300
+    static let tabBarHeight: CGFloat = 40
+    static let statusBarHeight: CGFloat = 30
+}
+
 /// A view that provides code editing functionality with Git integration
 public struct CodeEditorView: View {
     @ObservedObject private var viewModel: CodeEditorViewModel
@@ -28,11 +35,13 @@ public struct CodeEditorView: View {
     }
     
     public var body: some View {
-        HSplitView {
+        SplitView.horizontal {
             // File tree sidebar
             FileTreeView(viewModel: viewModel)
-                .frame(minWidth: 200, maxWidth: 300)
+                .frame(minWidth: Constants.sidebarWidth.lowerBound,
+                       maxWidth: Constants.sidebarWidth.upperBound)
                 .background(EffectView(.sidebar))
+                .collapsible()
             
             // Main editor area
             VStack(spacing: 0) {
@@ -45,7 +54,7 @@ public struct CodeEditorView: View {
                     Spacer()
                 }
                 .padding(.horizontal)
-                .frame(height: 40)
+                .frame(height: Constants.tabBarHeight)
                 .background(EffectView(.titlebar))
                 
                 // Editor content
@@ -71,9 +80,10 @@ public struct CodeEditorView: View {
                     }
                 }
                 .padding(.horizontal)
-                .frame(height: 30)
+                .frame(height: Constants.statusBarHeight)
                 .background(EffectView(.titlebar))
             }
+            .frame(maxWidth: .infinity)
         }
         .background(currentTheme.editor.background)
         .onAppear {
