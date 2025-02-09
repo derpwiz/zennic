@@ -70,17 +70,20 @@ private struct SplitViewModifier: ViewModifier {
     }
 }
 
-#Preview {
-    SplitView.horizontal {
-        Color.red
-            .frame(minWidth: 200, maxWidth: 300)
-            .collapsible()
-        
-        Color.blue
-            .frame(maxWidth: .infinity)
-        
-        Color.green
-            .frame(width: 200)
-            .collapsible()
+struct SplitView_Previews: PreviewProvider {
+    static var previews: some View {
+        SplitView.horizontal {
+            Color.red
+                .frame(minWidth: 200, maxWidth: 300)
+                .collapsible()
+            
+            Color.blue
+                .frame(maxWidth: .infinity)
+            
+            Color.green
+                .frame(width: 200)
+                .collapsible()
+        }
+        .frame(width: 800, height: 400)
     }
-    .frame(width: 800, height: 400)
+}
