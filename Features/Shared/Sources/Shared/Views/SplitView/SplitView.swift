@@ -56,17 +56,11 @@ private struct SplitViewModifier: ViewModifier {
     @Binding var viewController: () -> SplitViewController?
     
     func body(content: Content) -> some View {
-        Group {
-            if let children = content as? _VariadicView_Children {
-                SplitViewControllerView(
-                    axis: axis,
-                    children: children,
-                    viewController: $viewController
-                )
-            } else {
-                content
-            }
-        }
+        SplitViewControllerView(
+            axis: axis,
+            content: content,
+            viewController: $viewController
+        )
     }
 }
 

@@ -1,12 +1,12 @@
 import SwiftUI
 
 /// A SwiftUI wrapper for NSSplitViewController that manages split view items
-struct SplitViewControllerView: NSViewControllerRepresentable {
+struct SplitViewControllerView<Content: View>: NSViewControllerRepresentable {
     /// The axis along which to split the views
     let axis: Axis
     
-    /// The children views to display in the split view
-    let children: _VariadicView.Children
+    /// The content to display in the split view
+    let content: Content
     
     /// Binding to the view controller reference
     @Binding var viewController: () -> SplitViewController?
@@ -30,23 +30,5 @@ struct SplitViewControllerView: NSViewControllerRepresentable {
     
     func makeCoordinator() -> SplitViewController {
         SplitViewController(parent: self, axis: axis)
-    }
-}
-
-/// Extension to provide a more SwiftUI-like API for SplitViewControllerView
-extension SplitViewControllerView {
-    /// Creates a split view controller view with the given axis and children
-    /// - Parameters:
-    ///   - axis: The axis along which to split the views
-    ///   - children: The children views to display
-    ///   - viewController: Binding to the view controller reference
-    init(
-        axis: Axis,
-        children: _VariadicView.Children,
-        viewController: Binding<() -> SplitViewController?>
-    ) {
-        self.axis = axis
-        self.children = children
-        self._viewController = viewController
     }
 }
