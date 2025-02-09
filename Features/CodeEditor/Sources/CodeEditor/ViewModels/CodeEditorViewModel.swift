@@ -2,9 +2,10 @@ import SwiftUI
 import Foundation
 import Combine
 import Core
+import UI
 
 /// Manages the state and business logic for the code editor
-public class CodeEditorViewModel: ObservableObject {
+public class CodeEditorViewModel: ObservableObject, Loggable {
     public var gitWrapper: GitWrapper?
     private var cancellables = Set<AnyCancellable>()
     
@@ -44,8 +45,10 @@ public class CodeEditorViewModel: ObservableObject {
                 }
                 return lhs.path < rhs.path
             }
+            
+            logger.info("Scanned directory: \(path)")
         } catch {
-            print("Error scanning directory: \(error)")
+            logger.error(error)
             files = []
         }
     }
@@ -61,6 +64,7 @@ public class CodeEditorViewModel: ObservableObject {
         // Create directory if it doesn't exist
         if !FileManager.default.fileExists(atPath: workspacePath) {
             try? FileManager.default.createDirectory(at: URL(fileURLWithPath: workspacePath), withIntermediateDirectories: true)
+            logger.info("Created workspace directory: \(workspacePath)")
         }
         setupGitObservers()
         setupContentObserver()
@@ -88,8 +92,9 @@ public class CodeEditorViewModel: ObservableObject {
         do {
             let attributes = try FileManager.default.attributesOfItem(atPath: selectedFile)
             fileSize = attributes[.size] as? Int
+            logger.info("Updated file size for: \(selectedFile)")
         } catch {
-            print("Error getting file size: \(error)")
+            logger.error(error)
         }
     }
     
@@ -99,9 +104,11 @@ public class CodeEditorViewModel: ObservableObject {
     public func initializeGit() -> Bool {
         do {
             self.gitWrapper = try GitWrapper(path: workspacePath)
+            logger.info("Initialized Git repository at: \(workspacePath)")
             return true
         } catch {
             self.error = "Failed to initialize Git repository: \(error.localizedDescription)"
+            logger.error(error)
             return false
         }
     }
@@ -128,7 +135,7 @@ public class CodeEditorViewModel: ObservableObject {
                 fileStatus = status.first { $0.1 == selectedFile }?.0
             }
         } catch {
-            print("Error updating Git status: \(error)")
+            logger.error(error)
         }
     }
     
@@ -142,8 +149,9 @@ public class CodeEditorViewModel: ObservableObject {
             selectedFile = path
             updateGitStatus()
             updateFileInfo()
+            logger.info("Loaded file: \(path)")
         } catch {
-            print("Error loading file: \(error)")
+            logger.error(error)
         }
     }
     
@@ -151,15 +159,16 @@ public class CodeEditorViewModel: ObservableObject {
     /// - Parameter path: Path to save the file
     public func saveFile(to path: String) {
         guard let gitWrapper = gitWrapper else {
-            print("Error: Git repository not initialized")
+            logger.warning("Git repository not initialized")
             return
         }
         do {
             try content.write(toFile: path, atomically: true, encoding: .utf8)
             try gitWrapper.add(file: path)
             updateGitStatus()
+            logger.info("Saved file: \(path)")
         } catch {
-            print("Error saving file: \(error)")
+            logger.error(error)
         }
     }
     
@@ -167,14 +176,15 @@ public class CodeEditorViewModel: ObservableObject {
     /// - Parameter message: Commit message
     public func commit(message: String) {
         guard let gitWrapper = gitWrapper else {
-            print("Error: Git repository not initialized")
+            logger.warning("Git repository not initialized")
             return
         }
         do {
             try gitWrapper.commit(message: message)
             updateGitStatus()
+            logger.info("Committed changes: \(message)")
         } catch {
-            print("Error committing changes: \(error)")
+            logger.error(error)
         }
     }
     
@@ -183,9 +193,12 @@ public class CodeEditorViewModel: ObservableObject {
     /// - Returns: Array of commits that modified the file
     public func getHistory(for path: String) throws -> [GitCommit] {
         guard let gitWrapper = gitWrapper else {
+            logger.warning("Git repository not initialized")
             throw GitError.initFailed
         }
-        return try gitWrapper.getFileHistory(file: path)
+        let history = try gitWrapper.getFileHistory(file: path)
+        logger.info("Retrieved history for: \(path)")
+        return history
     }
     
     /// Get diff for a file
@@ -193,8 +206,11 @@ public class CodeEditorViewModel: ObservableObject {
     /// - Returns: String containing the unified diff
     public func getDiff(for path: String) throws -> String {
         guard let gitWrapper = gitWrapper else {
+            logger.warning("Git repository not initialized")
             throw GitError.initFailed
         }
-        return try gitWrapper.getDiff(file: path)
+        let diff = try gitWrapper.getDiff(file: path)
+        logger.info("Retrieved diff for: \(path)")
+        return diff
     }
 }
