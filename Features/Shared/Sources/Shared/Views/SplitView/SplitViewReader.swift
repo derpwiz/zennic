@@ -21,15 +21,15 @@ public struct SplitViewReader<Content: View>: View {
 }
 
 /// Environment key for accessing the split view controller
-private struct SplitViewControllerKey<T: View>: EnvironmentKey {
-    static var defaultValue: SplitViewController<T>? = nil
+private struct SplitViewControllerKey: EnvironmentKey {
+    static let defaultValue: SplitViewController<AnyView>? = nil
 }
 
 extension EnvironmentValues {
     /// The current split view controller
-    var splitViewController<T: View>: SplitViewController<T>? {
-        get { self[SplitViewControllerKey<T>.self] }
-        set { self[SplitViewControllerKey<T>.self] = newValue }
+    var splitViewController: SplitViewController<AnyView>? {
+        get { self[SplitViewControllerKey.self] }
+        set { self[SplitViewControllerKey.self] = newValue }
     }
 }
 
@@ -44,14 +44,14 @@ public extension View {
 }
 
 /// A view modifier that handles collapsing/expanding views
-private struct CollapsedModifier<T: View>: ViewModifier {
+private struct CollapsedModifier: ViewModifier {
     /// The environment's split view controller
     @Environment(\.splitViewController) private var controller
     
     /// Whether the view should be collapsed
     let isCollapsed: Bool
     
-    func body(content: T) -> some View {
+    func body(content: Content) -> some View {
         content.id("split-view-item-\(isCollapsed)")
             .onAppear {
                 controller?.collapse(
