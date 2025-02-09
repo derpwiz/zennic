@@ -1,63 +1,70 @@
 import SwiftUI
 
-/// Represents dimensions for status bar icons.
-public struct StatusBarIconDimensions {
-    public static let width: CGFloat = 24
-    public static let height: CGFloat = 24
-    public static let spacing: CGFloat = 8
-}
-
-/// Represents the line ending type for a file.
-public enum LineEnding: String, CaseIterable {
-    case lf = "LF"
-    case crlf = "CRLF"
-    case cr = "CR"
+/// Helper struct used to store image dimensions
+public struct ImageDimensions: Equatable {
+    /// The width of the image in pixels
+    public var width: Int
     
-    public var description: String {
-        switch self {
-        case .lf: return "Unix (LF)"
-        case .crlf: return "Windows (CRLF)"
-        case .cr: return "Classic Mac (CR)"
-        }
-    }
+    /// The height of the image in pixels
+    public var height: Int
     
-    public var icon: String {
-        switch self {
-        case .lf: return "arrow.turn.down.left"
-        case .crlf: return "arrow.turn.down.left"
-        case .cr: return "arrow.turn.down.left"
-        }
+    /// Creates new image dimensions
+    /// - Parameters:
+    ///   - width: The width in pixels
+    ///   - height: The height in pixels
+    public init(width: Int, height: Int) {
+        self.width = width
+        self.height = height
     }
 }
 
-/// Represents the indentation type for a file.
-public enum IndentationType: String, CaseIterable {
-    case spaces = "Spaces"
-    case tabs = "Tabs"
+/// A model representing the state of the status bar
+public struct StatusBarModel: Equatable {
+    /// The file size of the currently opened file
+    public var fileSize: Int?
     
-    public var description: String {
-        rawValue
-    }
+    /// The dimensions of the currently opened image
+    public var dimensions: ImageDimensions?
     
-    public var icon: String {
-        switch self {
-        case .spaces: return "arrow.right.to.line"
-        case .tabs: return "arrow.right.to.line.compact"
-        }
-    }
-}
-
-/// Represents the encoding type for a file.
-public enum FileEncoding: String, CaseIterable {
-    case utf8 = "UTF-8"
-    case utf16 = "UTF-16"
-    case ascii = "ASCII"
+    /// The current line number
+    public var line: Int?
     
-    public var description: String {
-        rawValue
-    }
+    /// The current column number
+    public var column: Int?
     
-    public var icon: String {
-        "textformat"
+    /// The current character offset
+    public var characterOffset: Int?
+    
+    /// The number of selected characters
+    public var selectedLength: Int?
+    
+    /// The number of selected lines
+    public var selectedLines: Int?
+    
+    /// Creates a new status bar model
+    /// - Parameters:
+    ///   - fileSize: The file size in bytes
+    ///   - dimensions: The image dimensions if applicable
+    ///   - line: The current line number
+    ///   - column: The current column number
+    ///   - characterOffset: The current character offset
+    ///   - selectedLength: The number of selected characters
+    ///   - selectedLines: The number of selected lines
+    public init(
+        fileSize: Int? = nil,
+        dimensions: ImageDimensions? = nil,
+        line: Int? = nil,
+        column: Int? = nil,
+        characterOffset: Int? = nil,
+        selectedLength: Int? = nil,
+        selectedLines: Int? = nil
+    ) {
+        self.fileSize = fileSize
+        self.dimensions = dimensions
+        self.line = line
+        self.column = column
+        self.characterOffset = characterOffset
+        self.selectedLength = selectedLength
+        self.selectedLines = selectedLines
     }
 }

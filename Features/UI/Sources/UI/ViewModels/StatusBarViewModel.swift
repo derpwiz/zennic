@@ -1,63 +1,82 @@
 import SwiftUI
+import Combine
 
-/// Manages the state of the status bar.
+/// A view model that manages the state of the status bar
 public final class StatusBarViewModel: ObservableObject {
-    /// The current line ending type.
-    @Published public var lineEnding: LineEnding = .lf
+    /// The current state of the status bar
+    @Published public var model: StatusBarModel
     
-    /// The current indentation type.
-    @Published public var indentationType: IndentationType = .spaces
+    /// The font style of items shown in the status bar
+    public let statusBarFont = Font.system(size: 11, weight: .medium)
     
-    /// The current file encoding.
-    @Published public var fileEncoding: FileEncoding = .utf8
+    /// The color of the text shown in the status bar
+    public let foregroundStyle = Color.secondary
     
-    /// The current cursor position.
-    @Published public var cursorPosition: (line: Int, column: Int) = (1, 1)
-    
-    /// Whether the file has unsaved changes.
-    @Published public var hasUnsavedChanges: Bool = false
-    
-    /// The current file path.
-    @Published public var filePath: String = ""
-    
-    /// The current file name.
-    public var fileName: String {
-        (filePath as NSString).lastPathComponent
+    /// Creates a new status bar view model
+    /// - Parameter model: The initial state of the status bar
+    public init(model: StatusBarModel = .init()) {
+        self.model = model
     }
     
-    /// Creates a new status bar view model.
-    public init() {}
-    
-    /// Updates the cursor position.
+    /// Updates the file information
     /// - Parameters:
-    ///   - line: The line number.
-    ///   - column: The column number.
-    public func updateCursorPosition(line: Int, column: Int) {
-        cursorPosition = (line, column)
+    ///   - fileSize: The file size in bytes
+    ///   - dimensions: The image dimensions if applicable
+    public func updateFileInfo(fileSize: Int?, dimensions: ImageDimensions?) {
+        model.fileSize = fileSize
+        model.dimensions = dimensions
     }
     
-    /// Updates the file path.
-    /// - Parameter path: The new file path.
-    public func updateFilePath(_ path: String) {
-        filePath = path
+    /// Updates the cursor position information
+    /// - Parameters:
+    ///   - line: The current line number
+    ///   - column: The current column number
+    ///   - characterOffset: The current character offset
+    public func updateCursorPosition(
+        line: Int?,
+        column: Int?,
+        characterOffset: Int?
+    ) {
+        model.line = line
+        model.column = column
+        model.characterOffset = characterOffset
     }
     
-    /// Updates whether the file has unsaved changes.
-    /// - Parameter hasChanges: Whether the file has unsaved changes.
-    public func updateUnsavedChanges(_ hasChanges: Bool) {
-        hasUnsavedChanges = hasChanges
+    /// Updates the selection information
+    /// - Parameters:
+    ///   - length: The number of selected characters
+    ///   - lines: The number of selected lines
+    public func updateSelection(length: Int?, lines: Int?) {
+        model.selectedLength = length
+        model.selectedLines = lines
     }
-}
-
-/// A key for accessing the status bar view model in the environment.
-private struct StatusBarViewModelKey: EnvironmentKey {
-    static let defaultValue = StatusBarViewModel()
-}
-
-extension EnvironmentValues {
-    /// The status bar view model.
-    public var statusBarViewModel: StatusBarViewModel {
-        get { self[StatusBarViewModelKey.self] }
-        set { self[StatusBarViewModelKey.self] = newValue }
+    
+    /// Formats the cursor position label based on the current state
+    /// - Parameter showCharacterOffset: Whether to show character offset instead of line/column
+    /// - Returns: A string describing the cursor position or selection
+    public func formatCursorPosition(showCharacterOffset: Bool = false) -> String {
+        // If there's a selection spanning multiple lines
+        if let selectedLines = model.selectedLines, selectedLines > 1 {
+            return "\(selectedLines) lines"
+        }
+        
+        // If there's a selection on a single line
+        if let selectedLength = model.selectedLength, selectedLength > 0 {
+            if showCharacterOffset {
+                return "Char: \(model.characterOffset ?? 0) Len: \(selectedLength)"
+            }
+            return "\(selectedLength) characters"
+        }
+        
+        // If it's just a cursor position
+        if showCharacterOffset {
+            return "Char: \(model.characterOffset ?? 0) Len: 0"
+        }
+        
+        if let line = model.line, let column = model.column {
+            return "Line: \(line)  Col: \(column)"
+        }
+        
+        return ""
     }
 }
