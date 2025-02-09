@@ -1,6 +1,6 @@
 import Foundation
 import Cgit2
-import UI
+import Shared
 
 /// A wrapper around libgit2 for Git operations
 public class GitWrapper: Loggable {
@@ -25,16 +25,15 @@ public class GitWrapper: Loggable {
         
         if result == GIT_ENOTFOUND.rawValue {
             // Repository doesn't exist, create it
-            logger.info("Creating new Git repository at: \(path)")
             try createRepository()
+            logger.info("Creating new Git repository at: \(path)")
         } else if result != 0 {
             // Other error
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.initFailed)
             throw GitError.initFailed
         } else {
-            logger.info("Opened existing Git repository at: \(path)")
             self.repo = repo
+            logger.info("Opened existing Git repository at: \(path)")
         }
     }
     
@@ -45,7 +44,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.initFailed)
             throw GitError.initFailed
         }
         
@@ -57,7 +55,6 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func getCurrentBranch() throws -> String {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
@@ -66,7 +63,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.branchFailed)
             throw GitError.branchFailed
         }
         
@@ -82,13 +78,11 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func getBranches() throws -> [String] {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
         var branches: OpaquePointer?
         guard git_branch_iterator_new(&branches, repo, GIT_BRANCH_LOCAL) == 0 else {
-            logger.error(GitError.branchFailed)
             throw GitError.branchFailed
         }
         defer { git_branch_iterator_free(branches) }
@@ -113,7 +107,6 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func createBranch(name: String) throws {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
@@ -121,7 +114,6 @@ public class GitWrapper: Loggable {
         var head = git_oid()
         guard git_reference_name_to_id(&head, repo, "HEAD") == 0,
               git_commit_lookup(&commit, repo, &head) == 0 else {
-            logger.error(GitError.branchFailed)
             throw GitError.branchFailed
         }
         defer { git_commit_free(commit) }
@@ -129,8 +121,7 @@ public class GitWrapper: Loggable {
         var branch: OpaquePointer?
         try name.withCString { name_str in
             guard git_branch_create(&branch, repo, name_str, commit, 0) == 0 else {
-                logger.error(GitError.branchFailed)
-                throw GitError.branchFailed
+            throw GitError.branchFailed
             }
         }
         if let branch = branch {
@@ -145,15 +136,13 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func checkoutBranch(name: String) throws {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
         var reference: OpaquePointer?
         try name.withCString { name_str in
             guard git_branch_lookup(&reference, repo, name_str, GIT_BRANCH_LOCAL) == 0 else {
-                logger.error(GitError.branchFailed)
-                throw GitError.branchFailed
+            throw GitError.branchFailed
             }
         }
         defer { git_reference_free(reference) }
@@ -163,12 +152,10 @@ public class GitWrapper: Loggable {
         
         guard let ref_name = git_reference_name(reference),
               git_checkout_tree(repo, nil, &opts) == 0 else {
-            logger.error(GitError.branchFailed)
             throw GitError.branchFailed
         }
         
         guard git_repository_set_head(repo, ref_name) == 0 else {
-            logger.error(GitError.branchFailed)
             throw GitError.branchFailed
         }
         
@@ -181,7 +168,6 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func getStatus() throws -> [(String, String)] {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
@@ -193,7 +179,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.statusFailed)
             throw GitError.statusFailed
         }
         
@@ -224,7 +209,6 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func add(file: String) throws {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
@@ -233,7 +217,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.addFailed)
             throw GitError.addFailed
         }
         
@@ -243,7 +226,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.addFailed)
             throw GitError.addFailed
         }
         
@@ -251,7 +233,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.addFailed)
             throw GitError.addFailed
         }
         
@@ -263,7 +244,6 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func commit(message: String) throws {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
@@ -272,7 +252,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.commitFailed)
             throw GitError.commitFailed
         }
         
@@ -285,7 +264,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.commitFailed)
             throw GitError.commitFailed
         }
         
@@ -293,7 +271,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.commitFailed)
             throw GitError.commitFailed
         }
         
@@ -304,7 +281,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.commitFailed)
             throw GitError.commitFailed
         }
         
@@ -315,7 +291,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.commitFailed)
             throw GitError.commitFailed
         }
         
@@ -326,7 +301,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.commitFailed)
             throw GitError.commitFailed
         }
         
@@ -350,7 +324,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.commitFailed)
             throw GitError.commitFailed
         }
         
@@ -363,7 +336,6 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func getFileHistory(file: String) throws -> [GitCommit] {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
@@ -372,7 +344,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.historyFailed)
             throw GitError.historyFailed
         }
         
@@ -390,8 +361,7 @@ public class GitWrapper: Loggable {
             
             if result != 0 {
                 let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-                logger.error(GitError.historyFailed)
-                throw GitError.historyFailed
+            throw GitError.historyFailed
             }
             
             defer { git_commit_free(commit) }
@@ -417,7 +387,6 @@ public class GitWrapper: Loggable {
     /// - Throws: GitError if the operation fails
     public func getDiff(file: String) throws -> String {
         guard let repo = repo else {
-            logger.error(GitError.notInitialized)
             throw GitError.notInitialized
         }
         
@@ -429,7 +398,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.diffFailed)
             throw GitError.diffFailed
         }
         
@@ -440,7 +408,6 @@ public class GitWrapper: Loggable {
         
         if result != 0 {
             let error = String(cString: git_error_last()?.pointee.message ?? "Unknown error")
-            logger.error(GitError.diffFailed)
             throw GitError.diffFailed
         }
         

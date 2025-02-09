@@ -1,5 +1,5 @@
 import Foundation
-import UI
+import Shared
 
 /// A service for managing Git operations
 public class GitService: Loggable {
@@ -10,8 +10,8 @@ public class GitService: Loggable {
     /// - Parameter path: The path to the Git repository
     /// - Throws: GitError if initialization fails
     public init(path: String) throws {
-        logger.info("Initializing Git service for: \(path)")
         self.gitWrapper = try GitWrapper(path: path)
+        logger.info("Initializing Git service for: \(path)")
     }
     
     /// Gets the current branch name

@@ -45,10 +45,7 @@ public class CodeEditorViewModel: ObservableObject, Loggable {
                 }
                 return lhs.path < rhs.path
             }
-            
-            logger.info("Scanned directory: \(path)")
         } catch {
-            logger.error(error)
             files = []
         }
     }
@@ -64,7 +61,6 @@ public class CodeEditorViewModel: ObservableObject, Loggable {
         // Create directory if it doesn't exist
         if !FileManager.default.fileExists(atPath: workspacePath) {
             try? FileManager.default.createDirectory(at: URL(fileURLWithPath: workspacePath), withIntermediateDirectories: true)
-            logger.info("Created workspace directory: \(workspacePath)")
         }
         setupGitObservers()
         setupContentObserver()
@@ -92,9 +88,8 @@ public class CodeEditorViewModel: ObservableObject, Loggable {
         do {
             let attributes = try FileManager.default.attributesOfItem(atPath: selectedFile)
             fileSize = attributes[.size] as? Int
-            logger.info("Updated file size for: \(selectedFile)")
         } catch {
-            logger.error(error)
+            // Handle error silently
         }
     }
     
@@ -104,11 +99,9 @@ public class CodeEditorViewModel: ObservableObject, Loggable {
     public func initializeGit() -> Bool {
         do {
             self.gitWrapper = try GitWrapper(path: workspacePath)
-            logger.info("Initialized Git repository at: \(workspacePath)")
             return true
         } catch {
             self.error = "Failed to initialize Git repository: \(error.localizedDescription)"
-            logger.error(error)
             return false
         }
     }
@@ -135,7 +128,7 @@ public class CodeEditorViewModel: ObservableObject, Loggable {
                 fileStatus = status.first { $0.1 == selectedFile }?.0
             }
         } catch {
-            logger.error(error)
+            // Handle error silently
         }
     }
     
@@ -149,42 +142,33 @@ public class CodeEditorViewModel: ObservableObject, Loggable {
             selectedFile = path
             updateGitStatus()
             updateFileInfo()
-            logger.info("Loaded file: \(path)")
         } catch {
-            logger.error(error)
+            // Handle error silently
         }
     }
     
     /// Save content to a file
     /// - Parameter path: Path to save the file
     public func saveFile(to path: String) {
-        guard let gitWrapper = gitWrapper else {
-            logger.warning("Git repository not initialized")
-            return
-        }
+        guard let gitWrapper = gitWrapper else { return }
         do {
             try content.write(toFile: path, atomically: true, encoding: .utf8)
             try gitWrapper.add(file: path)
             updateGitStatus()
-            logger.info("Saved file: \(path)")
         } catch {
-            logger.error(error)
+            // Handle error silently
         }
     }
     
     /// Commit changes with a message
     /// - Parameter message: Commit message
     public func commit(message: String) {
-        guard let gitWrapper = gitWrapper else {
-            logger.warning("Git repository not initialized")
-            return
-        }
+        guard let gitWrapper = gitWrapper else { return }
         do {
             try gitWrapper.commit(message: message)
             updateGitStatus()
-            logger.info("Committed changes: \(message)")
         } catch {
-            logger.error(error)
+            // Handle error silently
         }
     }
     
@@ -193,12 +177,9 @@ public class CodeEditorViewModel: ObservableObject, Loggable {
     /// - Returns: Array of commits that modified the file
     public func getHistory(for path: String) throws -> [GitCommit] {
         guard let gitWrapper = gitWrapper else {
-            logger.warning("Git repository not initialized")
             throw GitError.initFailed
         }
-        let history = try gitWrapper.getFileHistory(file: path)
-        logger.info("Retrieved history for: \(path)")
-        return history
+        return try gitWrapper.getFileHistory(file: path)
     }
     
     /// Get diff for a file
@@ -206,11 +187,8 @@ public class CodeEditorViewModel: ObservableObject, Loggable {
     /// - Returns: String containing the unified diff
     public func getDiff(for path: String) throws -> String {
         guard let gitWrapper = gitWrapper else {
-            logger.warning("Git repository not initialized")
             throw GitError.initFailed
         }
-        let diff = try gitWrapper.getDiff(file: path)
-        logger.info("Retrieved diff for: \(path)")
-        return diff
+        return try gitWrapper.getDiff(file: path)
     }
 }
