@@ -9,7 +9,7 @@ public struct SplitView<Content: View>: View {
     private let content: Content
     
     /// Reference to the split view controller
-    @State private var viewController: () -> SplitViewController<Content>? = { nil }
+    @State private var viewController: SplitViewController<Content>? = nil
     
     /// Creates a new split view
     /// - Parameters:
@@ -25,7 +25,7 @@ public struct SplitView<Content: View>: View {
             axis: axis,
             viewController: $viewController
         ))
-        ._trait(SplitViewControllerLayoutValueKey.self, viewController)
+        .environment(\.splitViewController, viewController)
         .accessibilityElement(children: .contain)
     }
 }
@@ -51,15 +51,22 @@ public extension SplitView {
     }
 }
 
+/// A view modifier that handles split view layout
 private struct SplitViewModifier<Content: View>: ViewModifier {
+    /// The axis along which to split the views
     let axis: Axis
-    @Binding var viewController: () -> SplitViewController<Content>?
+    
+    /// Binding to the split view controller
+    @Binding var viewController: SplitViewController<Content>?
     
     func body(content: Content) -> some View {
         SplitViewControllerView(
             axis: axis,
             content: content,
-            viewController: $viewController
+            viewController: Binding(
+                get: { { viewController } },
+                set: { viewController = $0() }
+            )
         )
     }
 }

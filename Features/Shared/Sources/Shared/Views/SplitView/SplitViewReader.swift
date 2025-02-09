@@ -6,7 +6,7 @@ public struct SplitViewReader<Content: View>: View {
     private let content: (SplitViewController<Content>?) -> Content
     
     /// The current split view controller from the environment
-    @Environment(\.splitViewController) private var controller
+    @Environment(\.splitViewController) private var controller: SplitViewController<Content>?
     
     /// Creates a new split view reader
     /// - Parameter content: A closure that takes a split view controller and returns a view
