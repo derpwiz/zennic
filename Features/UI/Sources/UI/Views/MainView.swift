@@ -5,10 +5,9 @@ import CodeEditorInterface
 
 public struct _MainView: View {
     @EnvironmentObject var appState: AppState
+    @StateObject private var utilityAreaViewModel = UtilityAreaViewModel()
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var isShowingSettings = false
-    @State private var utilityAreaCollapsed = true
-    @State private var utilityAreaMaximized = false
     @State private var editorsHeight: CGFloat = 0
     @State private var drawerHeight: CGFloat = 0
     
@@ -198,11 +197,11 @@ public struct _MainView: View {
                         }
                         .frame(minHeight: 170 + statusbarHeight + statusbarHeight)
                         .collapsable()
-                        .collapsed($utilityAreaMaximized)
+                        .collapsed($utilityAreaViewModel.isMaximized)
                         
                         Rectangle()
                             .collapsable()
-                            .collapsed($utilityAreaCollapsed)
+                            .collapsed($utilityAreaViewModel.isCollapsed)
                             .opacity(0)
                             .frame(idealHeight: 260)
                             .frame(minHeight: 100)
@@ -224,21 +223,20 @@ public struct _MainView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .overlay(alignment: .top) {
                         ZStack(alignment: .top) {
-                            Rectangle()
-                                .fill(Color.clear)
-                                .frame(height: utilityAreaMaximized ? nil : drawerHeight)
-                                .frame(maxHeight: utilityAreaMaximized ? .infinity : nil)
-                                .padding(.top, utilityAreaMaximized ? statusbarHeight + 1 : 0)
-                                .offset(y: utilityAreaMaximized ? 0 : editorsHeight + 1)
+                            UtilityAreaView()
+                                .frame(height: utilityAreaViewModel.isMaximized ? nil : drawerHeight)
+                                .frame(maxHeight: utilityAreaViewModel.isMaximized ? .infinity : nil)
+                                .padding(.top, utilityAreaViewModel.isMaximized ? statusbarHeight + 1 : 0)
+                                .offset(y: utilityAreaViewModel.isMaximized ? 0 : editorsHeight + 1)
                             VStack(spacing: 0) {
                                 Rectangle()
                                     .fill(Color.clear)
                                     .frame(height: statusbarHeight)
-                                if utilityAreaMaximized {
+                                if utilityAreaViewModel.isMaximized {
                                     PanelDivider()
                                 }
                             }
-                            .offset(y: utilityAreaMaximized ? 0 : editorsHeight - statusbarHeight)
+                            .offset(y: utilityAreaViewModel.isMaximized ? 0 : editorsHeight - statusbarHeight)
                         }
                         .accessibilityElement(children: .contain)
                     }
@@ -248,6 +246,7 @@ public struct _MainView: View {
         }
         .preferredColorScheme(appState.isDarkMode ? .dark : .light)
         .background(EffectView(.contentBackground))
+        .environmentObject(utilityAreaViewModel)
     }
 }
 
