@@ -98,6 +98,9 @@ public struct UtilityAreaSplitView<Content: View>: View {
                 .animation(.spring(), value: viewModel.isMaximized)
         }
         .environmentObject(viewModel)
+        .onAppear {
+            LoggingService.shared.register(viewModel)
+        }
     }
 }
 

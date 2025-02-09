@@ -1,0 +1,85 @@
+import SwiftUI
+import Combine
+
+/// A service for logging messages to the output and debug views
+public final class LoggingService: ObservableObject {
+    /// The shared instance
+    public static let shared = LoggingService()
+    
+    /// The utility area view model
+    private weak var utilityAreaViewModel: UtilityAreaViewModel?
+    
+    /// The output subject
+    private let outputSubject = PassthroughSubject<String, Never>()
+    
+    /// The debug subject
+    private let debugSubject = PassthroughSubject<(String, LogLevel), Never>()
+    
+    /// The cancellables
+    private var cancellables = Set<AnyCancellable>()
+    
+    /// Creates a new logging service
+    private init() {
+        // Set up output subscription
+        outputSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] text in
+                self?.utilityAreaViewModel?.outputViewModel.append(text)
+            }
+            .store(in: &cancellables)
+        
+        // Set up debug subscription
+        debugSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] text, level in
+                self?.utilityAreaViewModel?.debugViewModel.log(text, level: level)
+            }
+            .store(in: &cancellables)
+    }
+    
+    /// Registers a utility area view model
+    /// - Parameter viewModel: The view model to register
+    public func register(_ viewModel: UtilityAreaViewModel) {
+        self.utilityAreaViewModel = viewModel
+    }
+    
+    /// Logs a message to the output view
+    /// - Parameter text: The text to log
+    public func output(_ text: String) {
+        outputSubject.send(text)
+    }
+    
+    /// Logs a message to the debug view
+    /// - Parameters:
+    ///   - text: The text to log
+    ///   - level: The log level
+    public func debug(_ text: String, level: LogLevel = .info) {
+        debugSubject.send((text, level))
+    }
+    
+    /// Logs an error message to the debug view
+    /// - Parameter error: The error to log
+    public func error(_ error: Error) {
+        debug(error.localizedDescription, level: .error)
+    }
+    
+    /// Logs a warning message to the debug view
+    /// - Parameter text: The text to log
+    public func warning(_ text: String) {
+        debug(text, level: .warning)
+    }
+    
+    /// Logs an info message to the debug view
+    /// - Parameter text: The text to log
+    public func info(_ text: String) {
+        debug(text, level: .info)
+    }
+}
+
+/// Extension to add logging to any object
+public protocol Loggable {}
+
+extension Loggable {
+    /// The logging service
+    public var logger: LoggingService { .shared }
+}
