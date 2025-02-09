@@ -14,14 +14,16 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "../Shared")
+        .package(path: "../Shared"),
+        .package(path: "../UI")
     ],
     targets: [
         .target(
             name: "Core",
             dependencies: [
                 "Cgit2",
-                "Shared"
+                "Shared",
+                "UI"
             ],
             path: "Sources/Core",
             exclude: ["include/Core-Swift.h"],
