@@ -298,7 +298,10 @@ public class GitWrapper: Loggable {
         defer { git_reference_free(head) }
         
         var parent: OpaquePointer?
-        result = git_commit_lookup(&parent, repo, git_reference_target(head))
+        guard let target = git_reference_target(head) else {
+            throw GitError.commitFailed
+        }
+        result = git_commit_lookup(&parent, repo, target)
         
         if result != 0 {
             throw GitError.commitFailed
@@ -307,9 +310,12 @@ public class GitWrapper: Loggable {
         defer { git_commit_free(parent) }
         
         var commitId = git_oid()
-        var parentsArray = [OpaquePointer](repeating: parent, count: 1)
+        guard let unwrappedParent = parent else {
+            throw GitError.commitFailed
+        }
+        var parentsArray = [OpaquePointer](repeating: unwrappedParent, count: 1)
         
-        result = parentsArray.withUnsafeMutableBufferPointer { parentsPtr in
+        result = withUnsafeMutablePointer(to: &parentsArray[0]) { parentsPtr in
             message.withCString { cMessage in
                 "HEAD".withCString { cHead in
                     "UTF-8".withCString { cEncoding in
@@ -323,7 +329,7 @@ public class GitWrapper: Loggable {
                             cMessage,
                             tree,
                             1,
-                            parentsPtr.baseAddress
+                            parentsPtr
                         )
                     }
                 }
