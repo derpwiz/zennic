@@ -229,9 +229,7 @@ public struct _MainView: View {
                                 .padding(.top, utilityAreaViewModel.isMaximized ? statusbarHeight + 1 : 0)
                                 .offset(y: utilityAreaViewModel.isMaximized ? 0 : editorsHeight + 1)
                             VStack(spacing: 0) {
-                                Rectangle()
-                                    .fill(Color.clear)
-                                    .frame(height: statusbarHeight)
+                                StatusBarView()
                                 if utilityAreaViewModel.isMaximized {
                                     PanelDivider()
                                 }
