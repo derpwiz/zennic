@@ -22,8 +22,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Core", package: "Core"),
                 "Shared"
-            ],
-            path: "Sources"
+            ]
         )
     ]
 )
