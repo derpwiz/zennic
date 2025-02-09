@@ -307,9 +307,9 @@ public class GitWrapper: Loggable {
         defer { git_commit_free(parent) }
         
         var commitId = git_oid()
-        var parents = [parent]
+        var parentsArray = [OpaquePointer](repeating: parent, count: 1)
         
-        result = withUnsafeMutablePointer(to: &parents[0]) { parentsPtr in
+        result = parentsArray.withUnsafeMutableBufferPointer { parentsPtr in
             message.withCString { cMessage in
                 "HEAD".withCString { cHead in
                     "UTF-8".withCString { cEncoding in
@@ -323,7 +323,7 @@ public class GitWrapper: Loggable {
                             cMessage,
                             tree,
                             1,
-                            parentsPtr
+                            parentsPtr.baseAddress
                         )
                     }
                 }
@@ -411,7 +411,7 @@ public class GitWrapper: Loggable {
         defer { git_diff_free(diff) }
         
         var buffer = git_buf()
-        result = git_diff_to_buf(&buffer, diff, git_diff_format_t(GIT_DIFF_FORMAT_PATCH))
+        result = git_diff_to_buf(&buffer, diff, GIT_DIFF_FORMAT_PATCH)
         
         if result != 0 {
             throw GitError.diffFailed
