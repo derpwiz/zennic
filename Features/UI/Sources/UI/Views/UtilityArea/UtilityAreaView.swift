@@ -62,7 +62,7 @@ public struct UtilityAreaView: View {
                     case .debug:
                         EmptyView() // TODO: Implement debug view
                     case .terminal:
-                        EmptyView() // TODO: Implement terminal view
+                        TerminalView(workingDirectory: FileManager.default.currentDirectoryPath)
                     }
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
