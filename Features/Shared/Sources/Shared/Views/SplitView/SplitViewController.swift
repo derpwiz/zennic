@@ -9,7 +9,7 @@ public final class SplitViewController<Content: View>: NSSplitViewController {
     let axis: Axis
     
     /// Reference to the parent view for updating the view controller binding
-    var parentView: SplitViewControllerView
+    var parentView: SplitViewControllerView<Content>
     
     /// The content to display in the split view
     private var content: Content
@@ -19,7 +19,7 @@ public final class SplitViewController<Content: View>: NSSplitViewController {
     ///   - parent: The parent view that created this controller
     ///   - content: The content to display in the split view
     ///   - axis: The axis along which to split items
-    init(parent: SplitViewControllerView, content: Content, axis: Axis = .horizontal) {
+    init(parent: SplitViewControllerView<Content>, content: Content, axis: Axis = .horizontal) {
         self.parentView = parent
         self.content = content
         self.axis = axis
@@ -39,9 +39,7 @@ public final class SplitViewController<Content: View>: NSSplitViewController {
         
         // Update the parent's view controller reference
         DispatchQueue.main.async { [weak self] in
-            self?.parentView.viewController = { [weak self] in
-                self
-            }
+            self?.parentView.viewController = self
         }
     }
     
