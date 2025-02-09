@@ -60,7 +60,7 @@ public struct UtilityAreaView: View {
                     case .output:
                         OutputView(text: $viewModel.outputViewModel.text)
                     case .debug:
-                        EmptyView() // TODO: Implement debug view
+                        DebugView()
                     case .terminal:
                         TerminalView(workingDirectory: FileManager.default.currentDirectoryPath)
                     }

@@ -62,6 +62,9 @@ public final class UtilityAreaViewModel: ObservableObject {
     /// The output view model
     @Published public var outputViewModel = OutputViewModel()
     
+    /// The debug view model
+    @Published public var debugViewModel = DebugViewModel()
+    
     /// Creates a new utility area view model
     public init() {}
 }
