@@ -22,13 +22,10 @@ public struct SplitView<Content: View>: View {
     
     public var body: some View {
         VStack {
-            content.variadic { children in
-                SplitViewControllerView(
-                    axis: axis,
-                    children: children,
-                    viewController: $viewController
-                )
-            }
+            ViewBuilder.buildBlock(content).modifier(SplitViewModifier(
+                axis: axis,
+                viewController: $viewController
+            ))
         }
         ._trait(SplitViewControllerLayoutValueKey.self, viewController)
         .accessibilityElement(children: .contain)
@@ -40,19 +37,38 @@ public extension SplitView {
     /// Creates a horizontal split view
     /// - Parameter content: A view builder that creates the content views
     /// - Returns: A horizontal split view
-    static func horizontal<Content: View>(
+    static func horizontal(
         @ViewBuilder content: () -> Content
-    ) -> SplitView<Content> {
+    ) -> Self {
         SplitView(axis: .horizontal, content: content)
     }
     
     /// Creates a vertical split view
     /// - Parameter content: A view builder that creates the content views
     /// - Returns: A vertical split view
-    static func vertical<Content: View>(
+    static func vertical(
         @ViewBuilder content: () -> Content
-    ) -> SplitView<Content> {
+    ) -> Self {
         SplitView(axis: .vertical, content: content)
+    }
+}
+
+private struct SplitViewModifier: ViewModifier {
+    let axis: Axis
+    @Binding var viewController: () -> SplitViewController?
+    
+    func body(content: Content) -> some View {
+        Group {
+            if let children = (content as? _VariadicView_Children)?.children {
+                SplitViewControllerView(
+                    axis: axis,
+                    children: children,
+                    viewController: $viewController
+                )
+            } else {
+                content
+            }
+        }
     }
 }
 
@@ -70,4 +86,3 @@ public extension SplitView {
             .collapsible()
     }
     .frame(width: 800, height: 400)
-}
