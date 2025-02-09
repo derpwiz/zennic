@@ -1,73 +1,95 @@
 import SwiftUI
 
-/// A view that provides its content with a proxy for reading split view state.
+/// A view that provides access to the parent split view controller
 public struct SplitViewReader<Content: View>: View {
-    private let content: (SplitViewProxy) -> Content
-    @StateObject private var proxy = SplitViewProxy()
+    /// The content to display
+    private let content: (SplitViewController?) -> Content
     
-    /// Creates a split view reader with the given content.
-    /// - Parameter content: A closure that creates content using the proxy.
-    public init(@ViewBuilder content: @escaping (SplitViewProxy) -> Content) {
+    /// Creates a new split view reader
+    /// - Parameter content: A closure that takes a split view controller and returns a view
+    public init(@ViewBuilder content: @escaping (SplitViewController?) -> Content) {
         self.content = content
     }
     
     public var body: some View {
-        content(proxy)
-            .environmentObject(proxy)
+        content(viewController)
+            .environment(\.splitViewController, viewController)
+    }
+    
+    /// The parent split view controller
+    private var viewController: SplitViewController? {
+        let value = self[SplitViewControllerLayoutValueKey.self]
+        return value()
     }
 }
 
-/// A proxy object that provides access to split view state.
-public final class SplitViewProxy: ObservableObject {
-    @Published public private(set) var isCollapsed = false
-    @Published public private(set) var isMaximized = false
-    
-    /// Toggles the collapsed state.
-    public func toggleCollapsed() {
-        isCollapsed.toggle()
-    }
-    
-    /// Toggles the maximized state.
-    public func toggleMaximized() {
-        isMaximized.toggle()
-    }
-    
-    /// Sets the collapsed state.
-    /// - Parameter collapsed: The new collapsed state.
-    public func setCollapsed(_ collapsed: Bool) {
-        isCollapsed = collapsed
-    }
-    
-    /// Sets the maximized state.
-    /// - Parameter maximized: The new maximized state.
-    public func setMaximized(_ maximized: Bool) {
-        isMaximized = maximized
+/// Environment key for accessing the split view controller
+private struct SplitViewControllerKey: EnvironmentKey {
+    static let defaultValue: SplitViewController? = nil
+}
+
+extension EnvironmentValues {
+    /// The current split view controller
+    var splitViewController: SplitViewController? {
+        get { self[SplitViewControllerKey.self] }
+        set { self[SplitViewControllerKey.self] = newValue }
     }
 }
 
-/// A view modifier that makes a view collapsable.
-public struct CollapsableModifier: ViewModifier {
-    @Binding var collapsed: Bool
-    
-    public func body(content: Content) -> some View {
-        content
-            .frame(height: collapsed ? 0 : nil)
-            .opacity(collapsed ? 0 : 1)
+/// Extension to provide convenience methods for collapsing/expanding views
+public extension View {
+    /// Collapses or expands this view in its parent split view
+    /// - Parameter isCollapsed: Whether the view should be collapsed
+    /// - Returns: A modified view that can be collapsed/expanded
+    func collapsed(_ isCollapsed: Bool) -> some View {
+        modifier(CollapsedModifier(isCollapsed: isCollapsed))
     }
 }
 
-extension View {
-    /// Makes this view collapsable.
-    /// - Parameter collapsed: A binding to the collapsed state.
-    /// - Returns: A view that can be collapsed.
-    public func collapsable() -> some View {
-        modifier(CollapsableModifier(collapsed: .constant(false)))
-    }
+/// A view modifier that handles collapsing/expanding views
+private struct CollapsedModifier: ViewModifier {
+    /// The environment's split view controller
+    @Environment(\.splitViewController) private var splitViewController
     
-    /// Makes this view collapsable.
-    /// - Parameter collapsed: A binding to the collapsed state.
-    /// - Returns: A view that can be collapsed.
-    public func collapsed(_ collapsed: Binding<Bool>) -> some View {
-        modifier(CollapsableModifier(collapsed: collapsed))
+    /// Whether the view should be collapsed
+    let isCollapsed: Bool
+    
+    func body(content: Content) -> some View {
+        content.id("split-view-item-\(isCollapsed)")
+            .onAppear {
+                splitViewController?.collapse(
+                    for: "split-view-item-\(isCollapsed)",
+                    enabled: isCollapsed
+                )
+            }
+            .onChange(of: isCollapsed) { newValue in
+                splitViewController?.collapse(
+                    for: "split-view-item-\(isCollapsed)",
+                    enabled: newValue
+                )
+            }
     }
+}
+
+#Preview {
+    SplitView.horizontal {
+        Color.red
+            .frame(minWidth: 200, maxWidth: 300)
+        
+        SplitViewReader { controller in
+            Color.blue
+                .frame(maxWidth: .infinity)
+                .overlay(alignment: .topLeading) {
+                    Button("Toggle Left") {
+                        controller?.collapse(for: "split-view-item-true", enabled: true)
+                    }
+                    .padding()
+                }
+        }
+        
+        Color.green
+            .frame(width: 200)
+            .collapsed(true)
+    }
+    .frame(width: 800, height: 400)
 }
