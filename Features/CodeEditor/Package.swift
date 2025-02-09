@@ -19,13 +19,15 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(path: "../Core")
+        .package(path: "../Core"),
+        .package(path: "../Shared")
     ],
     targets: [
         .target(
             name: "CodeEditorInterface",
             dependencies: [
-                .product(name: "Core", package: "Core")
+                .product(name: "Core", package: "Core"),
+                .product(name: "Shared", package: "Shared")
             ],
             path: "Sources/CodeEditorInterface"
         ),
@@ -33,6 +35,7 @@ let package = Package(
             name: "CodeEditor",
             dependencies: [
                 .product(name: "Core", package: "Core"),
+                .product(name: "Shared", package: "Shared"),
                 "CodeEditorInterface"
             ],
             path: "Sources/CodeEditor"
