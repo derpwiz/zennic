@@ -4,7 +4,6 @@ module Core {
     
     explicit module Swift {
         header "Core-Swift.h"
-        requires objc
     }
     
     link "git2"
