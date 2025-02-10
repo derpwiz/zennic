@@ -1,16 +1,16 @@
 import SwiftUI
 
-public struct SplitViewControllerPreferenceKey: PreferenceKey {
-    public static var defaultValue: SplitViewController? = nil
-    public static func reduce(value: inout SplitViewController?, nextValue: () -> SplitViewController?) {
+internal struct SplitViewControllerPreferenceKey: PreferenceKey {
+    internal static var defaultValue: SplitViewController? = nil
+    internal static func reduce(value: inout SplitViewController?, nextValue: () -> SplitViewController?) {
         value = nextValue()
     }
 }
 
 /// A view that provides access to the parent split view controller
-public struct SplitViewReader<Content: View>: View {
+internal struct SplitViewReader<Content: View>: View {
     /// The content to display
-    @ViewBuilder var content: (SplitViewProxy) -> Content
+    @ViewBuilder internal var content: (SplitViewProxy) -> Content
     
     @State private var viewController: SplitViewController?
     
@@ -20,11 +20,11 @@ public struct SplitViewReader<Content: View>: View {
     
     /// Creates a new split view reader
     /// - Parameter content: A closure that takes a split view proxy and returns a view
-    public init(@ViewBuilder content: @escaping (SplitViewProxy) -> Content) {
+    internal init(@ViewBuilder content: @escaping (SplitViewProxy) -> Content) {
         self.content = content
     }
     
-    public var body: some View {
+    internal var body: some View {
         content(proxy)
             .onPreferenceChange(SplitViewControllerPreferenceKey.self) { controller in
                 viewController = controller
@@ -33,10 +33,10 @@ public struct SplitViewReader<Content: View>: View {
 }
 
 /// A proxy for interacting with the split view controller
-public struct SplitViewProxy {
+internal struct SplitViewProxy {
     private var viewController: () -> SplitViewController?
     
-    public init(viewController: @escaping () -> SplitViewController?) {
+    internal init(viewController: @escaping () -> SplitViewController?) {
         self.viewController = viewController
     }
     
@@ -44,7 +44,7 @@ public struct SplitViewProxy {
     /// - Parameters:
     ///   - index: index of the divider. The leftmost/top divider has index 0
     ///   - position: position to place the divider. This is a position inside the views width/height
-    public func setPosition(of index: Int, position: CGFloat) {
+    internal func setPosition(of index: Int, position: CGFloat) {
         viewController()?.splitView.setPosition(position, ofDividerAt: index)
     }
     
@@ -52,7 +52,7 @@ public struct SplitViewProxy {
     /// - Parameters:
     ///   - id: ID of the view
     ///   - enabled: true for collapse
-    public func collapseView(with id: AnyHashable, _ enabled: Bool) {
+    internal func collapseView(with id: AnyHashable, _ enabled: Bool) {
         viewController()?.collapse(for: id, enabled: enabled)
     }
     
@@ -61,7 +61,7 @@ public struct SplitViewProxy {
     ///   - id: ID of the view
     ///   - enabled: true for collapse
     @available(*, deprecated, message: "Use collapseView(with:_:) instead")
-    public func collapse(for id: AnyHashable, enabled: Bool) {
+    internal func collapse(for id: AnyHashable, enabled: Bool) {
         collapseView(with: id, enabled)
     }
 }
