@@ -1,7 +1,7 @@
 import SwiftUI
 import AppKit
 
-internal final class SplitViewController: NSSplitViewController {
+internal final class SplitViewController: NSSplitViewController, SplitViewControllerType {
     internal var items: [SplitViewItem] = []
     internal var axis: Axis
     internal var parentView: SplitViewControllerView

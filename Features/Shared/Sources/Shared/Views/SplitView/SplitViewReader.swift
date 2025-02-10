@@ -1,102 +1,67 @@
 import SwiftUI
 
+public struct SplitViewControllerPreferenceKey: PreferenceKey {
+    public static var defaultValue: SplitViewControllerType? = nil
+    public static func reduce(value: inout SplitViewControllerType?, nextValue: () -> SplitViewControllerType?) {
+        value = nextValue()
+    }
+}
+
 /// A view that provides access to the parent split view controller
 public struct SplitViewReader<Content: View>: View {
     /// The content to display
-    private let content: (SplitViewController<Content>?) -> Content
+    @ViewBuilder var content: (SplitViewProxy) -> Content
     
-    /// The current split view controller from the environment
-    @Environment(\.splitViewController) private var baseController
+    @State private var viewController: SplitViewControllerType?
+    
+    private var proxy: SplitViewProxy {
+        .init(viewController: { viewController })
+    }
     
     /// Creates a new split view reader
-    /// - Parameter content: A closure that takes a split view controller and returns a view
-    public init(@ViewBuilder content: @escaping (SplitViewController<Content>?) -> Content) {
+    /// - Parameter content: A closure that takes a split view proxy and returns a view
+    public init(@ViewBuilder content: @escaping (SplitViewProxy) -> Content) {
         self.content = content
     }
     
     public var body: some View {
-        let controller = baseController.map { base in
-            // Create a new controller with the same properties
-            SplitViewController(
-                parent: base.parentView,
-                content: base.content as! Content,  // Safe cast since we control the type
-                axis: base.axis
-            )
-        }
-        content(controller)
-            .environment(\.splitViewController, baseController)
+        content(proxy)
+            .onPreferenceChange(SplitViewControllerPreferenceKey.self) { controller in
+                viewController = controller
+            }
     }
 }
 
-/// Environment key for accessing the split view controller
-private struct SplitViewControllerKey: EnvironmentKey {
-    static let defaultValue: SplitViewController<AnyView>? = nil
-}
-
-extension EnvironmentValues {
-    /// The current split view controller
-    var splitViewController: SplitViewController<AnyView>? {
-        get { self[SplitViewControllerKey.self] }
-        set { self[SplitViewControllerKey.self] = newValue }
-    }
-}
-
-/// Extension to provide convenience methods for collapsing/expanding views
-public extension View {
-    /// Collapses or expands this view in its parent split view
-    /// - Parameter isCollapsed: Whether the view should be collapsed
-    /// - Returns: A modified view that can be collapsed/expanded
-    func collapsed(_ isCollapsed: Bool) -> some View {
-        modifier(CollapsedModifier(isCollapsed: isCollapsed))
-    }
-}
-
-/// A view modifier that handles collapsing/expanding views
-private struct CollapsedModifier: ViewModifier {
-    /// The environment's split view controller
-    @Environment(\.splitViewController) private var controller
+/// A proxy for interacting with the split view controller
+public struct SplitViewProxy {
+    private var viewController: () -> SplitViewControllerType?
     
-    /// Whether the view should be collapsed
-    let isCollapsed: Bool
-    
-    func body(content: Content) -> some View {
-        content.id("split-view-item-\(isCollapsed)")
-            .onAppear {
-                controller?.collapse(
-                    for: "split-view-item-\(isCollapsed)",
-                    enabled: isCollapsed
-                )
-            }
-            .onChange(of: isCollapsed) { newValue in
-                controller?.collapse(
-                    for: "split-view-item-\(isCollapsed)",
-                    enabled: newValue
-                )
-            }
+    public init(viewController: @escaping () -> SplitViewControllerType?) {
+        self.viewController = viewController
     }
-}
-
-struct SplitViewReader_Previews: PreviewProvider {
-    static var previews: some View {
-        SplitView.horizontal {
-            Color.red
-                .frame(minWidth: 200, maxWidth: 300)
-            
-            SplitViewReader { controller in
-                Color.blue
-                    .frame(maxWidth: .infinity)
-                    .overlay(alignment: .topLeading) {
-                        Button("Toggle Left") {
-                            controller?.collapse(for: "split-view-item-true", enabled: true)
-                        }
-                        .padding()
-                    }
-            }
-            
-            Color.green
-                .frame(width: 200)
-                .collapsed(true)
-        }
-        .frame(width: 800, height: 400)
+    
+    /// Set the position of a divider in a splitview
+    /// - Parameters:
+    ///   - index: index of the divider. The leftmost/top divider has index 0
+    ///   - position: position to place the divider. This is a position inside the views width/height
+    public func setPosition(of index: Int, position: CGFloat) {
+        viewController()?.splitView.setPosition(position, ofDividerAt: index)
+    }
+    
+    /// Collapse a view of the splitview
+    /// - Parameters:
+    ///   - id: ID of the view
+    ///   - enabled: true for collapse
+    public func collapseView(with id: AnyHashable, _ enabled: Bool) {
+        viewController()?.collapse(for: id, enabled: enabled)
+    }
+    
+    /// Collapse a view of the splitview (deprecated)
+    /// - Parameters:
+    ///   - id: ID of the view
+    ///   - enabled: true for collapse
+    @available(*, deprecated, message: "Use collapseView(with:_:) instead")
+    public func collapse(for id: AnyHashable, enabled: Bool) {
+        collapseView(with: id, enabled)
     }
 }
