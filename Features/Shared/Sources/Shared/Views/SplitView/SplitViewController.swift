@@ -1,6 +1,7 @@
 import SwiftUI
 
-final class SplitViewController: NSSplitViewController {
+@available(macOS 14.0, *)
+public final class SplitViewController: NSSplitViewController {
     var items: [SplitViewItem] = []
     var axis: Axis
     var parentView: SplitViewControllerView
@@ -33,7 +34,7 @@ final class SplitViewController: NSSplitViewController {
         items.first { $0.id == id }?.item.animator().isCollapsed = enabled
     }
     
-    func setPosition(of index: Int, position: CGFloat) {
+    public func setPosition(of index: Int, position: CGFloat) {
         guard index < splitView.arrangedSubviews.count else { return }
         let view = splitView.arrangedSubviews[index]
         if axis == .vertical {
