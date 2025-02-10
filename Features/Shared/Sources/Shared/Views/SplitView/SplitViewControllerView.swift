@@ -1,16 +1,15 @@
 import SwiftUI
 
-struct SplitViewControllerView: NSViewControllerRepresentable {
-
+public struct SplitViewControllerView: NSViewControllerRepresentable {
     var axis: Axis
     var children: _VariadicView.Children
     @Binding var viewController: () -> SplitViewController?
 
-    func makeNSViewController(context: Context) -> SplitViewController {
+    public func makeNSViewController(context: Context) -> SplitViewController {
         context.coordinator
     }
 
-    func updateNSViewController(_ controller: SplitViewController, context: Context) {
+    public func updateNSViewController(_ controller: SplitViewController, context: Context) {
         updateItems(controller: controller)
     }
 
@@ -53,7 +52,7 @@ struct SplitViewControllerView: NSViewControllerRepresentable {
         }
     }
 
-    func makeCoordinator() -> SplitViewController {
+    public func makeCoordinator() -> SplitViewController {
         SplitViewController(parent: self, axis: axis)
     }
 }
