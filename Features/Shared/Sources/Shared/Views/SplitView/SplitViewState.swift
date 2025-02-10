@@ -1,23 +1,23 @@
 import SwiftUI
 
 @MainActor public final class SplitViewState: ObservableObject {
-    @Published public private(set) var items: [SplitViewItemProtocol] {
-        get { _items }
-        set { _items = newValue as! [SplitViewItem] } // swiftlint:disable:this force_cast
+    @Published private var _items: [SplitViewItem] = []
+    
+    public var items: [SplitViewItemProtocol] {
+        _items
     }
-    private var _items: [SplitViewItem] = []
     
     public init() {}
     
     internal func updateItems(children: _VariadicView.Children, completion: @escaping ([SplitViewItem]) -> Void) {
         let newItems = children.map { child -> SplitViewItem in
-            if let existingItem = items.first(where: { $0.id == child.id }) {
+            if let existingItem = _items.first(where: { $0.id == child.id }) as? SplitViewItem {
                 existingItem.update(child: child)
                 return existingItem
             }
             return SplitViewItem(child: child)
         }
-        items = newItems
+        _items = newItems
         completion(newItems)
     }
     
@@ -48,7 +48,7 @@ import SwiftUI
     ///   - id: The id of the item to collapse/expand
     ///   - collapsed: Whether to collapse (true) or expand (false) the item
     public func setCollapsed(_ collapsed: Bool, for id: AnyHashable) {
-        guard let item = _items.first(where: { $0.id == id }) else { return }
+        guard let item = _items.first(where: { $0.id == id }) as? SplitViewItem else { return }
         item.item.animator().isCollapsed = collapsed
     }
 }
