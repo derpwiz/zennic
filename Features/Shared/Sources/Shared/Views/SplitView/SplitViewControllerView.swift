@@ -1,34 +1,36 @@
 import SwiftUI
+import AppKit
 
-/// A SwiftUI wrapper for NSSplitViewController that manages split view items
-struct SplitViewControllerView<Content: View>: NSViewControllerRepresentable {
-    /// The axis along which to split the views
-    let axis: Axis
+internal struct SplitViewControllerView: NSViewControllerRepresentable {
+    internal var axis: Axis
+    internal var children: _VariadicView.Children
+    @Binding internal var viewController: SplitViewController?
+    private let state = SplitViewState()
     
-    /// The content to display in the split view
-    let content: Content
+    internal init(axis: Axis, children: _VariadicView.Children, viewController: Binding<SplitViewController?>) {
+        self.axis = axis
+        self.children = children
+        self._viewController = viewController
+    }
     
-    /// Binding to the view controller reference
-    @Binding var viewController: SplitViewController<Content>?
-    
-    func makeNSViewController(context: Context) -> SplitViewController<Content> {
+    internal func makeNSViewController(context: Context) -> SplitViewController {
         context.coordinator
     }
     
-    func updateNSViewController(_ controller: SplitViewController<Content>, context: Context) {
-        // Update items and their positions
-        let hasChanged = controller.updateItems()
-        
-        // If items have changed and there are multiple items,
-        // the divider positions will be updated automatically
-        if hasChanged {
-            // The coordinator reference is already up to date since
-            // it's the same instance as the controller parameter
-            context.coordinator.updateItems()
+    internal func updateNSViewController(_ controller: SplitViewController, context: Context) {
+        state.updateItems(children: children) { (newItems: [SplitViewItem]) in
+            controller.items = newItems
+            controller.splitViewItems = newItems.map { $0.item }
+            
+            if controller.splitViewItems.count > 1 {
+                state.updateLayout(splitView: controller.splitView, items: newItems)
+            }
         }
     }
     
-    func makeCoordinator() -> SplitViewController<Content> {
-        SplitViewController(parent: self, content: content, axis: axis)
+    internal func makeCoordinator() -> SplitViewController {
+        let controller = SplitViewController(parent: self, axis: axis)
+        viewController = controller
+        return controller
     }
 }

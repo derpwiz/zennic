@@ -17,7 +17,7 @@ public final class SplitViewItem: SplitViewItemProtocol {
         item.canCollapse
     }
     
-    public var holdingPriority: Float? {
+    public var holdingPriority: NSLayoutConstraint.Priority? {
         item.holdingPriority
     }
     
