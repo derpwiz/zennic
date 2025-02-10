@@ -1,50 +1,42 @@
 import SwiftUI
-import AppKit
 import Combine
 
-public final class SplitViewItem: SplitViewItemProtocol {
-    public let id: AnyHashable
-    internal let item: NSSplitViewItem
-    
-    internal var collapsed: Binding<Bool>
-    internal var observers: [NSKeyValueObservation] = []
-    
-    public var isCollapsed: Bool {
-        item.isCollapsed
-    }
-    
-    public var canCollapse: Bool {
-        item.canCollapse
-    }
-    
-    public var holdingPriority: NSLayoutConstraint.Priority? {
-        item.holdingPriority
-    }
-    
-    internal init(child: _VariadicView.Children.Element) {
+class SplitViewItem: ObservableObject {
+
+    var id: AnyHashable
+    var item: NSSplitViewItem
+
+    var collapsed: Binding<Bool>
+
+    var cancellables: [AnyCancellable] = []
+
+    var observers: [NSKeyValueObservation] = []
+
+    init(child: _VariadicView.Children.Element) {
         self.id = child.id
         self.item = NSSplitViewItem(viewController: NSHostingController(rootView: AnyView(child)))
         self.collapsed = child[SplitViewItemCollapsedViewTraitKey.self]
         self.item.canCollapse = child[SplitViewItemCanCollapseViewTraitKey.self]
         self.item.isCollapsed = self.collapsed.wrappedValue
         self.item.holdingPriority = child[SplitViewHoldingPriorityTraitKey.self]
-        
         // Skip the initial observation via a dispatch to avoid a "updating during view update" error
         DispatchQueue.main.async {
             self.observers = self.createObservers()
         }
     }
-    
-    internal func createObservers() -> [NSKeyValueObservation] {
+
+    private func createObservers() -> [NSKeyValueObservation] {
         [
             item.observe(\.isCollapsed) { [weak self] item, _ in
                 self?.collapsed.wrappedValue = item.isCollapsed
             }
         ]
     }
-    
-    internal func update(child: _VariadicView.Children.Element) {
-        (item.viewController as? NSHostingController<AnyView>)?.rootView = AnyView(child)
+
+    /// Updates a SplitViewItem.
+    /// This will fetch updated binding values and update them if needed.
+    /// - Parameter child: the view corresponding to the SplitViewItem.
+    func update(child: _VariadicView.Children.Element) {
         self.item.canCollapse = child[SplitViewItemCanCollapseViewTraitKey.self]
         DispatchQueue.main.async {
             self.observers = []
