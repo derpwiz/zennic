@@ -1,5 +1,6 @@
 import SwiftUI
 
+@available(macOS 14.0, *)
 public struct SplitViewControllerView: NSViewControllerRepresentable {
     var axis: Axis
     var children: _VariadicView.Children
