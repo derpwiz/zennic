@@ -11,6 +11,20 @@ struct EditorTabItemView: View {
         editorManager.selectedTab?.id == tab.id
     }
     
+    @State private var isHovering: Bool = false
+    
+    private var backgroundColor: Color {
+        if isSelected {
+            return Color(nsColor: .controlAccentColor)
+                .opacity(colorScheme == .dark ? 0.3 : 0.1)
+        } else if isHovering {
+            return colorScheme == .dark
+                ? .white.opacity(0.05)
+                : .black.opacity(0.03)
+        }
+        return .clear
+    }
+    
     var body: some View {
         HStack(spacing: 0) {
             EditorTabDivider()
@@ -25,16 +39,23 @@ struct EditorTabItemView: View {
                 Text(tab.name)
                     .font(.system(size: 11))
                     .lineLimit(1)
+                
+                if isHovering || isSelected {
+                    EditorTabCloseButton(tab: tab)
+                        .transition(.opacity)
+                }
             }
-            .padding(.horizontal, 20)
+            .padding(.horizontal, isHovering || isSelected ? 12 : 20)
             .frame(height: EditorTabBarView.height)
             .contentShape(Rectangle())
-            .background(
-                Color(nsColor: isSelected ? .controlAccentColor : .clear)
-                    .opacity(colorScheme == .dark ? 0.3 : 0.1)
-            )
+            .background(backgroundColor)
+            .animation(.easeInOut(duration: 0.15), value: isHovering)
+            .animation(.easeInOut(duration: 0.15), value: isSelected)
             .onTapGesture {
                 editorManager.selectTab(tab)
+            }
+            .onHover { hovering in
+                isHovering = hovering
             }
             
             EditorTabDivider()
