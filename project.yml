@@ -56,6 +56,10 @@ targets:
     deploymentTarget: "13.0"
     sources:
       - path: Features/Shared/Sources/Shared
+        excludes:
+          - "Views/SplitView/SplitViewState.swift"
+          - "Views/SplitView/SplitViewItemProtocol.swift"
+          - "Views/SplitView/SplitViewControllerType.swift"
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -142,6 +146,7 @@ targets:
       - path: Features/CodeEditor/Sources/CodeEditorInterface
     dependencies:
       - target: Core
+      - target: Shared
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -160,6 +165,7 @@ targets:
     dependencies:
       - target: Core
       - target: CodeEditorInterface
+      - target: Shared
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -230,6 +236,7 @@ targets:
     dependencies:
       - target: Core
       - target: CodeEditorInterface
+      - target: Shared
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
