@@ -1,8 +1,8 @@
 import SwiftUI
 
 public struct SplitViewControllerPreferenceKey: PreferenceKey {
-    public static var defaultValue: SplitViewControllerType? = nil
-    public static func reduce(value: inout SplitViewControllerType?, nextValue: () -> SplitViewControllerType?) {
+    public static var defaultValue: SplitViewController? = nil
+    public static func reduce(value: inout SplitViewController?, nextValue: () -> SplitViewController?) {
         value = nextValue()
     }
 }
@@ -12,7 +12,7 @@ public struct SplitViewReader<Content: View>: View {
     /// The content to display
     @ViewBuilder var content: (SplitViewProxy) -> Content
     
-    @State private var viewController: SplitViewControllerType?
+    @State private var viewController: SplitViewController?
     
     private var proxy: SplitViewProxy {
         .init(viewController: { viewController })
@@ -34,9 +34,9 @@ public struct SplitViewReader<Content: View>: View {
 
 /// A proxy for interacting with the split view controller
 public struct SplitViewProxy {
-    private var viewController: () -> SplitViewControllerType?
+    private var viewController: () -> SplitViewController?
     
-    public init(viewController: @escaping () -> SplitViewControllerType?) {
+    public init(viewController: @escaping () -> SplitViewController?) {
         self.viewController = viewController
     }
     
