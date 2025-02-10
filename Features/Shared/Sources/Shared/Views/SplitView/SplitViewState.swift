@@ -42,4 +42,13 @@ import SwiftUI
             )
         }
     }
+    
+    /// Collapses or expands a split view item
+    /// - Parameters:
+    ///   - id: The id of the item to collapse/expand
+    ///   - collapsed: Whether to collapse (true) or expand (false) the item
+    public func setCollapsed(_ collapsed: Bool, for id: AnyHashable) {
+        guard let item = _items.first(where: { $0.id == id }) else { return }
+        item.item.animator().isCollapsed = collapsed
+    }
 }
