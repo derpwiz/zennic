@@ -18,7 +18,7 @@ public final class SplitViewItem: SplitViewItemProtocol {
     }
     
     public var holdingPriority: Float? {
-        item.holdingPriority
+        item.holdingPriority?.rawValue
     }
     
     internal init(child: _VariadicView.Children.Element) {
