@@ -9,17 +9,37 @@ public struct EditorTabBarView: View {
     
     public init() {}
     
+    @State private var scrollOffset: CGFloat = 0
+    @State private var scrollTrailingOffset: CGFloat? = 0
+    
     public var body: some View {
         HStack(alignment: .center, spacing: 0) {
             // Leading accessories (placeholder for now)
             leadingAccessories
             
             // Tab list with horizontal scrolling
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: -1) { // Negative spacing for overlapping dividers
-                    ForEach(editorManager.tabs) { tab in
-                        EditorTabItemView(tab: tab)
+            GeometryReader { geometry in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    ScrollViewReader { scrollReader in
+                        HStack(spacing: -1) { // Negative spacing for overlapping dividers
+                            ForEach(editorManager.tabs) { tab in
+                                EditorTabItemView(tab: tab)
+                            }
+                        }
+                        .onChange(of: editorManager.selectedTab) { newValue in
+                            withAnimation {
+                                scrollReader.scrollTo(newValue?.id)
+                            }
+                        }
                     }
+                }
+                .overlay(alignment: .leading) {
+                    EditorTabOverflowShadow(side: .leading)
+                        .opacity(scrollOffset > 0 ? 1 : 0)
+                }
+                .overlay(alignment: .trailing) {
+                    EditorTabOverflowShadow(side: .trailing)
+                        .opacity((scrollTrailingOffset ?? 0) > 0 ? 1 : 0)
                 }
             }
             .frame(maxWidth: .infinity)
