@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 
+@available(macOS 14.0, *)
 public class SplitViewItem: ObservableObject {
     var id: AnyHashable
     var item: NSSplitViewItem
