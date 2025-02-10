@@ -1,23 +1,27 @@
 import SwiftUI
 
 /// A trait key for storing whether a split view item can collapse
+@available(macOS 14.0, *)
 public struct SplitViewItemCanCollapseViewTraitKey: ViewTraitKey {
     /// The default value for the trait key
     public static let defaultValue: Bool = false
 }
 
 /// A trait key for storing whether a split view item is collapsed
+@available(macOS 14.0, *)
 public struct SplitViewItemCollapsedViewTraitKey: ViewTraitKey {
     /// The default value for the trait key
     public static let defaultValue: Binding<Bool> = .constant(false)
 }
 
 /// A trait key for storing the holding priority of a split view item
+@available(macOS 14.0, *)
 public struct SplitViewHoldingPriorityTraitKey: ViewTraitKey {
     /// The default value for the trait key
     public static let defaultValue: Float = 250
 }
 
+@available(macOS 14.0, *)
 extension View {
     /// Sets whether this split view item can collapse
     /// - Parameter value: Whether the item can collapse
