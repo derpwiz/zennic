@@ -27,7 +27,7 @@ extension View {
             })
     }
 
-    func collapsable() -> some View {
+    func collapsible() -> some View {
         self
             ._trait(SplitViewItemCanCollapseViewTraitKey.self, true)
     }

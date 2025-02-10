@@ -21,3 +21,13 @@ struct SplitView<Content: View>: View {
         .accessibilityElement(children: .contain)
     }
 }
+
+extension SplitView {
+    static func horizontal<Content: View>(@ViewBuilder content: () -> Content) -> SplitView<Content> {
+        SplitView(axis: .horizontal, content: content)
+    }
+
+    static func vertical<Content: View>(@ViewBuilder content: () -> Content) -> SplitView<Content> {
+        SplitView(axis: .vertical, content: content)
+    }
+}
