@@ -1,41 +1,38 @@
 import SwiftUI
 
-internal struct SplitViewControllerLayoutValueKey: _ViewTraitKey {
-    internal static var defaultValue: () -> SplitViewController? = { nil }
+struct SplitViewControllerLayoutValueKey: _ViewTraitKey {
+    static var defaultValue: () -> SplitViewController? = { nil }
 }
 
-internal struct SplitViewItemCollapsedViewTraitKey: _ViewTraitKey {
-    internal static var defaultValue: Binding<Bool> = .constant(false)
+struct SplitViewItemCollapsedViewTraitKey: _ViewTraitKey {
+    static var defaultValue: Binding<Bool> = .constant(false)
 }
 
-internal struct SplitViewItemCanCollapseViewTraitKey: _ViewTraitKey {
-    internal static var defaultValue: Bool = false
+struct SplitViewItemCanCollapseViewTraitKey: _ViewTraitKey {
+    static var defaultValue: Bool = false
 }
 
-internal struct SplitViewHoldingPriorityTraitKey: _ViewTraitKey {
-    internal static var defaultValue: NSLayoutConstraint.Priority = .defaultLow
+struct SplitViewHoldingPriorityTraitKey: _ViewTraitKey {
+    static var defaultValue: NSLayoutConstraint.Priority = .defaultLow
 }
 
-public extension View {
-    /// Collapses or expands this view in its parent split view
-    /// - Parameter value: Binding to control the collapsed state
-    /// - Returns: A modified view that can be collapsed/expanded
-    internal func collapsed(_ value: Binding<Bool>) -> some View {
+extension View {
+    func collapsed(_ value: Binding<Bool>) -> some View {
         self
-            ._trait(SplitViewItemCollapsedViewTraitKey.self, value)
+        // Use get/set instead of binding directly, so a view update will be triggered if the binding changes.
+            ._trait(SplitViewItemCollapsedViewTraitKey.self, .init {
+                value.wrappedValue
+            } set: {
+                value.wrappedValue = $0
+            })
     }
-    
-    /// Makes this view collapsible in its parent split view
-    /// - Returns: A modified view that can be collapsed
-    internal func collapsible() -> some View {
+
+    func collapsable() -> some View {
         self
             ._trait(SplitViewItemCanCollapseViewTraitKey.self, true)
     }
-    
-    /// Sets the holding priority for this view in its parent split view
-    /// - Parameter priority: The NSLayoutConstraint.Priority to use
-    /// - Returns: A modified view with the specified holding priority
-    internal func holdingPriority(_ priority: NSLayoutConstraint.Priority) -> some View {
+
+    func holdingPriority(_ priority: NSLayoutConstraint.Priority) -> some View {
         self
             ._trait(SplitViewHoldingPriorityTraitKey.self, priority)
     }
