@@ -1,4 +1,5 @@
 import SwiftUI
+import Shared
 
 /// The main view for the utility area.
 /// A view that displays the utility area with tabs and resizable content
@@ -99,9 +100,6 @@ public struct UtilityAreaSplitView<Content: View>: View {
                 .animation(.spring(), value: viewModel.isMaximized)
         }
         .environmentObject(viewModel)
-        .onAppear {
-            LoggingService.shared.register(viewModel)
-        }
     }
 }
 

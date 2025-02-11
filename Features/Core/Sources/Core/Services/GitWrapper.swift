@@ -198,7 +198,7 @@ public class GitWrapper: Loggable {
             guard let entry = git_status_byindex(statusList, i) else { continue }
             
             let status = entry.pointee.status
-            let path = String(cString: entry.pointee.head_to_index?.pointee.new_file.path ?? entry.pointee.index_to_workdir?.pointee.new_file.path ?? "")
+            let path = getPathString(from: entry)
             
             if status.rawValue & GIT_STATUS_WT_NEW.rawValue != 0 {
                 statuses.append(("Untracked", path))
@@ -315,12 +315,15 @@ public class GitWrapper: Loggable {
         }
         var parentsArray = [OpaquePointer?](repeating: unwrappedParent, count: 1)
         
-        let head = "HEAD"
+        // Create static strings to avoid repeated conversions
+        let headRef = "HEAD"
         let encoding = "UTF-8"
+        
+        // Single nested withCString block to handle all string conversions at once
         result = parentsArray.withUnsafeMutableBufferPointer { parentsPtr in
-            message.withCString { cMessage in
-                head.withCString { cHead in
-                    encoding.withCString { cEncoding in
+            headRef.withCString { cHead in
+                encoding.withCString { cEncoding in
+                    message.withCString { cMessage in
                         git_commit_create(
                             &commitId,
                             repo,
@@ -434,6 +437,17 @@ public class GitWrapper: Loggable {
         let diffText = String(cString: ptr)
         logger.info("Retrieved diff for file: \(file)")
         return diffText
+    }
+    
+    /// Helper function to safely get path string from git status entry
+    private func getPathString(from entry: UnsafePointer<git_status_entry>) -> String {
+        if let headPath = entry.pointee.head_to_index?.pointee.new_file.path {
+            return String(cString: headPath)
+        }
+        if let workdirPath = entry.pointee.index_to_workdir?.pointee.new_file.path {
+            return String(cString: workdirPath)
+        }
+        return ""
     }
     
     deinit {

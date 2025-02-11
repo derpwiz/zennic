@@ -1,5 +1,20 @@
 import SwiftUI
 import Shared
+import Combine
+
+// Extension to convert between LogLevel types
+extension Shared.LogLevel {
+    var uiLogLevel: UI.LogLevel {
+        switch self {
+        case .info:
+            return .info
+        case .warning:
+            return .warning
+        case .error:
+            return .error
+        }
+    }
+}
 
 /// Manages the state of the utility area.
 public final class UtilityAreaViewModel: ObservableObject {
@@ -49,7 +64,7 @@ public final class UtilityAreaViewModel: ObservableObject {
             height = previousHeight
         } else {
             previousHeight = height
-            height = maxHeight
+            height = Self.maxHeight
         }
         
         isMaximized.toggle()
@@ -59,7 +74,7 @@ public final class UtilityAreaViewModel: ObservableObject {
     /// - Parameter newHeight: The new height
     public func updateHeight(_ newHeight: CGFloat) {
         if !isMaximized {
-            height = min(max(newHeight, minHeight), maxHeight)
+            height = min(max(newHeight, Self.minHeight), Self.maxHeight)
         }
     }
     
@@ -82,7 +97,7 @@ public final class UtilityAreaViewModel: ObservableObject {
         LoggingService.shared.debugPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] text, level in
-                self?.debugViewModel.log(text, level: level)
+                self?.debugViewModel.log(text, level: level.uiLogLevel)
             }
             .store(in: &cancellables)
     }

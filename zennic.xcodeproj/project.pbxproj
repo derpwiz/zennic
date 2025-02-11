@@ -7,69 +7,121 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0087F07EBA2F6B8BCE6DDE23 /* SplitViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E567B77159ADFA92D28705C /* SplitViewModifiers.swift */; };
 		011A5233E9C60DCEF72EB0B9 /* UI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 49FE49F1AECE205F63E8ECEF /* UI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		03F9D7473910E0ADF197D816 /* AlpacaServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F33BA7A70D0F53EBF9C57D8 /* AlpacaServiceManager.swift */; };
+		040CC3A1CC503D1A144274D1 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C463A8E75B87F61654E97271 /* LoggingService.swift */; };
+		07FE6058083BD16193B9B56B /* SplitViewProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF42D8D1E0533C5CDA53BD45 /* SplitViewProxy.swift */; };
+		09BC94299904AFB574F4B6B1 /* StatusBarItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393BDC26FC0728A053903429 /* StatusBarItems.swift */; };
 		0BECC424736DC1796434A908 /* UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49FE49F1AECE205F63E8ECEF /* UI.framework */; };
+		0CCCA6D469B54AA253CD373F /* UtilityAreaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF5C9E7AE4671350C179B40 /* UtilityAreaViewModel.swift */; };
 		0EF9E8EAD7244AB7B50D7107 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
 		12E986EB3E1D959D711626CF /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7AF9B5FD900208F3AB20EA2 /* MainView.swift */; };
 		14D5397D2B5C38695164FCFC /* AlpacaOAuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D2FA65D60A5B7D6EA6F22F /* AlpacaOAuthService.swift */; };
+		1749715A89244A29406B0D7D /* EditorTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2A1ABE5343E64AD5806AA74 /* EditorTab.swift */; };
+		1830FB7618E5BF7D6FD41851 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D32CC954A475A1FF8192A08 /* Theme.swift */; };
+		1C1500A48E2345B099235FAD /* StatusBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2998190D187DFE0AC66221E2 /* StatusBarViewModel.swift */; };
 		1E6744D2A31DE316B5F5A4F1 /* CodeEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5F901313DDBDBF970926F7 /* CodeEditorViewModel.swift */; };
+		20138E3D4C6BEE9F62E81D30 /* DebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF70FF2A4BB1D6956120701E /* DebugView.swift */; };
+		22FBA57E2C6ADAB9DD03A26D /* EditorTabItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E198BA1F3B15EDB75D5F770 /* EditorTabItemView.swift */; };
 		231BF3BE3F50C08D444FCCDC /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65DBDE62DCC894FF09609F76 /* SettingsView.swift */; };
 		29143B067DE752A27F297102 /* CodeEditorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA6EBA54726E3ABEB5A8791F /* CodeEditorFactory.swift */; };
 		2C669B1E189588694EBC7B6A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E1039CF7888B1F126017DD /* AppDelegate.swift */; };
-		2EBEE9460936FAEBAAF20617 /* GitWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = C315F7D559C45B86DC57A33C /* GitWrapper.swift */; };
 		34DE2231CE84B30BC832ADAB /* CodeEditorInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB4C6778E434A7417A5F5453 /* CodeEditorInterface.framework */; };
+		363B5823B4A6134A9BF32130 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4710E9AA53939A5B1996695E /* TerminalView.swift */; };
 		3F163CF1A507AAF82914DEC9 /* Backtesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F2DA2D32B1A47BBF95AB26A /* Backtesting.framework */; };
+		3FBA01B42AE331D4A131DCA0 /* SplitViewControllerLayoutValueKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB30F84DB44602020B6F7499 /* SplitViewControllerLayoutValueKey.swift */; };
+		4001CEBEFBB41A4A27E48041 /* WindowStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D85221752799BC470611F88 /* WindowStyle.swift */; };
 		42A30A295E2232508E334535 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
 		4587E87AE1FE49D252B26C28 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
 		464507E7571A56DA28EAAD89 /* CodeAssistant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D6FE2E06C30A670303C8D2F /* CodeAssistant.swift */; };
 		4AD828DBAC6FDEA7AE75CFD5 /* BacktestingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954CB023DF1AA0B761111844 /* BacktestingView.swift */; };
 		4C50E1E4BD35F99D561F1ECB /* CodeEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F5F234DDF8E74505714306A /* CodeEditorView.swift */; };
 		51520009541E03C0AE8D74BB /* Core-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 46458F15C77B9B093F1EF81F /* Core-Swift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5207511CB05C427B16B8EBCA /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BBB87149A5E174C8FDF028E /* SplitViewController.swift */; };
 		5262166E1267423BF5738E61 /* AlpacaAuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B09BF6F564DA4EB514F23232 /* AlpacaAuthView.swift */; };
 		53255DF67BAF0EAE9877B340 /* CodeEditor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD1C8F1B23BA5CE2EBF0F781 /* CodeEditor.framework */; };
+		560BB6B426A2AC45917C2480 /* GitWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5544055322B7BACF8E9904D2 /* GitWrapper.swift */; };
 		565AB7FA926F808DA374E90C /* DataIntegrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37480C4F49F82A3AF0EC6E2 /* DataIntegrationView.swift */; };
 		566FF007579C847F251A95A4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E596613E0B27953E4D51F82 /* SceneDelegate.swift */; };
 		5918A30646836E1CBA1000BD /* Core.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10D8CF33C617F4A6044555DB /* Core.swift */; };
+		59FED660EFBE57A7B619911B /* SplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CC3414A4E524E5878B11181 /* SplitView.swift */; };
+		61368838FF633FEE8DEB2148 /* UtilityAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E291B486C777806135F0725A /* UtilityAreaView.swift */; };
 		62412307485FF89143B57AFB /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
 		63DB6833A756BE8F2BA95156 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27A5782F0AD37C669AC54DE /* ContentView.swift */; };
+		63E561EC195F21901BDE33D7 /* SplitViewPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF40EB948DB5FE4ADE92ECA /* SplitViewPreview.swift */; };
 		67D335B83089B15C9B21CE33 /* UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49FE49F1AECE205F63E8ECEF /* UI.framework */; };
+		6DDC9DB9B5138747D44A9D3A /* StatusBarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88C06A35D8AC7D3F6F53117 /* StatusBarModel.swift */; };
 		6F634E5E32CC7109BB552B67 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
+		71DE7FD1A24DEF243CEE6802 /* SplitViewReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA991A16DF47BD658F9CE5 /* SplitViewReader.swift */; };
 		73A582F18EE0B027676A03C9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03BFA01DE36D86D82006A1A7 /* Shared.framework */; };
 		740A7C198D2DCD787BFAFA27 /* SyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8D1206DAABAA779E1E836F /* SyntaxHighlighter.swift */; };
 		7424D9FF426FACDE005F692F /* RealTimeMonitoring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 684940976F8FA804E3EE9FFA /* RealTimeMonitoring.framework */; };
+		7C6A1B21799BB798FF7A43DF /* SplitViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ED240678BC392832048419 /* SplitViewControllerView.swift */; };
+		842F31D998E612E47D1A339B /* ToolbarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C71EE573ACE9D4230DF1F37 /* ToolbarViewModel.swift */; };
 		858FDE31234A5D04779FC180 /* App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0C8D5CF8125AACF471468FE /* App.framework */; };
 		8596A922127CF0D85503C70D /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BF5B18554A5655207290F9 /* AppCoordinator.swift */; };
 		884861F9D1F9C1B2C92A5D57 /* CodeEditor.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DD1C8F1B23BA5CE2EBF0F781 /* CodeEditor.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		89A76519C8AEF7B40A1AC30C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96E1039CF7888B1F126017DD /* AppDelegate.swift */; };
+		8A06FF7BB0DEF9621B3E94FE /* Variadic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E68566D9467AECA0B620694E /* Variadic.swift */; };
 		8AACB34688D07A1163038EF0 /* CodeEditorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66AA75ADA5ED97AF05AB537 /* CodeEditorProtocol.swift */; };
+		8AB951F294CFDE91C4175E45 /* UtilityAreaTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7C5547B56522A9AB17BCCB /* UtilityAreaTab.swift */; };
 		8D98D62F2569E212C0151655 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A27A5782F0AD37C669AC54DE /* ContentView.swift */; };
 		8F9C9F21383703A8CA856BEB /* CodeLanguage.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBD02E21037DBED6A31594C2 /* CodeLanguage.swift */; };
 		9126A981D1C6514E2861E0FC /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
+		9465CD326A74BA7290A15F6D /* CodeEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16AD6E2B54E2FEDA5B566227 /* CodeEditorViewModel.swift */; };
+		95464A513CF97BF9779839B0 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03BFA01DE36D86D82006A1A7 /* Shared.framework */; };
+		987F0E0AB1301C7F424D6124 /* SplitViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E7362A71C3643DD41A3AD60 /* SplitViewControllerProtocol.swift */; };
+		9A26DE82741B1A3803E70AE3 /* ThemedTextEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441BCF8DEA3FAC629697D48D /* ThemedTextEditor.swift */; };
+		9DAC7BA3FF26E0F14A3E67FF /* ToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C202AFD6A45444E460241E /* ToolbarView.swift */; };
+		9EB8E395E0B6A45D339512FA /* UtilityAreaToolbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB4014364E43BE0C7A5CAB98 /* UtilityAreaToolbarButton.swift */; };
+		A202483B65EC1B6C4F299378 /* StatusBarModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4583695C55433A377FA57183 /* StatusBarModel.swift */; };
+		A334C8342917F05C6BAA0AB0 /* EditorTabID.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0234974209ADE0CF77365C93 /* EditorTabID.swift */; };
 		A4481EB0F7B7E4EAE49CA9DC /* RealTimeMonitoringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F737A17A5A6962F70FF18827 /* RealTimeMonitoringView.swift */; };
+		A87B3D3783E54FA28DC718BC /* EditorTabOverflowShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9942732992631FE098F63BEB /* EditorTabOverflowShadow.swift */; };
+		A8B0256A357DCB44DF94AB87 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03BFA01DE36D86D82006A1A7 /* Shared.framework */; };
 		AA63B1454752CEB04BB8B352 /* CodeEditorFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5820CFDA3871E3772651201F /* CodeEditorFactory.swift */; };
 		ACBA1DD6AD639DFFA4D038A2 /* AlpacaService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9511117E15405323DE52A198 /* AlpacaService.swift */; };
 		AE124DBDE96924ADD18DD2E3 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
+		AEFE9FED6AEBB4D6A2CA9FAE /* SplitViewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C55D5AF31CB8AB5A28FD243F /* SplitViewItem.swift */; };
 		B1A88182C271F8F0AF6C9F0C /* Core.h in Headers */ = {isa = PBXBuildFile; fileRef = F109011898558CBD679CA8C1 /* Core.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B1CDC977255435D4662584BD /* EditorTabDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 112A70D3E613232D88B3873A /* EditorTabDivider.swift */; };
+		B30C142A61176BB4D681426C /* StatusBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68F266208A8FB32FE44400D /* StatusBarView.swift */; };
+		B4496848D40BB6FD47A079F3 /* OutputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6A2C3F773CE38D33182323A /* OutputView.swift */; };
+		B97BE1D4863A00258321BE00 /* EffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFFF1CD6A0E99C07302FBFA6 /* EffectView.swift */; };
 		B9EC68A68096846B708EEBB6 /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEA65ABC1264F1A5B807BE8D /* FileTreeView.swift */; };
+		BB9986DE5E7CD30F7D9E14E6 /* PanelDivider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40079EAB2BA6A0F415BBB857 /* PanelDivider.swift */; };
 		BC5CE8F74AC6D6D361B681C9 /* CodeEditorInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB4C6778E434A7417A5F5453 /* CodeEditorInterface.framework */; };
 		C00C67BE5A5998C3FC68B379 /* UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = CADD8D85A7B4C4FC158BB4A7 /* UI.swift */; };
 		C175E83E76B219C6294E2A7C /* CodeEditor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD1C8F1B23BA5CE2EBF0F781 /* CodeEditor.framework */; };
+		C46C9348B7A7B361D60EA11C /* SegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 347F774EFF4064B475899722 /* SegmentedControl.swift */; };
 		C491FDB4A329958F75E69463 /* DataIntegration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB069AD2973B20F2780B7E7 /* DataIntegration.swift */; };
+		C5E8225828F84BB569731286 /* EditorTabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B75A583CFD43F6C6A4F8D1A /* EditorTabBarView.swift */; };
 		C77229FCB1184B30CB62D21D /* Core-Bridging-Header.h in Headers */ = {isa = PBXBuildFile; fileRef = D1EA89F11ED35C7EB4673791 /* Core-Bridging-Header.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CBFA5917063EFC88189FE02E /* App.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A0C8D5CF8125AACF471468FE /* App.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D349DB6A77AB340B4C8C7104 /* CodeEditorContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F35BE8A4AC312FED3C237A95 /* CodeEditorContainerView.swift */; };
+		D3A1346C726B9503972236A1 /* PressActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E0FB880981F9CD1F131DB0 /* PressActionsModifier.swift */; };
+		D5C701AF5258AE1C7F003181 /* StatusBarMenuStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D85503EF94276276D29F0B /* StatusBarMenuStyle.swift */; };
+		D64E3EC80574BCD59B24E051 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6F1B0165E255B81A2C48F29 /* ViewExtensions.swift */; };
+		DA4790ABB5F809D40E46E15C /* SplitViewTraitKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */; };
 		DBF4B9EFD997AA186D518DFC /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
 		DEB714C25949A37276D2A69D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A90DE4E210AF6DE042EB6C1 /* AppState.swift */; };
 		DFF82AD142025F57655ACB64 /* GitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC17FB1497BBC1981C4BBB9 /* GitService.swift */; };
+		E093BD8BE2B3E7B7B4D838F8 /* GitStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDFBFD3DDB311EE23E43CF8 /* GitStatus.swift */; };
+		E2E6F7E82A26A0DF9DC13BC0 /* EditorTabCloseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4D4AE4E61816CE1106C48E /* EditorTabCloseButton.swift */; };
 		E81A53AD01668E9AFE489FC5 /* CodeEditorFactoryImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D08036117A1B8F7284EAA627 /* CodeEditorFactoryImpl.swift */; };
+		E8E6E012365FE7C8834C7B7E /* EditorManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45F1E52E857DD5C9575A1C79 /* EditorManager.swift */; };
+		EA3AB00F765EC21A0C9450E9 /* StatusBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E74F49C6397FBE299373893B /* StatusBarViewModel.swift */; };
 		EC1865F6C7DD994669AF39D8 /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7FA42BECB6F9D5D3963FA0A /* FileTreeView.swift */; };
 		ECB17B22E2E0A0C61BD5B4BF /* VisualizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94C3840A0DE0D82212E8C75A /* VisualizationView.swift */; };
 		ED618C4A2FA94C96DB7600E7 /* DataIntegration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A16EA186DF108D736ADBAA5 /* DataIntegration.framework */; };
 		EE2582B327DD54580F463E15 /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B49774A160037AEF3E2F7497 /* SettingsManager.swift */; };
+		EE665A9182EAAF2E6D3A70C3 /* SplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B017317E8053BB442779218E /* SplitView.swift */; };
 		F01797DD77E48622927EC371 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E596613E0B27953E4D51F82 /* SceneDelegate.swift */; };
 		F7E2F3010011E4A627A2822C /* GitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BB9814CB369FE3FB556C17 /* GitView.swift */; };
 		F82B6EA5753980173648925F /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BF5B18554A5655207290F9 /* AppCoordinator.swift */; };
+		FD4421B049846E7EFBF755DB /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03BFA01DE36D86D82006A1A7 /* Shared.framework */; };
+		FE77896CCD7495B3B89BB363 /* ThemeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D1E788BFC12E03FB53F9D6 /* ThemeModel.swift */; };
 		FEE89A02E84AFD5A180A2500 /* Visualization.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F7DAF5A2447BA185DE69065B /* Visualization.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +132,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2B76E4FF487725F094B9DD8B;
 			remoteInfo = CodeEditor;
+		};
+		03845A7E8FDA4C1F29D2626A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 566B5E479B93FC9E2418AA0F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 42F186205C2F2A516975CE24;
+			remoteInfo = Shared;
 		};
 		0B64505FE5CCAEAABC1F2897 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -200,12 +259,26 @@
 			remoteGlobalIDString = 8F797375218F2E3C51F8B999;
 			remoteInfo = Core;
 		};
+		DA77B28A801583C2B4F05CB3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 566B5E479B93FC9E2418AA0F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 42F186205C2F2A516975CE24;
+			remoteInfo = Shared;
+		};
 		E4927C507FE4C8AC4DED9E30 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 566B5E479B93FC9E2418AA0F /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 9258B78882436D9C0A4F2A11;
 			remoteInfo = DataIntegration;
+		};
+		E9CFB8EB2014F1DD78BEBDAF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 566B5E479B93FC9E2418AA0F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 42F186205C2F2A516975CE24;
+			remoteInfo = Shared;
 		};
 		F36B918E9DE55C36D4288984 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -233,20 +306,46 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0234974209ADE0CF77365C93 /* EditorTabID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabID.swift; sourceTree = "<group>"; };
 		03BFA01DE36D86D82006A1A7 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0CC3414A4E524E5878B11181 /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 		0D6FE2E06C30A670303C8D2F /* CodeAssistant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAssistant.swift; sourceTree = "<group>"; };
 		0F2DA2D32B1A47BBF95AB26A /* Backtesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Backtesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10D8CF33C617F4A6044555DB /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
+		112A70D3E613232D88B3873A /* EditorTabDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabDivider.swift; sourceTree = "<group>"; };
+		16AD6E2B54E2FEDA5B566227 /* CodeEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorViewModel.swift; sourceTree = "<group>"; };
+		1D85221752799BC470611F88 /* WindowStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowStyle.swift; sourceTree = "<group>"; };
 		1DB069AD2973B20F2780B7E7 /* DataIntegration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataIntegration.swift; sourceTree = "<group>"; };
+		1E7362A71C3643DD41A3AD60 /* SplitViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewControllerProtocol.swift; sourceTree = "<group>"; };
+		27E0FB880981F9CD1F131DB0 /* PressActionsModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PressActionsModifier.swift; sourceTree = "<group>"; };
+		2998190D187DFE0AC66221E2 /* StatusBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewModel.swift; sourceTree = "<group>"; };
 		2A16EA186DF108D736ADBAA5 /* DataIntegration.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataIntegration.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		2BBB87149A5E174C8FDF028E /* SplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
+		2DF40EB948DB5FE4ADE92ECA /* SplitViewPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewPreview.swift; sourceTree = "<group>"; };
+		347F774EFF4064B475899722 /* SegmentedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedControl.swift; sourceTree = "<group>"; };
+		393BDC26FC0728A053903429 /* StatusBarItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarItems.swift; sourceTree = "<group>"; };
+		3C71EE573ACE9D4230DF1F37 /* ToolbarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarViewModel.swift; sourceTree = "<group>"; };
+		40079EAB2BA6A0F415BBB857 /* PanelDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelDivider.swift; sourceTree = "<group>"; };
+		441BCF8DEA3FAC629697D48D /* ThemedTextEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemedTextEditor.swift; sourceTree = "<group>"; };
+		4583695C55433A377FA57183 /* StatusBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarModel.swift; sourceTree = "<group>"; };
+		45F1E52E857DD5C9575A1C79 /* EditorManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorManager.swift; sourceTree = "<group>"; };
 		46458F15C77B9B093F1EF81F /* Core-Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Core-Swift.h"; sourceTree = "<group>"; };
+		4710E9AA53939A5B1996695E /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		49FE49F1AECE205F63E8ECEF /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4B75A583CFD43F6C6A4F8D1A /* EditorTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabBarView.swift; sourceTree = "<group>"; };
+		4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewTraitKeys.swift; sourceTree = "<group>"; };
+		4D32CC954A475A1FF8192A08 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E596613E0B27953E4D51F82 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		5544055322B7BACF8E9904D2 /* GitWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitWrapper.swift; sourceTree = "<group>"; };
 		5820CFDA3871E3772651201F /* CodeEditorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorFactory.swift; sourceTree = "<group>"; };
 		65DBDE62DCC894FF09609F76 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		66ED240678BC392832048419 /* SplitViewControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewControllerView.swift; sourceTree = "<group>"; };
 		684940976F8FA804E3EE9FFA /* RealTimeMonitoring.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RealTimeMonitoring.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E198BA1F3B15EDB75D5F770 /* EditorTabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabItemView.swift; sourceTree = "<group>"; };
 		6F5F901313DDBDBF970926F7 /* CodeEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorViewModel.swift; sourceTree = "<group>"; };
+		7BAA991A16DF47BD658F9CE5 /* SplitViewReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewReader.swift; sourceTree = "<group>"; };
+		7E567B77159ADFA92D28705C /* SplitViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewModifiers.swift; sourceTree = "<group>"; };
 		7F33BA7A70D0F53EBF9C57D8 /* AlpacaServiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlpacaServiceManager.swift; sourceTree = "<group>"; };
 		7F5F234DDF8E74505714306A /* CodeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorView.swift; sourceTree = "<group>"; };
 		80BF5B18554A5655207290F9 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
@@ -258,31 +357,54 @@
 		9511117E15405323DE52A198 /* AlpacaService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlpacaService.swift; sourceTree = "<group>"; };
 		954CB023DF1AA0B761111844 /* BacktestingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BacktestingView.swift; sourceTree = "<group>"; };
 		96E1039CF7888B1F126017DD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		9942732992631FE098F63BEB /* EditorTabOverflowShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabOverflowShadow.swift; sourceTree = "<group>"; };
+		9AF5C9E7AE4671350C179B40 /* UtilityAreaViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityAreaViewModel.swift; sourceTree = "<group>"; };
 		A064F52CE315E094359F761F /* zennic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = zennic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0C8D5CF8125AACF471468FE /* App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A27A5782F0AD37C669AC54DE /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A37480C4F49F82A3AF0EC6E2 /* DataIntegrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataIntegrationView.swift; sourceTree = "<group>"; };
+		A4D1E788BFC12E03FB53F9D6 /* ThemeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeModel.swift; sourceTree = "<group>"; };
+		A6F1B0165E255B81A2C48F29 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		A7FA42BECB6F9D5D3963FA0A /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
+		A88C06A35D8AC7D3F6F53117 /* StatusBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarModel.swift; sourceTree = "<group>"; };
 		AEA65ABC1264F1A5B807BE8D /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
+		AF42D8D1E0533C5CDA53BD45 /* SplitViewProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewProxy.swift; sourceTree = "<group>"; };
+		AFFF1CD6A0E99C07302FBFA6 /* EffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectView.swift; sourceTree = "<group>"; };
+		B017317E8053BB442779218E /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 		B09BF6F564DA4EB514F23232 /* AlpacaAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlpacaAuthView.swift; sourceTree = "<group>"; };
 		B49774A160037AEF3E2F7497 /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		B5C202AFD6A45444E460241E /* ToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarView.swift; sourceTree = "<group>"; };
 		B66AA75ADA5ED97AF05AB537 /* CodeEditorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorProtocol.swift; sourceTree = "<group>"; };
+		B68F266208A8FB32FE44400D /* StatusBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarView.swift; sourceTree = "<group>"; };
+		B6A2C3F773CE38D33182323A /* OutputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputView.swift; sourceTree = "<group>"; };
 		BB8D1206DAABAA779E1E836F /* SyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlighter.swift; sourceTree = "<group>"; };
+		BEDFBFD3DDB311EE23E43CF8 /* GitStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitStatus.swift; sourceTree = "<group>"; };
 		C0DD9A62B757741CC6BE8628 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		C315F7D559C45B86DC57A33C /* GitWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitWrapper.swift; sourceTree = "<group>"; };
+		C463A8E75B87F61654E97271 /* LoggingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggingService.swift; sourceTree = "<group>"; };
+		C55D5AF31CB8AB5A28FD243F /* SplitViewItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewItem.swift; sourceTree = "<group>"; };
 		CADD8D85A7B4C4FC158BB4A7 /* UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI.swift; sourceTree = "<group>"; };
 		D08036117A1B8F7284EAA627 /* CodeEditorFactoryImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorFactoryImpl.swift; sourceTree = "<group>"; };
 		D1EA89F11ED35C7EB4673791 /* Core-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Core-Bridging-Header.h"; sourceTree = "<group>"; };
+		D2A1ABE5343E64AD5806AA74 /* EditorTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTab.swift; sourceTree = "<group>"; };
 		DA6EBA54726E3ABEB5A8791F /* CodeEditorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorFactory.swift; sourceTree = "<group>"; };
+		DB30F84DB44602020B6F7499 /* SplitViewControllerLayoutValueKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewControllerLayoutValueKey.swift; sourceTree = "<group>"; };
 		DB4C6778E434A7417A5F5453 /* CodeEditorInterface.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CodeEditorInterface.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBD02E21037DBED6A31594C2 /* CodeLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeLanguage.swift; sourceTree = "<group>"; };
 		DD1C8F1B23BA5CE2EBF0F781 /* CodeEditor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CodeEditor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E291B486C777806135F0725A /* UtilityAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityAreaView.swift; sourceTree = "<group>"; };
 		E2D2FA65D60A5B7D6EA6F22F /* AlpacaOAuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlpacaOAuthService.swift; sourceTree = "<group>"; };
+		E68566D9467AECA0B620694E /* Variadic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Variadic.swift; sourceTree = "<group>"; };
+		E74F49C6397FBE299373893B /* StatusBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarViewModel.swift; sourceTree = "<group>"; };
+		EB4014364E43BE0C7A5CAB98 /* UtilityAreaToolbarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityAreaToolbarButton.swift; sourceTree = "<group>"; };
+		EE7C5547B56522A9AB17BCCB /* UtilityAreaTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityAreaTab.swift; sourceTree = "<group>"; };
 		F109011898558CBD679CA8C1 /* Core.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Core.h; sourceTree = "<group>"; };
 		F35BE8A4AC312FED3C237A95 /* CodeEditorContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorContainerView.swift; sourceTree = "<group>"; };
+		F3D85503EF94276276D29F0B /* StatusBarMenuStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarMenuStyle.swift; sourceTree = "<group>"; };
 		F737A17A5A6962F70FF18827 /* RealTimeMonitoringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeMonitoringView.swift; sourceTree = "<group>"; };
 		F7AF9B5FD900208F3AB20EA2 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		F7DAF5A2447BA185DE69065B /* Visualization.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Visualization.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF4D4AE4E61816CE1106C48E /* EditorTabCloseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabCloseButton.swift; sourceTree = "<group>"; };
+		FF70FF2A4BB1D6956120701E /* DebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -301,6 +423,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				62412307485FF89143B57AFB /* Core.framework in Frameworks */,
+				A8B0256A357DCB44DF94AB87 /* Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,6 +479,7 @@
 			files = (
 				9126A981D1C6514E2861E0FC /* Core.framework in Frameworks */,
 				BC5CE8F74AC6D6D361B681C9 /* CodeEditorInterface.framework in Frameworks */,
+				95464A513CF97BF9779839B0 /* Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,6 +489,7 @@
 			files = (
 				6F634E5E32CC7109BB552B67 /* Core.framework in Frameworks */,
 				34DE2231CE84B30BC832ADAB /* CodeEditorInterface.framework in Frameworks */,
+				FD4421B049846E7EFBF755DB /* Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -386,6 +511,14 @@
 			);
 			name = Views;
 			path = Features/Backtesting/Views;
+			sourceTree = "<group>";
+		};
+		1A75E4892A895B1486E84BDF /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				BEDFBFD3DDB311EE23E43CF8 /* GitStatus.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		1E007F41F93348B9AEE3D3D2 /* Views */ = {
@@ -418,12 +551,27 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		2DE8959D62B1D2A606F80A42 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				4B75A583CFD43F6C6A4F8D1A /* EditorTabBarView.swift */,
+				FF4D4AE4E61816CE1106C48E /* EditorTabCloseButton.swift */,
+				112A70D3E613232D88B3873A /* EditorTabDivider.swift */,
+				6E198BA1F3B15EDB75D5F770 /* EditorTabItemView.swift */,
+				9942732992631FE098F63BEB /* EditorTabOverflowShadow.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
 		3081E254E9FF92A1E48B079C /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				F35BE8A4AC312FED3C237A95 /* CodeEditorContainerView.swift */,
 				7F5F234DDF8E74505714306A /* CodeEditorView.swift */,
 				AEA65ABC1264F1A5B807BE8D /* FileTreeView.swift */,
+				B017317E8053BB442779218E /* SplitView.swift */,
+				441BCF8DEA3FAC629697D48D /* ThemedTextEditor.swift */,
+				A6F1B0165E255B81A2C48F29 /* ViewExtensions.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -432,8 +580,28 @@
 			isa = PBXGroup;
 			children = (
 				6F5F901313DDBDBF970926F7 /* CodeEditorViewModel.swift */,
+				2998190D187DFE0AC66221E2 /* StatusBarViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		471D4D760E4F361BC26F26BD /* SplitView */ = {
+			isa = PBXGroup;
+			children = (
+				0CC3414A4E524E5878B11181 /* SplitView.swift */,
+				2BBB87149A5E174C8FDF028E /* SplitViewController.swift */,
+				DB30F84DB44602020B6F7499 /* SplitViewControllerLayoutValueKey.swift */,
+				1E7362A71C3643DD41A3AD60 /* SplitViewControllerProtocol.swift */,
+				66ED240678BC392832048419 /* SplitViewControllerView.swift */,
+				C55D5AF31CB8AB5A28FD243F /* SplitViewItem.swift */,
+				7E567B77159ADFA92D28705C /* SplitViewModifiers.swift */,
+				2DF40EB948DB5FE4ADE92ECA /* SplitViewPreview.swift */,
+				AF42D8D1E0533C5CDA53BD45 /* SplitViewProxy.swift */,
+				7BAA991A16DF47BD658F9CE5 /* SplitViewReader.swift */,
+				4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */,
+				E68566D9467AECA0B620694E /* Variadic.swift */,
+			);
+			path = SplitView;
 			sourceTree = "<group>";
 		};
 		48AEB4C53328F530A0BEA114 /* UI */ = {
@@ -441,10 +609,23 @@
 			children = (
 				DA6EBA54726E3ABEB5A8791F /* CodeEditorFactory.swift */,
 				CADD8D85A7B4C4FC158BB4A7 /* UI.swift */,
+				F586D92ADD5A896900303656 /* Models */,
+				4C531E6DB73CB760879E1BA3 /* ViewModels */,
 				BB895ED0FF2FD76B4DCE18F7 /* Views */,
 			);
 			name = UI;
 			path = Features/UI/Sources/UI;
+			sourceTree = "<group>";
+		};
+		4C531E6DB73CB760879E1BA3 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				45F1E52E857DD5C9575A1C79 /* EditorManager.swift */,
+				E74F49C6397FBE299373893B /* StatusBarViewModel.swift */,
+				3C71EE573ACE9D4230DF1F37 /* ToolbarViewModel.swift */,
+				9AF5C9E7AE4671350C179B40 /* UtilityAreaViewModel.swift */,
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		4E2F3D3C46FD5B404F01A020 /* Sources */ = {
@@ -481,8 +662,8 @@
 				8A90DE4E210AF6DE042EB6C1 /* AppState.swift */,
 				D1EA89F11ED35C7EB4673791 /* Core-Bridging-Header.h */,
 				10D8CF33C617F4A6044555DB /* Core.swift */,
-				C315F7D559C45B86DC57A33C /* GitWrapper.swift */,
 				90AACD9C4A4196154EF39653 /* include */,
+				1A75E4892A895B1486E84BDF /* Models */,
 				D3C7BFA0EC0EC6FA9D1EFC6F /* Services */,
 			);
 			name = Core;
@@ -506,6 +687,7 @@
 			children = (
 				9DBAF5B7701C4044D2641F56 /* Models */,
 				F3418907CF21B3A7852754D0 /* Services */,
+				BEFD72EB03900E8494DF13A4 /* Views */,
 			);
 			name = Shared;
 			path = Features/Shared/Sources/Shared;
@@ -516,6 +698,7 @@
 			children = (
 				5820CFDA3871E3772651201F /* CodeEditorFactory.swift */,
 				B66AA75ADA5ED97AF05AB537 /* CodeEditorProtocol.swift */,
+				16AD6E2B54E2FEDA5B566227 /* CodeEditorViewModel.swift */,
 			);
 			name = CodeEditorInterface;
 			path = Features/CodeEditor/Sources/CodeEditorInterface;
@@ -528,6 +711,14 @@
 			);
 			name = Cgit2;
 			path = Features/Core/Sources/Cgit2;
+			sourceTree = "<group>";
+		};
+		89313EC62A8581FCF01970B0 /* Toolbar */ = {
+			isa = PBXGroup;
+			children = (
+				B5C202AFD6A45444E460241E /* ToolbarView.swift */,
+			);
+			path = Toolbar;
 			sourceTree = "<group>";
 		};
 		8EB9176BCDDE85236BF47882 /* Views */ = {
@@ -553,6 +744,9 @@
 			isa = PBXGroup;
 			children = (
 				DBD02E21037DBED6A31594C2 /* CodeLanguage.swift */,
+				A88C06A35D8AC7D3F6F53117 /* StatusBarModel.swift */,
+				4D32CC954A475A1FF8192A08 /* Theme.swift */,
+				A4D1E788BFC12E03FB53F9D6 /* ThemeModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -562,9 +756,38 @@
 			children = (
 				92BB9814CB369FE3FB556C17 /* GitView.swift */,
 				F7AF9B5FD900208F3AB20EA2 /* MainView.swift */,
+				40079EAB2BA6A0F415BBB857 /* PanelDivider.swift */,
+				27E0FB880981F9CD1F131DB0 /* PressActionsModifier.swift */,
+				347F774EFF4064B475899722 /* SegmentedControl.swift */,
 				65DBDE62DCC894FF09609F76 /* SettingsView.swift */,
+				1D85221752799BC470611F88 /* WindowStyle.swift */,
+				F7FCAC080401BC83079AC1CD /* StatusBar */,
+				2DE8959D62B1D2A606F80A42 /* TabBar */,
+				89313EC62A8581FCF01970B0 /* Toolbar */,
+				C45ECE70982038067BD60D1E /* UtilityArea */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		BEFD72EB03900E8494DF13A4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AFFF1CD6A0E99C07302FBFA6 /* EffectView.swift */,
+				471D4D760E4F361BC26F26BD /* SplitView */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C45ECE70982038067BD60D1E /* UtilityArea */ = {
+			isa = PBXGroup;
+			children = (
+				FF70FF2A4BB1D6956120701E /* DebugView.swift */,
+				B6A2C3F773CE38D33182323A /* OutputView.swift */,
+				4710E9AA53939A5B1996695E /* TerminalView.swift */,
+				EB4014364E43BE0C7A5CAB98 /* UtilityAreaToolbarButton.swift */,
+				E291B486C777806135F0725A /* UtilityAreaView.swift */,
+			);
+			path = UtilityArea;
 			sourceTree = "<group>";
 		};
 		C7BC367920A00F8F67E1CCD8 /* Products */ = {
@@ -589,6 +812,7 @@
 			isa = PBXGroup;
 			children = (
 				8AC17FB1497BBC1981C4BBB9 /* GitService.swift */,
+				5544055322B7BACF8E9904D2 /* GitWrapper.swift */,
 				B49774A160037AEF3E2F7497 /* SettingsManager.swift */,
 			);
 			path = Services;
@@ -598,9 +822,31 @@
 			isa = PBXGroup;
 			children = (
 				0D6FE2E06C30A670303C8D2F /* CodeAssistant.swift */,
+				C463A8E75B87F61654E97271 /* LoggingService.swift */,
 				BB8D1206DAABAA779E1E836F /* SyntaxHighlighter.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		F586D92ADD5A896900303656 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				D2A1ABE5343E64AD5806AA74 /* EditorTab.swift */,
+				0234974209ADE0CF77365C93 /* EditorTabID.swift */,
+				4583695C55433A377FA57183 /* StatusBarModel.swift */,
+				EE7C5547B56522A9AB17BCCB /* UtilityAreaTab.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F7FCAC080401BC83079AC1CD /* StatusBar */ = {
+			isa = PBXGroup;
+			children = (
+				393BDC26FC0728A053903429 /* StatusBarItems.swift */,
+				F3D85503EF94276276D29F0B /* StatusBarMenuStyle.swift */,
+				B68F266208A8FB32FE44400D /* StatusBarView.swift */,
+			);
+			path = StatusBar;
 			sourceTree = "<group>";
 		};
 		FE0CBBD2A9C8927A96756444 /* CodeEditor */ = {
@@ -614,32 +860,32 @@
 			path = Features/CodeEditor/Sources/CodeEditor;
 			sourceTree = "<group>";
 		};
-		"TEMP_3130624A-CB13-4D72-A4CA-DBBEDA692FC7" /* git2 */ = {
+		"TEMP_068545A5-B2E3-4833-81CD-9B40176B23BC" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = git2;
 			sourceTree = "<group>";
 		};
-		"TEMP_826BCD22-C2E8-48AC-94D1-431AC5A5E205" /* git2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = git2;
-			sourceTree = "<group>";
-		};
-		"TEMP_84FB0B35-B792-45F8-BDA7-1AD20212D716" /* Headers */ = {
+		"TEMP_228C931E-B32F-4640-AA88-693338FF68A7" /* Headers */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Headers;
 			sourceTree = "<group>";
 		};
-		"TEMP_A1D6BE34-AA0E-4689-8A99-9CB35BCD5877" /* include */ = {
+		"TEMP_2DB346FE-4254-4986-980C-37E7E2A61880" /* include */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = include;
+			sourceTree = "<group>";
+		};
+		"TEMP_94A7A6AC-75F4-4E22-90F7-C949301363B7" /* git2 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = git2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -690,6 +936,7 @@
 			dependencies = (
 				1CB8EEAA67A3013D0747F645 /* PBXTargetDependency */,
 				E6F542D1807D944E4846C609 /* PBXTargetDependency */,
+				2C89248C44FAE21F32396985 /* PBXTargetDependency */,
 			);
 			name = CodeEditor;
 			productName = CodeEditor;
@@ -722,6 +969,7 @@
 			);
 			dependencies = (
 				C58A9C6B00EAFF32E4DC4D7C /* PBXTargetDependency */,
+				2DCBECC778CAC4403D369E17 /* PBXTargetDependency */,
 			);
 			name = CodeEditorInterface;
 			productName = CodeEditorInterface;
@@ -849,6 +1097,7 @@
 			dependencies = (
 				F9DBD10AF1DB64F60CBD57F1 /* PBXTargetDependency */,
 				8B333241EDCD5F339EB0BFAB /* PBXTargetDependency */,
+				216A915D810A13DCD43DE0E2 /* PBXTargetDependency */,
 			);
 			name = UI;
 			productName = UI;
@@ -901,7 +1150,8 @@
 				DEB714C25949A37276D2A69D /* AppState.swift in Sources */,
 				5918A30646836E1CBA1000BD /* Core.swift in Sources */,
 				DFF82AD142025F57655ACB64 /* GitService.swift in Sources */,
-				2EBEE9460936FAEBAAF20617 /* GitWrapper.swift in Sources */,
+				E093BD8BE2B3E7B7B4D838F8 /* GitStatus.swift in Sources */,
+				560BB6B426A2AC45917C2480 /* GitWrapper.swift in Sources */,
 				EE2582B327DD54580F463E15 /* SettingsManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -912,6 +1162,7 @@
 			files = (
 				AA63B1454752CEB04BB8B352 /* CodeEditorFactory.swift in Sources */,
 				8AACB34688D07A1163038EF0 /* CodeEditorProtocol.swift in Sources */,
+				9465CD326A74BA7290A15F6D /* CodeEditorViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -924,6 +1175,10 @@
 				4C50E1E4BD35F99D561F1ECB /* CodeEditorView.swift in Sources */,
 				1E6744D2A31DE316B5F5A4F1 /* CodeEditorViewModel.swift in Sources */,
 				B9EC68A68096846B708EEBB6 /* FileTreeView.swift in Sources */,
+				EE665A9182EAAF2E6D3A70C3 /* SplitView.swift in Sources */,
+				1C1500A48E2345B099235FAD /* StatusBarViewModel.swift in Sources */,
+				9A26DE82741B1A3803E70AE3 /* ThemedTextEditor.swift in Sources */,
+				D64E3EC80574BCD59B24E051 /* ViewExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -932,10 +1187,36 @@
 			buildActionMask = 2147483647;
 			files = (
 				29143B067DE752A27F297102 /* CodeEditorFactory.swift in Sources */,
+				20138E3D4C6BEE9F62E81D30 /* DebugView.swift in Sources */,
+				E8E6E012365FE7C8834C7B7E /* EditorManager.swift in Sources */,
+				1749715A89244A29406B0D7D /* EditorTab.swift in Sources */,
+				C5E8225828F84BB569731286 /* EditorTabBarView.swift in Sources */,
+				E2E6F7E82A26A0DF9DC13BC0 /* EditorTabCloseButton.swift in Sources */,
+				B1CDC977255435D4662584BD /* EditorTabDivider.swift in Sources */,
+				A334C8342917F05C6BAA0AB0 /* EditorTabID.swift in Sources */,
+				22FBA57E2C6ADAB9DD03A26D /* EditorTabItemView.swift in Sources */,
+				A87B3D3783E54FA28DC718BC /* EditorTabOverflowShadow.swift in Sources */,
 				F7E2F3010011E4A627A2822C /* GitView.swift in Sources */,
 				12E986EB3E1D959D711626CF /* MainView.swift in Sources */,
+				B4496848D40BB6FD47A079F3 /* OutputView.swift in Sources */,
+				BB9986DE5E7CD30F7D9E14E6 /* PanelDivider.swift in Sources */,
+				D3A1346C726B9503972236A1 /* PressActionsModifier.swift in Sources */,
+				C46C9348B7A7B361D60EA11C /* SegmentedControl.swift in Sources */,
 				231BF3BE3F50C08D444FCCDC /* SettingsView.swift in Sources */,
+				09BC94299904AFB574F4B6B1 /* StatusBarItems.swift in Sources */,
+				D5C701AF5258AE1C7F003181 /* StatusBarMenuStyle.swift in Sources */,
+				A202483B65EC1B6C4F299378 /* StatusBarModel.swift in Sources */,
+				B30C142A61176BB4D681426C /* StatusBarView.swift in Sources */,
+				EA3AB00F765EC21A0C9450E9 /* StatusBarViewModel.swift in Sources */,
+				363B5823B4A6134A9BF32130 /* TerminalView.swift in Sources */,
+				9DAC7BA3FF26E0F14A3E67FF /* ToolbarView.swift in Sources */,
+				842F31D998E612E47D1A339B /* ToolbarViewModel.swift in Sources */,
 				C00C67BE5A5998C3FC68B379 /* UI.swift in Sources */,
+				8AB951F294CFDE91C4175E45 /* UtilityAreaTab.swift in Sources */,
+				9EB8E395E0B6A45D339512FA /* UtilityAreaToolbarButton.swift in Sources */,
+				61368838FF633FEE8DEB2148 /* UtilityAreaView.swift in Sources */,
+				0CCCA6D469B54AA253CD373F /* UtilityAreaViewModel.swift in Sources */,
+				4001CEBEFBB41A4A27E48041 /* WindowStyle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -954,7 +1235,24 @@
 			files = (
 				464507E7571A56DA28EAAD89 /* CodeAssistant.swift in Sources */,
 				8F9C9F21383703A8CA856BEB /* CodeLanguage.swift in Sources */,
+				B97BE1D4863A00258321BE00 /* EffectView.swift in Sources */,
+				040CC3A1CC503D1A144274D1 /* LoggingService.swift in Sources */,
+				59FED660EFBE57A7B619911B /* SplitView.swift in Sources */,
+				5207511CB05C427B16B8EBCA /* SplitViewController.swift in Sources */,
+				3FBA01B42AE331D4A131DCA0 /* SplitViewControllerLayoutValueKey.swift in Sources */,
+				987F0E0AB1301C7F424D6124 /* SplitViewControllerProtocol.swift in Sources */,
+				7C6A1B21799BB798FF7A43DF /* SplitViewControllerView.swift in Sources */,
+				AEFE9FED6AEBB4D6A2CA9FAE /* SplitViewItem.swift in Sources */,
+				0087F07EBA2F6B8BCE6DDE23 /* SplitViewModifiers.swift in Sources */,
+				63E561EC195F21901BDE33D7 /* SplitViewPreview.swift in Sources */,
+				07FE6058083BD16193B9B56B /* SplitViewProxy.swift in Sources */,
+				71DE7FD1A24DEF243CEE6802 /* SplitViewReader.swift in Sources */,
+				DA4790ABB5F809D40E46E15C /* SplitViewTraitKeys.swift in Sources */,
+				6DDC9DB9B5138747D44A9D3A /* StatusBarModel.swift in Sources */,
 				740A7C198D2DCD787BFAFA27 /* SyntaxHighlighter.swift in Sources */,
+				1830FB7618E5BF7D6FD41851 /* Theme.swift in Sources */,
+				FE77896CCD7495B3B89BB363 /* ThemeModel.swift in Sources */,
+				8A06FF7BB0DEF9621B3E94FE /* Variadic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1021,6 +1319,21 @@
 			isa = PBXTargetDependency;
 			target = 8F797375218F2E3C51F8B999 /* Core */;
 			targetProxy = 82BC3332F5D6541E211FF177 /* PBXContainerItemProxy */;
+		};
+		216A915D810A13DCD43DE0E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 42F186205C2F2A516975CE24 /* Shared */;
+			targetProxy = E9CFB8EB2014F1DD78BEBDAF /* PBXContainerItemProxy */;
+		};
+		2C89248C44FAE21F32396985 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 42F186205C2F2A516975CE24 /* Shared */;
+			targetProxy = 03845A7E8FDA4C1F29D2626A /* PBXContainerItemProxy */;
+		};
+		2DCBECC778CAC4403D369E17 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 42F186205C2F2A516975CE24 /* Shared */;
+			targetProxy = DA77B28A801583C2B4F05CB3 /* PBXContainerItemProxy */;
 		};
 		321372F27A7EB779357EC7F2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

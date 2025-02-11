@@ -14,11 +14,12 @@ public struct GitView: View {
     @State private var newBranchName = ""
     @State private var error: Error?
     
-    private let gitService = GitService.shared
+    private let gitService: GitService
     private let path: String
     
-    public init(path: String) {
+    public init(path: String) throws {
         self.path = path
+        self.gitService = try GitService(path: path)
     }
     
     public var body: some View {
@@ -122,17 +123,15 @@ public struct GitView: View {
                 .tag(1)
                 
                 // History tab
-                List(history, id: \.commitHash) { commit in
+                List(history, id: \.message) { commit in
                     VStack(alignment: .leading, spacing: 4) {
                         Text(commit.message)
                             .font(.headline)
                         HStack {
-                             Text(commit.commitHash)
+                            Text(commit.author)
                                 .font(.system(.caption, design: .monospaced))
                             Text("•")
-                            Text(commit.author)
-                            Text("•")
-                            Text(commit.date)
+                            Text(commit.timestamp, style: .date)
                         }
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -193,11 +192,11 @@ public struct GitView: View {
     
     private func refresh() {
         do {
-            branches = try gitService.getBranches(at: path)
-            currentBranch = try gitService.getCurrentBranch(at: path)
-            status = try gitService.getStatus(at: path)
+            branches = try gitService.getBranches()
+            currentBranch = try gitService.getCurrentBranch()
+            status = try gitService.getStatus()
             if let file = selectedFile {
-                history = try gitService.getFileHistory(file: file, at: path)
+                history = try gitService.getHistory(for: file)
             }
             updateDiff()
         } catch let error as GitError {
@@ -210,7 +209,7 @@ public struct GitView: View {
     private func updateDiff() {
         guard let file = selectedFile else { return }
         do {
-            diff = try gitService.getDiff(file: file, at: path)
+            diff = try gitService.getDiff(for: file)
         } catch let error as GitError {
             self.error = error
         } catch {
@@ -220,7 +219,7 @@ public struct GitView: View {
     
     private func switchBranch(to branch: String) {
         do {
-            try gitService.checkoutBranch(name: branch, at: path)
+            try gitService.checkoutBranch(name: branch)
             refresh()
         } catch let error as GitError {
             self.error = error
@@ -231,7 +230,7 @@ public struct GitView: View {
     
     private func createBranch() {
         do {
-            try gitService.createBranch(name: newBranchName, at: path)
+            try gitService.createBranch(name: newBranchName)
             newBranchName = ""
             refresh()
         } catch let error as GitError {
@@ -243,7 +242,7 @@ public struct GitView: View {
     
     private func commitChanges() {
         do {
-            try gitService.commit(message: commitMessage, at: path)
+            try gitService.commit(message: commitMessage)
             commitMessage = ""
             refresh()
         } catch let error as GitError {
@@ -255,32 +254,58 @@ public struct GitView: View {
     
     private func statusIcon(for state: String) -> String {
         switch state {
-        case "M": return "pencil"
-        case "A": return "plus"
-        case "D": return "minus"
-        case "R": return "arrow.right"
-        case "C": return "doc.on.doc"
-        case "U": return "arrow.up"
-        case "??": return "questionmark"
+        case "Modified": return "pencil"
+        case "Untracked": return "questionmark"
+        case "Added": return "plus"
+        case "Deleted": return "minus"
+        case "Renamed": return "arrow.right"
+        case "Copied": return "doc.on.doc"
+        case "Updated": return "arrow.up"
         default: return "circle"
         }
     }
     
     private func statusColor(for state: String) -> Color {
         switch state {
-        case "M": return .yellow
-        case "A": return .green
-        case "D": return .red
-        case "R": return .blue
-        case "C": return .purple
-        case "U": return .orange
-        case "??": return .gray
+        case "Modified": return .yellow
+        case "Untracked": return .gray
+        case "Added": return .green
+        case "Deleted": return .red
+        case "Renamed": return .blue
+        case "Copied": return .purple
+        case "Updated": return .orange
         default: return .primary
         }
     }
 }
 
+/// A container view that handles the throwing initialization of GitView
+private struct GitViewContainer: View {
+    let path: String
+    @State private var view: AnyView?
+    @State private var error: Error?
+    
+    var body: some View {
+        Group {
+            if let view = view {
+                view
+            } else if let error = error {
+                Text("Error: \(error.localizedDescription)")
+            } else {
+                Text("Loading...")
+            }
+        }
+        .onAppear {
+            do {
+                self.view = AnyView(try GitView(path: path))
+            } catch {
+                self.error = error
+            }
+        }
+    }
+}
+
 #Preview {
-    GitView(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    GitViewContainer(path: FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
         .appendingPathComponent("ZennicCode").path)
 }

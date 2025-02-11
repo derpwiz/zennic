@@ -68,7 +68,7 @@ public struct SettingsView: View {
                         Text("Path")
                             .foregroundColor(currentTheme.editor.text)
                         Spacer()
-                        Button(appState[keyPath: \.workspacePath].isEmpty ? "Select" : appState[keyPath: \.workspacePath]) {
+                        Button(appState.workspacePath.isEmpty ? "Select" : appState.workspacePath) {
                             isShowingWorkspacePicker = true
                         }
                     }
@@ -93,7 +93,7 @@ public struct SettingsView: View {
             switch result {
             case .success(let urls):
                 if let url = urls.first {
-                    appState[keyPath: \.workspacePath] = url.path
+                    appState.workspacePath = url.path
                 }
             case .failure(let error):
                 print("Error selecting workspace: \(error.localizedDescription)")

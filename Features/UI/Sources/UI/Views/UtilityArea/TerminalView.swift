@@ -29,7 +29,8 @@ public struct TerminalView: NSViewRepresentable {
         
         guard grantpt(masterFD) == 0,
               unlockpt(masterFD) == 0,
-              let slavePath = String(cString: ptsname(masterFD)) else {
+              let ptsPtr = ptsname(masterFD),
+              let slavePath = String(validatingUTF8: ptsPtr) else {
             close(masterFD)
             return terminalView
         }

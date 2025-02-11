@@ -36,77 +36,87 @@ public struct CodeEditorView: View {
         themeModel.selectedTheme ?? (colorScheme == .dark ? .darkDefault : .lightDefault)
     }
     
-    public var body: some View {
-        UtilityAreaSplitView {
-            SplitView.horizontal {
-                // File tree sidebar
-                FileTreeView(viewModel: viewModel)
-                    .frame(minWidth: Constants.sidebarWidth.lowerBound,
-                           maxWidth: Constants.sidebarWidth.upperBound)
-                    .background(EffectView(.sidebar))
-                    .collapsible()
-                
-                // Main editor area
-                VStack(spacing: 0) {
-                    // Tab bar
-                    HStack {
-                        Text(filePath)
-                            .lineLimit(1)
-                            .truncationMode(.middle)
-                            .foregroundColor(currentTheme.editor.text)
-                        Spacer()
-                    }
-                    .padding(.horizontal)
-                    .frame(height: Constants.tabBarHeight)
-                    .background(EffectView(.titlebar))
-                    
-                    // Editor content
-                    ThemedTextEditor(
-                        text: $viewModel.content,
-                        theme: currentTheme,
-                        isEditable: isEditable,
-                        onCursorChange: { line, column, offset in
-                            viewModel.cursorLine = line
-                            viewModel.cursorColumn = column
-                            viewModel.characterOffset = offset
-                        },
-                        onSelectionChange: { length, lines in
-                            viewModel.selectedLength = length
-                            viewModel.selectedLines = lines
-                        }
-                    )
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                }
-                .frame(maxWidth: .infinity)
+    private var sidebar: some View {
+        FileTreeView(viewModel: viewModel)
+            .frame(minWidth: Constants.sidebarWidth.lowerBound,
+                   maxWidth: Constants.sidebarWidth.upperBound)
+            .background(EffectView(.sidebar))
+            .frame(minWidth: 0)
+    }
+    
+    private var editorArea: some View {
+        VStack(spacing: 0) {
+            tabBar
+            editorContent
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    private var tabBar: some View {
+        HStack {
+            Text(filePath)
+                .lineLimit(1)
+                .truncationMode(.middle)
+                .foregroundColor(currentTheme.editor.text)
+            Spacer()
+        }
+        .padding(.horizontal)
+        .frame(height: Constants.tabBarHeight)
+        .background(EffectView(.titlebar))
+    }
+    
+    private var editorContent: some View {
+        ThemedTextEditor(
+            text: $viewModel.fileContent,
+            theme: currentTheme,
+            isEditable: isEditable,
+            onCursorChange: handleCursorChange,
+            onSelectionChange: handleSelectionChange
+        )
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+    
+    private func handleCursorChange(line: Int, column: Int, offset: Int) {
+        viewModel.cursorLine = line
+        viewModel.cursorColumn = column
+        viewModel.characterOffset = offset
+    }
+    
+    private func handleSelectionChange(length: Int, lines: Int) {
+        viewModel.selectedLength = length
+        viewModel.selectedLines = lines
+    }
+    
+    private func setupLifecycle(_ view: some View) -> some View {
+        view
+            .onAppear {
+                themeModel.updateTheme(for: colorScheme)
+                updateStatusBar()
             }
-            .environmentObject(statusBarViewModel)
-        }
-        .background(currentTheme.editor.background)
-        .onAppear {
-            themeModel.updateTheme(for: colorScheme)
-            updateStatusBar()
-        }
-        .onChange(of: colorScheme) { newValue in
-            themeModel.updateTheme(for: newValue)
-        }
-        .onChange(of: viewModel.cursorLine) { _ in updateStatusBar() }
-        .onChange(of: viewModel.cursorColumn) { _ in updateStatusBar() }
-        .onChange(of: viewModel.characterOffset) { _ in updateStatusBar() }
-        .onChange(of: viewModel.selectedLength) { _ in updateStatusBar() }
-        .onChange(of: viewModel.selectedLines) { _ in updateStatusBar() }
-        .onChange(of: viewModel.fileSize) { _ in updateStatusBar() }
+            .onChange(of: colorScheme) { newValue in
+                themeModel.updateTheme(for: newValue)
+            }
+            .onChange(of: viewModel.cursorLine) { _ in updateStatusBar() }
+            .onChange(of: viewModel.cursorColumn) { _ in updateStatusBar() }
+            .onChange(of: viewModel.characterOffset) { _ in updateStatusBar() }
+            .onChange(of: viewModel.selectedLength) { _ in updateStatusBar() }
+            .onChange(of: viewModel.selectedLines) { _ in updateStatusBar() }
+            .onChange(of: viewModel.fileSize) { _ in updateStatusBar() }
+    }
+    
+    public var body: some View {
+        setupLifecycle(
+            HSplitView {
+                sidebar
+                editorArea
+            }
+            .background(currentTheme.editor.background)
+        )
     }
     
     /// Updates the status bar model with the current state
     private func updateStatusBar() {
-        statusBarViewModel.model = StatusBarModel(
-            fileSize: viewModel.fileSize,
-            line: viewModel.cursorLine,
-            column: viewModel.cursorColumn,
-            characterOffset: viewModel.characterOffset,
-            selectedLength: viewModel.selectedLength,
-            selectedLines: viewModel.selectedLines
-        )
+        statusBarViewModel.model = viewModel.updateStatusBar()
     }
 }
 

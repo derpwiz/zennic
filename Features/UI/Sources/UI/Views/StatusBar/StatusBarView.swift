@@ -1,4 +1,5 @@
 import SwiftUI
+import Shared
 
 /// A view that displays information and controls in the status bar
 public struct StatusBarView: View {
@@ -12,11 +13,11 @@ public struct StatusBarView: View {
     @Environment(\.colorScheme) private var colorScheme
     
     /// The split view proxy for resizing the utility area
-    private let proxy: SplitViewProxy
+    private let proxy: Shared.SplitViewProxy
     
     /// Creates a new status bar view
     /// - Parameter proxy: The split view proxy for resizing the utility area
-    public init(proxy: SplitViewProxy) {
+    public init(proxy: Shared.SplitViewProxy = .init(viewController: { nil })) {
         self.proxy = proxy
     }
     
@@ -80,29 +81,27 @@ extension View {
     }
 }
 
-#Preview {
-    StatusBarView(proxy: .init())
-        .environmentObject(StatusBarViewModel())
-        .environmentObject(UtilityAreaViewModel())
-        .frame(width: 800)
-}
-
-/// A proxy for controlling a split view
-public struct SplitViewProxy {
-    /// The function to set a divider position
-    private let setPositionHandler: (Int, CGFloat) -> Void
-    
-    /// Creates a new split view proxy
-    /// - Parameter setPositionHandler: The function to set a divider position
-    public init(setPositionHandler: @escaping (Int, CGFloat) -> Void = { _, _ in }) {
-        self.setPositionHandler = setPositionHandler
-    }
-    
-    /// Sets the position of a divider
-    /// - Parameters:
-    ///   - index: The index of the divider
-    ///   - position: The new position
-    public func setPosition(of index: Int, position: CGFloat) {
-        setPositionHandler(index, position)
+#Preview("Status Bar") {
+    VStack(spacing: 0) {
+        // Light mode
+        HStack {
+            StatusBarView(proxy: .init(viewController: { nil }))
+                .environmentObject(StatusBarViewModel())
+                .environmentObject(UtilityAreaViewModel())
+                .frame(width: 800)
+        }
+        .frame(height: 28)
+        .background(.bar)
+        
+        // Dark mode
+        HStack {
+            StatusBarView(proxy: .init(viewController: { nil }))
+                .environmentObject(StatusBarViewModel())
+                .environmentObject(UtilityAreaViewModel())
+                .frame(width: 800)
+        }
+        .frame(height: 28)
+        .background(.bar)
+        .preferredColorScheme(.dark)
     }
 }

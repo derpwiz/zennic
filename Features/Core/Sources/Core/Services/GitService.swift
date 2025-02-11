@@ -18,6 +18,16 @@ public class GitService: Loggable {
         logger.info("Initializing Git service for: \(path)")
     }
     
+    /// Gets all branches in the repository
+    /// - Returns: Array of branch names
+    /// - Throws: GitError if the operation fails
+    public func getBranches() throws -> [String] {
+        logger.info("Getting branches")
+        let branches = try gitWrapper.getBranches()
+        logger.info("Found \(branches.count) branches")
+        return branches
+    }
+
     /// Gets the current branch name
     /// - Returns: The current branch name
     /// - Throws: GitError if the operation fails
@@ -28,18 +38,36 @@ public class GitService: Loggable {
     }
     
     /// Gets the status of files in the repository
-    /// - Returns: Array of tuples containing status and file path
+    /// - Returns: Array of GitStatus objects
     /// - Throws: GitError if the operation fails
-    public func getStatus() throws -> [(String, String)] {
+    public func getStatus() throws -> [GitStatus] {
         let status = try gitWrapper.getStatus()
         logger.info("Retrieved status for \(status.count) files")
         
-        // Log individual file statuses
-        status.forEach { status, path in
+        return status.map { status, path in
+            let description: String
+            switch status {
+            case "Modified":
+                description = "File has been modified"
+            case "Untracked":
+                description = "New file"
+            case "Added":
+                description = "Added to index"
+            case "Deleted":
+                description = "File has been deleted"
+            case "Renamed":
+                description = "File has been renamed"
+            case "Copied":
+                description = "File has been copied"
+            case "Updated":
+                description = "File has been updated"
+            default:
+                description = "Unknown status"
+            }
+            
             logger.info("File status: \(status) - \(path)")
+            return GitStatus(file: path, state: status, description: description)
         }
-        
-        return status
     }
     
     /// Adds a file to the index
@@ -58,6 +86,24 @@ public class GitService: Loggable {
         try gitWrapper.commit(message: message)
     }
     
+    /// Checks out a branch
+    /// - Parameter name: The branch name
+    /// - Throws: GitError if the operation fails
+    public func checkoutBranch(name: String) throws {
+        logger.info("Checking out branch: \(name)")
+        try gitWrapper.checkoutBranch(name: name)
+        logger.info("Successfully checked out branch: \(name)")
+    }
+
+    /// Creates a new branch
+    /// - Parameter name: The branch name
+    /// - Throws: GitError if the operation fails
+    public func createBranch(name: String) throws {
+        logger.info("Creating branch: \(name)")
+        try gitWrapper.createBranch(name: name)
+        logger.info("Successfully created branch: \(name)")
+    }
+
     /// Gets the history of a file
     /// - Parameter file: The file path
     /// - Returns: Array of commits that modified the file
@@ -102,15 +148,15 @@ public class GitService: Loggable {
     
     /// Gets the status of a specific file
     /// - Parameter file: The file path
-    /// - Returns: The file status or nil if not found
+    /// - Returns: The GitStatus object or nil if not found
     /// - Throws: GitError if the operation fails
-    public func getFileStatus(for file: String) throws -> String? {
+    public func getFileStatus(for file: String) throws -> GitStatus? {
         logger.info("Getting status for: \(file)")
         let status = try getStatus()
-        let fileStatus = status.first { $0.1 == file }?.0
+        let fileStatus = status.first { $0.file == file }
         
         if let status = fileStatus {
-            logger.info("File status: \(status) - \(file)")
+            logger.info("File status: \(status.state) - \(file)")
         } else {
             logger.info("No status found for: \(file)")
         }

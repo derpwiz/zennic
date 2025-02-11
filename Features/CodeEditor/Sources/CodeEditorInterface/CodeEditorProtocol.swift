@@ -9,7 +9,7 @@ public protocol CodeEditor {
     func saveFile() async throws
 }
 
-public protocol CodeEditorViewModel: ObservableObject {
+public protocol CodeEditorViewModelProtocol: ObservableObject {
     var editor: CodeEditor { get }
     var selectedFile: String? { get set }
     var fileContent: String { get set }

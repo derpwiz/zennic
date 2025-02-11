@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 /// A divider for the status bar
 public struct StatusBarDivider: View {
@@ -40,13 +41,26 @@ public struct StatusBarFileInfoView: View {
 /// Shows cursor position information in the status bar
 public struct StatusBarCursorPositionView: View {
     @EnvironmentObject private var statusBarViewModel: StatusBarViewModel
-    @Environment(\.modifierKeys) private var modifierKeys
     @Environment(\.controlActiveState) private var controlActive
+    @State private var isControlPressed = false
+    @State private var eventMonitor: Any?
     
     public init() {}
     
     public var body: some View {
         Text(label)
+            .onAppear {
+                eventMonitor = NSEvent.addLocalMonitorForEvents(matching: [.flagsChanged]) { event in
+                    isControlPressed = event.modifierFlags.contains(.control)
+                    return event
+                }
+            }
+            .onDisappear {
+                if let monitor = eventMonitor {
+                    NSEvent.removeMonitor(monitor)
+                    eventMonitor = nil
+                }
+            }
             .font(statusBarViewModel.statusBarFont)
             .foregroundColor(foregroundColor)
             .lineLimit(1)
@@ -56,7 +70,7 @@ public struct StatusBarCursorPositionView: View {
     }
     
     private var foregroundColor: Color {
-        if controlActive == .inactive {
+        if controlActive == .key {
             return Color(nsColor: .disabledControlTextColor)
         } else {
             return Color(nsColor: .secondaryLabelColor)
@@ -65,7 +79,7 @@ public struct StatusBarCursorPositionView: View {
     
     private var label: String {
         statusBarViewModel.formatCursorPosition(
-            showCharacterOffset: modifierKeys.contains(.option)
+            showCharacterOffset: isControlPressed
         )
     }
 }
@@ -82,8 +96,9 @@ public struct StatusBarToggleUtilityAreaButton: View {
             utilityAreaViewModel.togglePanel()
         } label: {
             Image(systemName: "square.bottomthird.inset.filled")
+                .symbolRenderingMode(.hierarchical)
         }
-        .buttonStyle(.icon)
+        .buttonStyle(StatusBarIconButtonStyle(isActive: false))
         .keyboardShortcut("Y", modifiers: [.command, .shift])
         .help(utilityAreaViewModel.isCollapsed ? "Show the Utility area" : "Hide the Utility area")
     }
@@ -91,36 +106,46 @@ public struct StatusBarToggleUtilityAreaButton: View {
 
 /// A menu for selecting the indentation settings
 public struct StatusBarIndentSelector: View {
-    @AppStorage("defaultTabWidth") private var defaultTabWidth: Int = 4
+    @AppStorage("useTabs") private var useTabs = false
+    @AppStorage("tabWidth") private var tabWidth: Int = 4
     
     public init() {}
     
     public var body: some View {
         Menu {
             Button {
-                // TODO: Implement tab/space switching
+                useTabs = true
             } label: {
-                Text("Use Tabs")
+                HStack {
+                    Text("Use Tabs")
+                    if useTabs {
+                        Image(systemName: "checkmark")
+                    }
+                }
             }
-            .disabled(true)
             
             Button {
-                // TODO: Implement tab/space switching
+                useTabs = false
             } label: {
-                Text("Use Spaces")
+                HStack {
+                    Text("Use Spaces")
+                    if !useTabs {
+                        Image(systemName: "checkmark")
+                    }
+                }
             }
-            .disabled(true)
             
             Divider()
             
-            Picker("Tab Width", selection: $defaultTabWidth) {
+            Picker("Tab Width", selection: $tabWidth) {
                 ForEach(2..<9) { index in
-                    Text("\(index) Spaces")
+                    Text("\(index) \(useTabs ? "Tabs" : "Spaces")")
                         .tag(index)
                 }
             }
         } label: {
-            Text("\(defaultTabWidth) Spaces")
+            Text("\(tabWidth) \(useTabs ? "Tabs" : "Spaces")")
+                .font(.system(size: 11))
         }
         .menuStyle(.statusBar)
     }
@@ -128,13 +153,27 @@ public struct StatusBarIndentSelector: View {
 
 /// A menu for selecting the text encoding
 public struct StatusBarEncodingSelector: View {
+    @AppStorage("fileEncoding") private var fileEncoding = "UTF-8"
+    
     public init() {}
     
     public var body: some View {
         Menu {
-            // TODO: Add encoding options
+            ForEach(["UTF-8", "UTF-16", "ASCII", "ISO-8859-1"], id: \.self) { encoding in
+                Button {
+                    fileEncoding = encoding
+                } label: {
+                    HStack {
+                        Text(encoding)
+                        if encoding == fileEncoding {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
         } label: {
-            Text("UTF-8")
+            Text(fileEncoding)
+                .font(.system(size: 11))
         }
         .menuStyle(.statusBar)
     }
@@ -142,13 +181,27 @@ public struct StatusBarEncodingSelector: View {
 
 /// A menu for selecting the line ending style
 public struct StatusBarLineEndSelector: View {
+    @AppStorage("lineEnding") private var lineEnding = "LF"
+    
     public init() {}
     
     public var body: some View {
         Menu {
-            // TODO: Add line ending options
+            ForEach(["LF", "CRLF", "CR"], id: \.self) { ending in
+                Button {
+                    lineEnding = ending
+                } label: {
+                    HStack {
+                        Text(ending)
+                        if ending == lineEnding {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
         } label: {
-            Text("LF")
+            Text(lineEnding)
+                .font(.system(size: 11))
         }
         .menuStyle(.statusBar)
     }
