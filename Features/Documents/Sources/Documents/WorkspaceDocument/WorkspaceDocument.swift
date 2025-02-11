@@ -52,7 +52,7 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     
     public required init(configuration: ReadConfiguration) throws {
         // Initialize properties
-        let url = configuration.contentURL
+        let url = configuration.file?.url
         self.workspaceFileManager = .init(
             folderUrl: url,
             ignoredFilesAndFolders: Set(ignoredFilesAndDirectory)
