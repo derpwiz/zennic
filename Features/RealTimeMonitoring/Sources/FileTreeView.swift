@@ -10,15 +10,16 @@ struct FileItem: Identifiable {
 
 class FileTreeViewModel: ObservableObject {
     @Published var items: [FileItem] = []
-    @EnvironmentObject private var appState: AppState
     private var gitService: Core.GitServiceType?
     
-    private func initializeGitService() {
-        gitService = try? Core.GitServiceType(path: appState.workspacePath)
+    private func initializeGitService(workspace: WorkspaceDocument) {
+        if let fileManager = workspace.workspaceFileManager {
+            gitService = try? Core.GitServiceType(path: fileManager.folderUrl.path)
+        }
     }
     
-    func loadFiles() {
-        initializeGitService()
+    func loadFiles(workspace: WorkspaceDocument) {
+        initializeGitService(workspace: workspace)
         do {
             guard let gitService = gitService else { return }
             let files = try gitService.listFiles()
@@ -28,23 +29,23 @@ class FileTreeViewModel: ObservableObject {
         }
     }
     
-    func createFile(name: String, content: String) {
-        initializeGitService()
+    func createFile(name: String, content: String, workspace: WorkspaceDocument) {
+        initializeGitService(workspace: workspace)
         do {
             guard let gitService = gitService else { return }
             try gitService.createFile(name: name, content: content)
-            loadFiles()
+            loadFiles(workspace: workspace)
         } catch {
             print("Error creating file: \(error)")
         }
     }
     
-    func deleteFile(name: String) {
-        initializeGitService()
+    func deleteFile(name: String, workspace: WorkspaceDocument) {
+        initializeGitService(workspace: workspace)
         do {
             guard let gitService = gitService else { return }
             try gitService.deleteFile(name: name)
-            loadFiles()
+            loadFiles(workspace: workspace)
         } catch {
             print("Error deleting file: \(error)")
         }
@@ -53,6 +54,7 @@ class FileTreeViewModel: ObservableObject {
 
 struct FileTreeView: View {
     @StateObject private var viewModel = FileTreeViewModel()
+    @EnvironmentObject private var workspace: WorkspaceDocument
     @State private var selectedFile: String?
     @State private var showingCreateFile = false
     @State private var newFileName = ""
@@ -69,7 +71,7 @@ struct FileTreeView: View {
             }
             .contextMenu {
                 Button("Delete") {
-                    viewModel.deleteFile(name: item.name)
+                    viewModel.deleteFile(name: item.name, workspace: workspace)
                 }
             }
         }
@@ -83,11 +85,11 @@ struct FileTreeView: View {
         }
         .sheet(isPresented: $showingCreateFile) {
             CreateFileView(isPresented: $showingCreateFile, onCreate: { name, content in
-                viewModel.createFile(name: name, content: content)
+                viewModel.createFile(name: name, content: content, workspace: workspace)
             })
         }
         .onAppear {
-            viewModel.loadFiles()
+            viewModel.loadFiles(workspace: workspace)
         }
     }
 }
@@ -122,8 +124,12 @@ struct CreateFileView: View {
     }
 }
 
+#if DEBUG
 struct FileTreeView_Previews: PreviewProvider {
     static var previews: some View {
-        FileTreeView()
+        let workspace = WorkspaceDocument()
+        return FileTreeView()
+            .environmentObject(workspace)
     }
 }
+#endif
