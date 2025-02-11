@@ -72,7 +72,11 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     
     public func fileWrapper(snapshot: WorkspaceDocument, configuration: WriteConfiguration) throws -> FileWrapper {
         // Just create an empty directory wrapper since we don't need to save any file content
-        FileWrapper(directoryWithFileWrappers: [:])
+        let fileWrapper = FileWrapper(directoryWithFileWrappers: [:])
+        if let fileURL = configuration.file.url {
+            // Use fileURL here if needed
+        }
+        return fileWrapper
     }
 
     deinit {
