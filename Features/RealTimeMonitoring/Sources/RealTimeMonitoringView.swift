@@ -1,18 +1,21 @@
 import SwiftUI
+import Documents
 
 struct RealTimeMonitoringView: View {
+    @EnvironmentObject private var workspace: WorkspaceDocument
+    
     var body: some View {
-        VStack {
-            Text("Real-Time Monitoring")
-                .font(.largeTitle)
-            Text("This is where the real-time monitoring features will be implemented.")
-                .font(.subheadline)
-        }
+        FileTreeView()
+            .environmentObject(workspace)
     }
 }
 
+#if DEBUG
 struct RealTimeMonitoringView_Previews: PreviewProvider {
     static var previews: some View {
-        RealTimeMonitoringView()
+        let workspace = WorkspaceDocument()
+        return RealTimeMonitoringView()
+            .environmentObject(workspace)
     }
 }
+#endif
