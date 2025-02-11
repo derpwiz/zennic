@@ -6,7 +6,7 @@ public struct UtilityAreaOutputView: View {
     @State private var filterText = ""
     @State private var selectedSource: String?
     
-    var body: some View {
+    public var body: some View {
         UtilityAreaTabView(model: model) { _ in
             VStack {
                 Text("No output")

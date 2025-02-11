@@ -1,4 +1,5 @@
 import SwiftUI
+import Shared
 
 /// A view that provides a split view layout with optional sidebars for utility area tabs
 public struct UtilityAreaTabView<Content: View, LeadingSidebar: View, TrailingSidebar: View>: View {
@@ -69,7 +70,7 @@ public struct UtilityAreaTabView<Content: View, LeadingSidebar: View, TrailingSi
         )
     }
     
-    var body: some View {
+    public var body: some View {
         SplitView(axis: .horizontal) {
             // Leading Sidebar
             if model.hasLeadingSidebar {

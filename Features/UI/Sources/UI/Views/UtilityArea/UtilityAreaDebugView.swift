@@ -4,7 +4,7 @@ import SwiftUI
 public struct UtilityAreaDebugView: View {
     @StateObject private var model = UtilityAreaTabViewModel(hasLeadingSidebar: true)
     
-    var body: some View {
+    public var body: some View {
         UtilityAreaTabView(model: model) { _ in
             VStack {
                 Text("No Task Selected")
