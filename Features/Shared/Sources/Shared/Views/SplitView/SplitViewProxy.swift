@@ -1,10 +1,12 @@
 import SwiftUI
 
 /// A proxy for controlling a split view controller
-@available(macOS 14.0, *)
-public final class SplitViewProxy: Observable {
+public final class SplitViewProxy: ObservableObject {
     /// The view controller closure
     private let viewController: () -> SplitViewController?
+    
+    /// The current position of the split view items
+    @Published public private(set) var positions: [CGFloat] = []
     
     /// Creates a new split view proxy
     /// - Parameter viewController: A closure that returns the split view controller
@@ -18,5 +20,10 @@ public final class SplitViewProxy: Observable {
     ///   - position: The new position
     public func setPosition(of index: Int, position: CGFloat) {
         viewController()?.setPosition(of: index, position: position)
+        if index < positions.count {
+            positions[index] = position
+        } else {
+            positions.append(position)
+        }
     }
 }
