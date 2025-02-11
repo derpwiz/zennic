@@ -30,7 +30,7 @@ struct ZennicApp: App {
     private var appState = AppState.shared
     
     var body: some Scene {
-        DocumentGroup(viewing: WorkspaceDocument.self) { file in
+        DocumentGroup(newDocument: WorkspaceDocument()) { file in
             ContentView()
                 .environmentObject(appState)
                 .environmentObject(file.document)
