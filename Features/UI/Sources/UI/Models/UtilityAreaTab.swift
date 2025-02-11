@@ -1,25 +1,33 @@
 import SwiftUI
 
-/// Represents a tab in the utility area.
-public enum UtilityAreaTab: String, CaseIterable {
+/// Represents the different tabs in the utility area
+public enum UtilityAreaTab: String, CaseIterable, Hashable, WorkspacePanelTab {
     case output = "Output"
     case debug = "Debug"
     case terminal = "Terminal"
     
-    /// The icon associated with this tab.
-    public var icon: String {
+    public var id: Self { self }
+    
+    /// The display name of the tab
+    public var title: String { rawValue }
+    
+    /// The SF Symbol name for the tab's icon
+    public var systemImage: String {
         switch self {
-        case .output:
-            return "text.alignleft"
-        case .debug:
-            return "ladybug"
-        case .terminal:
-            return "terminal"
+        case .output: return "list.bullet.indent"
+        case .debug: return "ladybug"
+        case .terminal: return "terminal"
         }
     }
     
-    /// The display name of this tab.
-    public var name: String {
-        return rawValue
+    public var body: some View {
+        switch self {
+        case .terminal:
+            UtilityAreaTerminalView()
+        case .debug:
+            UtilityAreaDebugView()
+        case .output:
+            UtilityAreaOutputView()
+        }
     }
 }
