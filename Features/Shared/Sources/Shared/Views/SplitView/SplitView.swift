@@ -1,6 +1,5 @@
 import SwiftUI
 
-@available(macOS 14.0, *)
 public struct SplitView<Content: View>: View {
     var axis: Axis
     var content: Content
@@ -10,7 +9,7 @@ public struct SplitView<Content: View>: View {
         self.content = content()
     }
 
-    @State var viewController: () -> SplitViewController? = { nil }
+    @State var viewController: () -> SplitViewControllerProtocol? = { nil }
 
     public var body: some View {
         VStack {
@@ -23,7 +22,6 @@ public struct SplitView<Content: View>: View {
     }
 }
 
-@available(macOS 14.0, *)
 extension SplitView {
     public static func horizontal<V: View>(@ViewBuilder content: () -> V) -> SplitView<V> {
         SplitView(axis: .horizontal, content: content)

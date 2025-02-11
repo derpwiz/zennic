@@ -1,7 +1,7 @@
 import SwiftUI
 
 @available(macOS 14.0, *)
-public final class SplitViewController: NSSplitViewController {
+public final class SplitViewController: NSSplitViewController, SplitViewControllerProtocol {
     var items: [SplitViewItem] = []
     var axis: Axis
     var parentView: SplitViewControllerView
