@@ -2,6 +2,7 @@ import SwiftUI
 import Shared
 import Core
 import CodeEditorInterface
+import Documents
 
 // Use Shared module's SplitView components
 typealias SplitViewProxy = Shared.SplitViewProxy
@@ -244,6 +245,7 @@ public struct _MainView: View {
     @StateObject private var statusBarViewModel = StatusBarViewModel()
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var editorsHeight: CGFloat = 0
+    
     private var navigationTitle: String {
         switch workspace.selectedFeature {
         case "CodeEditor": return "Code Editor"
@@ -259,26 +261,24 @@ public struct _MainView: View {
     public init() {}
     
     public var body: some View {
-        let mainContent = NavigationStack {
-            Shared.SplitViewReader { proxy in
-                VStack(spacing: 0) {
-                    ToolbarView()
-                        .padding(EdgeInsets(top: 1, leading: 0, bottom: 0, trailing: 0))
-                    MainContentLayout(
-                        editorsHeight: $editorsHeight,
-                        utilityAreaViewModel: utilityAreaViewModel,
-                        workspace: workspace,
-                        proxy: proxy
-                    )
-                }
-            }
-            .windowTitleBarStyle()
-        }
-        
-        return NavigationSplitView(columnVisibility: $columnVisibility) {
+        NavigationSplitView(columnVisibility: $columnVisibility) {
             SidebarNavigationView(selectedFeature: $workspace.selectedFeature)
         } detail: {
-            mainContent
+            NavigationStack {
+                Shared.SplitViewReader { proxy in
+                    VStack(spacing: 0) {
+                        ToolbarView()
+                            .padding(EdgeInsets(top: 1, leading: 0, bottom: 0, trailing: 0))
+                        MainContentLayout(
+                            editorsHeight: $editorsHeight,
+                            utilityAreaViewModel: utilityAreaViewModel,
+                            workspace: workspace,
+                            proxy: proxy
+                        )
+                    }
+                }
+                .windowTitleBarStyle()
+            }
         }
         .preferredColorScheme(appState.isDarkMode ? .dark : .light)
         .background(EffectView(.contentBackground))
