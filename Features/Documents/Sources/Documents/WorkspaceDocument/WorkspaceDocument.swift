@@ -16,7 +16,7 @@ import DocumentsInterface
 import UniformTypeIdentifiers
 
 extension UTType {
-    static let zennicWorkspace = UTType("com.zennic.workspace")
+    static let zennicWorkspace = UTType("com.zennic.workspace") ?? UTType.folder
 }
 
 public final class WorkspaceDocument: ReferenceFileDocument {
@@ -71,6 +71,7 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     }
     
     public func fileWrapper(snapshot: WorkspaceDocument, configuration: WriteConfiguration) throws -> FileWrapper {
+        // Just create an empty directory wrapper since we don't need to save any file content
         FileWrapper(directoryWithFileWrappers: [:])
     }
 
@@ -110,8 +111,9 @@ public final class WorkspaceDocument: ReferenceFileDocument {
         }
 
         window.setAccessibilityIdentifier("workspace")
-        window.setAccessibilityDocument(self.fileURL?.absoluteString)
-
+        if let fileURL = fileURL {
+            window.setAccessibilityDocument(fileURL.absoluteString)
+        }
         window.makeKeyAndOrderFront(nil)
     }
 
