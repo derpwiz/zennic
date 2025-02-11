@@ -52,14 +52,15 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     
     public required init(configuration: ReadConfiguration) throws {
         // Initialize properties
+        let url = configuration.url
         self.workspaceFileManager = .init(
-            folderUrl: configuration.file.url,
+            folderUrl: url,
             ignoredFilesAndFolders: Set(ignoredFilesAndDirectory)
         )
         self.editorManager = EditorManager()
         self.statusBarViewModel = StatusBarViewModel()
         self.utilityAreaModel = UtilityAreaViewModel()
-        self.fileURL = configuration.file.url
+        self.fileURL = url
         
         // Restore state
         editorManager?.restoreFromState(self)
@@ -73,9 +74,6 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     public func fileWrapper(snapshot: WorkspaceDocument, configuration: WriteConfiguration) throws -> FileWrapper {
         // Just create an empty directory wrapper since we don't need to save any file content
         let fileWrapper = FileWrapper(directoryWithFileWrappers: [:])
-        if let fileURL = configuration.file.url {
-            // Use fileURL here if needed
-        }
         return fileWrapper
     }
 
