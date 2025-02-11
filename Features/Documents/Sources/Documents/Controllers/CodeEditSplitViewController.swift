@@ -1,18 +1,21 @@
 //
 //  CodeEditSplitViewController.swift
-//  zennic
+//  Documents
 //
 //  Created by Claude on 2/11/25.
 //
 
 import Cocoa
 import SwiftUI
+import Editor
+import UtilityArea
+import Core
 
-final class CodeEditSplitViewController: NSSplitViewController {
-    static let minSidebarWidth: CGFloat = 242
-    static let maxSnapWidth: CGFloat = snapWidth + 10
-    static let snapWidth: CGFloat = 272
-    static let minSnapWidth: CGFloat = snapWidth - 10
+public final class CodeEditSplitViewController: NSSplitViewController {
+    public static let minSidebarWidth: CGFloat = 242
+    public static let maxSnapWidth: CGFloat = snapWidth + 10
+    public static let snapWidth: CGFloat = 272
+    public static let minSnapWidth: CGFloat = snapWidth - 10
 
     private weak var workspace: WorkspaceDocument?
     private weak var windowRef: NSWindow?
@@ -20,7 +23,7 @@ final class CodeEditSplitViewController: NSSplitViewController {
 
     // MARK: - Initialization
 
-    init(
+    public init(
         workspace: WorkspaceDocument,
         windowRef: NSWindow,
         hapticPerformer: NSHapticFeedbackPerformer = NSHapticFeedbackManager.defaultPerformer
@@ -36,7 +39,7 @@ final class CodeEditSplitViewController: NSSplitViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         guard let windowRef else {
             assertionFailure("No WindowRef found, not initialized properly or the window was dereferenced and the controller was not.")
@@ -55,7 +58,10 @@ final class CodeEditSplitViewController: NSSplitViewController {
 
         let navigator = makeNavigator(view: SettingsInjector {
             NavigationSplitView {
-                SidebarNavigationView(selectedFeature: $workspace.selectedFeature)
+                SidebarNavigationView(selectedFeature: Binding(
+                    get: { workspace.selectedFeature },
+                    set: { workspace.selectedFeature = $0 }
+                ))
             } detail: {
                 EmptyView()
             }
@@ -67,7 +73,7 @@ final class CodeEditSplitViewController: NSSplitViewController {
 
         let workspaceView = SettingsInjector {
             WindowObserver(window: WindowBox(value: windowRef)) {
-                MainView()
+                DocumentContentView()
                     .environmentObject(workspace)
                     .environmentObject(editorManager)
                     .environmentObject(statusBarViewModel)
@@ -91,7 +97,7 @@ final class CodeEditSplitViewController: NSSplitViewController {
         return navigator
     }
 
-    override func viewWillAppear() {
+    public override func viewWillAppear() {
         super.viewWillAppear()
 
         guard let workspace else { return }
@@ -108,7 +114,7 @@ final class CodeEditSplitViewController: NSSplitViewController {
 
     // MARK: - NSSplitViewDelegate
 
-    override func splitView(
+    public override func splitView(
         _ splitView: NSSplitView,
         constrainSplitPosition proposedPosition: CGFloat,
         ofSubviewAt dividerIndex: Int
@@ -137,7 +143,7 @@ final class CodeEditSplitViewController: NSSplitViewController {
         item?.isCollapsed = collapseAction
     }
 
-    override func splitViewDidResizeSubviews(_ notification: Notification) {
+    public override func splitViewDidResizeSubviews(_ notification: Notification) {
         super.splitViewDidResizeSubviews(notification)
         guard let resizedDivider = notification.userInfo?["NSSplitViewDividerIndex"] as? Int else {
             return
@@ -152,30 +158,43 @@ final class CodeEditSplitViewController: NSSplitViewController {
         }
     }
 
-    func saveNavigatorCollapsedState(isCollapsed: Bool) {
+    public func saveNavigatorCollapsedState(isCollapsed: Bool) {
         workspace?.addToWorkspaceState(key: .navigatorCollapsed, value: isCollapsed)
     }
 }
 
 // MARK: - Helper Views
 
-struct WindowBox {
-    let value: NSWindow?
+public struct WindowBox {
+    public let value: NSWindow?
+
+    public init(value: NSWindow?) {
+        self.value = value
+    }
 }
 
-struct WindowObserver<Content: View>: View {
-    let window: WindowBox
-    let content: () -> Content
+public struct WindowObserver<Content: View>: View {
+    public let window: WindowBox
+    public let content: () -> Content
 
-    var body: some View {
+    public init(window: WindowBox, @ViewBuilder content: @escaping () -> Content) {
+        self.window = window
+        self.content = content
+    }
+
+    public var body: some View {
         content()
     }
 }
 
-struct SettingsInjector<Content: View>: View {
-    let content: () -> Content
+public struct SettingsInjector<Content: View>: View {
+    public let content: () -> Content
 
-    var body: some View {
+    public init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+    }
+
+    public var body: some View {
         content()
     }
 }

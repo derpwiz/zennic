@@ -69,12 +69,12 @@ targets:
         PRODUCT_MODULE_NAME: "Shared"
         DEFINES_MODULE: "YES"
 
-  Documents:
+  DocumentsInterface:
     type: framework
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: Features/Documents/Sources/Documents
+      - path: Features/Documents/Sources/DocumentsInterface
     dependencies:
       - target: Core
       - target: Shared
@@ -84,7 +84,87 @@ targets:
         CODE_SIGNING_REQUIRED: "NO"
         CODE_SIGN_ENTITLEMENTS: ""
         GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "DocumentsInterface"
+        DEFINES_MODULE: "YES"
+
+  Documents:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/Documents/Sources/Documents
+    dependencies:
+      - target: Core
+      - target: Shared
+      - target: Editor
+      - target: UtilityArea
+      - target: DocumentsInterface
+      - target: CodeEditorInterface
+      - target: CodeEditor
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
         PRODUCT_MODULE_NAME: "Documents"
+        DEFINES_MODULE: "YES"
+
+  Editor:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/Editor/Sources/Editor
+    dependencies:
+      - target: Core
+      - target: Shared
+      - target: DocumentsInterface
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "Editor"
+        DEFINES_MODULE: "YES"
+
+  UtilityArea:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/UtilityArea/Sources/UtilityArea
+    dependencies:
+      - target: Core
+      - target: Shared
+      - target: TerminalEmulator
+      - target: DocumentsInterface
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "UtilityArea"
+        DEFINES_MODULE: "YES"
+
+  TerminalEmulator:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/TerminalEmulator/Sources/TerminalEmulator
+    dependencies:
+      - target: Core
+      - target: Shared
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "TerminalEmulator"
         DEFINES_MODULE: "YES"
 
   App:
@@ -259,6 +339,8 @@ targets:
       - target: CodeEditorInterface
       - target: Shared
       - target: Documents
+      - target: Editor
+      - target: UtilityArea
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
