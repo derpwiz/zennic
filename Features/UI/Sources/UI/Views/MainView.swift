@@ -129,15 +129,15 @@ private struct SidebarNavigationView: View {
 
 // MARK: - Feature Content
 private struct FeatureContentView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var workspace: WorkspaceDocument
     @Binding var editorsHeight: CGFloat
     
     var body: some View {
         GeometryReader { geo in
             Group {
-                switch appState.selectedFeature {
+                switch workspace.selectedFeature {
                 case "CodeEditor":
-                    CodeEditorContent(workspacePath: appState.workspacePath)
+                    CodeEditorContent(workspace: workspace)
                 case "DataIntegration", "Backtesting", "RealTimeMonitoring", "Visualization":
                     EmptyView()
                 case "Settings":
@@ -158,12 +158,12 @@ private struct FeatureContentView: View {
 }
 
 private struct CodeEditorContent: View {
-    let workspacePath: String
+    @ObservedObject var workspace: WorkspaceDocument
     
     var body: some View {
         Group {
-            if !workspacePath.isEmpty {
-                CodeEditorFactory.makeEditor(workspacePath: workspacePath)
+            if let fileManager = workspace.workspaceFileManager {
+                CodeEditorFactory.makeEditor(workspacePath: fileManager.folderUrl.path)
             } else {
                 EmptyWorkspaceContent()
             }
@@ -203,7 +203,7 @@ private struct DefaultContent: View {
 private struct MainContentLayout: View {
     @Binding var editorsHeight: CGFloat
     @ObservedObject var utilityAreaViewModel: UtilityAreaViewModel
-    @ObservedObject var appState: AppState
+    @ObservedObject var workspace: WorkspaceDocument
     let proxy: Shared.SplitViewProxy
     
     private let statusbarHeight: CGFloat = 29
@@ -239,12 +239,13 @@ private struct MainContentLayout: View {
 // MARK: - Main View
 public struct _MainView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var workspace: WorkspaceDocument
     @StateObject private var utilityAreaViewModel = UtilityAreaViewModel()
     @StateObject private var statusBarViewModel = StatusBarViewModel()
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var editorsHeight: CGFloat = 0
     private var navigationTitle: String {
-        switch appState.selectedFeature {
+        switch workspace.selectedFeature {
         case "CodeEditor": return "Code Editor"
         case "DataIntegration": return "Data Integration"
         case "Backtesting": return "Backtesting"
@@ -266,7 +267,7 @@ public struct _MainView: View {
                     MainContentLayout(
                         editorsHeight: $editorsHeight,
                         utilityAreaViewModel: utilityAreaViewModel,
-                        appState: appState,
+                        workspace: workspace,
                         proxy: proxy
                     )
                 }
@@ -275,7 +276,7 @@ public struct _MainView: View {
         }
         
         return NavigationSplitView(columnVisibility: $columnVisibility) {
-            SidebarNavigationView(selectedFeature: $appState.selectedFeature)
+            SidebarNavigationView(selectedFeature: $workspace.selectedFeature)
         } detail: {
             mainContent
         }
@@ -286,12 +287,18 @@ public struct _MainView: View {
     }
 }
 
+#if DEBUG
 // MARK: - Previews
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        _MainView()
+        let workspace = WorkspaceDocument()
+        workspace.selectedFeature = "CodeEditor"
+        
+        return _MainView()
             .environmentObject(AppState.shared)
+            .environmentObject(workspace)
             .environmentObject(StatusBarViewModel())
             .environmentObject(UtilityAreaViewModel())
     }
 }
+#endif
