@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UniformTypeIdentifiers
 
 /// Represents a tab in the editor
 public struct EditorTab: Identifiable, Hashable {
@@ -20,7 +21,7 @@ public struct EditorTab: Identifiable, Hashable {
         if let path = path {
             return NSWorkspace.shared.icon(forFile: path)
         }
-        return NSWorkspace.shared.icon(forFileType: "txt")
+        return NSWorkspace.shared.icon(for: UTType.plainText)
     }
     
     /// The color for the file icon
