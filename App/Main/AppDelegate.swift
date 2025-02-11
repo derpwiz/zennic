@@ -4,6 +4,7 @@ import Core
 import CodeEditorInterface
 import CodeEditor
 import UniformTypeIdentifiers
+import Documents
 
 extension UTType {
     static var zennicWorkspace: UTType {
