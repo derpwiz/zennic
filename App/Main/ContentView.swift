@@ -1,6 +1,7 @@
 import SwiftUI
 import Core
 import UI
+import Documents
 
 struct ContentView: View {
     @EnvironmentObject private var appState: AppState
