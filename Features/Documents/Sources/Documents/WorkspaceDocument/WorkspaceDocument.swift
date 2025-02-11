@@ -15,7 +15,10 @@ import CodeEditorInterface
 import DocumentsInterface
 import UniformTypeIdentifiers
 
-@objc(WorkspaceDocument)
+extension UTType {
+    static let zennicWorkspace = UTType("com.zennic.workspace")
+}
+
 public final class WorkspaceDocument: ReferenceFileDocument {
     public static var readableContentTypes: [UTType] { [.zennicWorkspace] }
     
@@ -44,11 +47,23 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     public var fileURL: URL?
 
     public init() {
-        super.init()
+        // No initialization needed
     }
     
     public required init(configuration: ReadConfiguration) throws {
-        try initWorkspaceState(configuration.file.url)
+        // Initialize properties
+        self.workspaceFileManager = .init(
+            folderUrl: configuration.file.url,
+            ignoredFilesAndFolders: Set(ignoredFilesAndDirectory)
+        )
+        self.editorManager = EditorManager()
+        self.statusBarViewModel = StatusBarViewModel()
+        self.utilityAreaModel = UtilityAreaViewModel()
+        self.fileURL = configuration.file.url
+        
+        // Restore state
+        editorManager?.restoreFromState(self)
+        utilityAreaModel?.restoreFromState(self)
     }
     
     public func snapshot(contentType: UTType) throws -> WorkspaceDocument {
@@ -82,7 +97,7 @@ public final class WorkspaceDocument: ReferenceFileDocument {
             defer: false
         )
 
-        let windowController = CodeEditWindowController(
+        let _ = CodeEditWindowController(
             window: window,
             workspace: self
         )
@@ -98,26 +113,6 @@ public final class WorkspaceDocument: ReferenceFileDocument {
         window.setAccessibilityDocument(self.fileURL?.absoluteString)
 
         window.makeKeyAndOrderFront(nil)
-    }
-
-    // MARK: Set Up Workspace
-
-    private func initWorkspaceState(_ url: URL) throws {
-        // Ensure the URL ends with a "/" to prevent certain URL(filePath:relativeTo) initializers from
-        // placing the file one directory above our workspace. This quick fix appends a "/" if needed.
-        var url = url
-        if !url.absoluteString.hasSuffix("/") {
-            url = URL(filePath: url.absoluteURL.path(percentEncoded: false) + "/")
-        }
-
-        self.fileURL = url
-        self.workspaceFileManager = .init(
-            folderUrl: url,
-            ignoredFilesAndFolders: Set(ignoredFilesAndDirectory)
-        )
-
-        editorManager?.restoreFromState(self)
-        utilityAreaModel?.restoreFromState(self)
     }
 
     // MARK: Close Workspace
