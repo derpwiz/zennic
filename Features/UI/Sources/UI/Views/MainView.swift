@@ -199,46 +199,9 @@ private struct DefaultContent: View {
     }
 }
 
-// MARK: - Utility Area
-private struct UtilityAreaOverlay: View {
-    @ObservedObject var viewModel: UtilityAreaViewModel
-    let editorsHeight: CGFloat
-    let drawerHeight: CGFloat
-    let statusbarHeight: CGFloat
-    let proxy: Shared.SplitViewProxy
-    
-    private var utilityAreaOffset: CGFloat {
-        viewModel.isMaximized ? 0 : editorsHeight + 1
-    }
-    
-    private var statusBarOffset: CGFloat {
-        viewModel.isMaximized ? 0 : editorsHeight - statusbarHeight
-    }
-    
-    var body: some View {
-        ZStack(alignment: .top) {
-            UtilityAreaView()
-                .frame(height: viewModel.isMaximized ? nil : drawerHeight)
-                .frame(maxHeight: viewModel.isMaximized ? .infinity : nil)
-                .padding(.top, viewModel.isMaximized ? statusbarHeight + 1 : 0)
-                .offset(y: utilityAreaOffset)
-            
-            VStack(spacing: 0) {
-                StatusBarView(proxy: proxy)
-                if viewModel.isMaximized {
-                    PanelDivider()
-                }
-            }
-            .offset(y: statusBarOffset)
-        }
-        .accessibilityElement(children: .contain)
-    }
-}
-
 // MARK: - Main Content Layout
 private struct MainContentLayout: View {
     @Binding var editorsHeight: CGFloat
-    @Binding var drawerHeight: CGFloat
     @ObservedObject var utilityAreaViewModel: UtilityAreaViewModel
     @ObservedObject var appState: AppState
     let proxy: Shared.SplitViewProxy
@@ -250,42 +213,25 @@ private struct MainContentLayout: View {
             ZStack {
                 FeatureContentView(editorsHeight: $editorsHeight)
             }
-            .frame(minHeight: 170 + statusbarHeight + statusbarHeight)
-            .collapsible()
+            .frame(minHeight: 170 + statusbarHeight)
+            .canCollapse()
             .collapsed($utilityAreaViewModel.isMaximized)
             
-            Rectangle()
-                .collapsible()
-                .collapsed($utilityAreaViewModel.isCollapsed)
-                .opacity(0)
-                .frame(idealHeight: 260)
-                .frame(minHeight: 100)
-                .background(drawerHeightReader)
-                .accessibilityHidden(true)
+            VStack(spacing: 0) {
+                Divider()
+                UtilityAreaView()
+                    .environmentObject(utilityAreaViewModel)
+            }
+            .frame(idealHeight: 300)
+            .frame(minHeight: 100)
+            .canCollapse()
+            .collapsed($utilityAreaViewModel.isCollapsed)
         }
         .edgesIgnoringSafeArea(.top)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .overlay(alignment: .top) {
-            UtilityAreaOverlay(
-                viewModel: utilityAreaViewModel,
-                editorsHeight: editorsHeight,
-                drawerHeight: drawerHeight,
-                statusbarHeight: statusbarHeight,
-                proxy: proxy
-            )
-        }
-    }
-    
-    private var drawerHeightReader: some View {
-        GeometryReader { geo in
-            Rectangle()
-                .opacity(0)
-                .onChange(of: geo.size.height) { newHeight in
-                    drawerHeight = newHeight
-                }
-                .onAppear {
-                    drawerHeight = geo.size.height
-                }
+        .overlay(alignment: .bottom) {
+            StatusBarView(proxy: proxy)
+                .frame(height: statusbarHeight)
         }
     }
 }
@@ -297,8 +243,6 @@ public struct _MainView: View {
     @StateObject private var statusBarViewModel = StatusBarViewModel()
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
     @State private var editorsHeight: CGFloat = 0
-    @State private var drawerHeight: CGFloat = 0
-    
     private var navigationTitle: String {
         switch appState.selectedFeature {
         case "CodeEditor": return "Code Editor"
@@ -320,11 +264,10 @@ public struct _MainView: View {
                     ToolbarView()
                         .padding(EdgeInsets(top: 1, leading: 0, bottom: 0, trailing: 0))
                     MainContentLayout(
-                    editorsHeight: $editorsHeight,
-                    drawerHeight: $drawerHeight,
-                    utilityAreaViewModel: utilityAreaViewModel,
-                    appState: appState,
-                    proxy: proxy
+                        editorsHeight: $editorsHeight,
+                        utilityAreaViewModel: utilityAreaViewModel,
+                        appState: appState,
+                        proxy: proxy
                     )
                 }
             }
