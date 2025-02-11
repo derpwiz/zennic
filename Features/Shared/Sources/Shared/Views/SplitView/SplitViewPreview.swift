@@ -2,14 +2,11 @@ import SwiftUI
 
 struct SplitViewPreview: PreviewProvider {
     static var previews: some View {
-        SplitView<TupleView<(
-            ModifiedContent<Color, _FrameLayout>,
-            ModifiedContent<Color, _FrameLayout>,
-            ModifiedContent<SplitViewReader<ModifiedContent<Color, _OverlayModifier<ModifiedContent<Button<Text>, _PaddingLayout>>>>, _FrameLayout>
-        )>>.horizontal {
+        SplitView {
             Color.red
                 .frame(minWidth: 200, maxWidth: 300)
                 .canCollapse()
+                .id("left-pane")
             
             Color.blue
                 .frame(maxWidth: .infinity)
