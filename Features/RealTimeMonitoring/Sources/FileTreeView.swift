@@ -1,5 +1,7 @@
 import SwiftUI
 import Core
+import AppKit
+import Documents
 
 struct FileItem: Identifiable {
     let id = UUID()
@@ -55,10 +57,8 @@ class FileTreeViewModel: ObservableObject {
 struct FileTreeView: View {
     @StateObject private var viewModel = FileTreeViewModel()
     @EnvironmentObject private var workspace: WorkspaceDocument
-    @State private var selectedFile: String?
+    @State private var selectedFile: String? = nil
     @State private var showingCreateFile = false
-    @State private var newFileName = ""
-    @State private var newFileContent = ""
     
     var body: some View {
         List(viewModel.items) { item in

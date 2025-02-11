@@ -69,6 +69,24 @@ targets:
         PRODUCT_MODULE_NAME: "Shared"
         DEFINES_MODULE: "YES"
 
+  Documents:
+    type: framework
+    platform: macOS
+    deploymentTarget: "13.0"
+    sources:
+      - path: Features/Documents
+    dependencies:
+      - target: Core
+      - target: Shared
+    settings:
+      base:
+        CODE_SIGN_IDENTITY: "-"
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGN_ENTITLEMENTS: ""
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_MODULE_NAME: "Documents"
+        DEFINES_MODULE: "YES"
+
   App:
     type: framework
     platform: macOS
@@ -83,6 +101,7 @@ targets:
       - target: Backtesting
       - target: Visualization
       - target: UI
+      - target: Documents
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -103,6 +122,7 @@ targets:
       - target: App
       - target: UI
       - target: CodeEditor
+      - target: Documents
     scheme:
       environmentVariables:
         ALPACA_ACCESS_TOKEN: ${ALPACA_ACCESS_TOKEN}
@@ -183,6 +203,7 @@ targets:
       - path: Features/RealTimeMonitoring/Sources
     dependencies:
       - target: Core
+      - target: Documents
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -237,6 +258,7 @@ targets:
       - target: Core
       - target: CodeEditorInterface
       - target: Shared
+      - target: Documents
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
