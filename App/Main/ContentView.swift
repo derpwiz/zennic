@@ -4,16 +4,24 @@ import UI
 
 struct ContentView: View {
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var workspace: WorkspaceDocument
     
     var body: some View {
         MainView()
             .environmentObject(appState)
+            .environmentObject(workspace)
     }
 }
 
+#if DEBUG
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        let workspace = WorkspaceDocument()
+        workspace.selectedFeature = "CodeEditor"
+        
+        return ContentView()
             .environmentObject(AppState.shared)
+            .environmentObject(workspace)
     }
 }
+#endif
