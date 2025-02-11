@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-enum FileIcon {
-    enum FileType: String {
+public enum FileIcon {
+    public enum FileType: String {
         case swift
         case js
         case ts
@@ -55,7 +55,7 @@ enum FileIcon {
         case other
     }
 
-    static func fileIcon(fileType: FileType) -> String {
+    public static func fileIcon(fileType: FileType) -> String {
         switch fileType {
         case .swift: return "swift"
         case .js, .jsx: return "js"
@@ -87,7 +87,7 @@ enum FileIcon {
         }
     }
 
-    static func iconColor(fileType: FileType) -> Color {
+    public static func iconColor(fileType: FileType) -> Color {
         switch fileType {
         case .swift: return .orange
         case .js, .jsx: return .yellow
