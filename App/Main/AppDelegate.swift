@@ -3,6 +3,13 @@ import DataIntegration
 import Core
 import CodeEditorInterface
 import CodeEditor
+import UniformTypeIdentifiers
+
+extension UTType {
+    static var zennicWorkspace: UTType {
+        UTType(exportedAs: "com.zennic.workspace")
+    }
+}
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
@@ -22,9 +29,10 @@ struct ZennicApp: App {
     private var appState = AppState.shared
     
     var body: some Scene {
-        WindowGroup {
+        DocumentGroup(viewing: WorkspaceDocument.self) { file in
             ContentView()
                 .environmentObject(appState)
+                .environmentObject(file.document)
         }
     }
 }
