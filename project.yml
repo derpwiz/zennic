@@ -74,7 +74,7 @@ targets:
     platform: macOS
     deploymentTarget: "13.0"
     sources:
-      - path: Features/Documents
+      - path: Features/Documents/Sources/Documents
     dependencies:
       - target: Core
       - target: Shared
