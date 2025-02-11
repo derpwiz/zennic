@@ -13,7 +13,9 @@ public struct SplitViewReader<Content: View>: View {
     public var body: some View {
         content(proxy)
             .onPreferenceChange(SplitViewControllerLayoutValueKey.self) { value in
-                proxy.setPosition(of: 0, position: 0) // Trigger update
+                if let controller = value?() {
+                    proxy.setPosition(of: 0, position: 0) // Trigger update
+                }
             }
     }
 }
