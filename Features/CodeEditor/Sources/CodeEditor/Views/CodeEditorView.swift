@@ -2,6 +2,7 @@ import SwiftUI
 import Foundation
 import Core
 import Shared
+import CodeEditorInterface
 
 // MARK: - Constants
 private enum Constants {
