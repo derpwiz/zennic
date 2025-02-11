@@ -1,14 +1,14 @@
 import SwiftUI
 import Combine
 
-class SplitViewItem {
-    var id: AnyHashable
-    var item: NSSplitViewItem
-    var collapsed: Binding<Bool>
-    var cancellables: [AnyCancellable] = []
-    var observers: [NSKeyValueObservation] = []
+public class SplitViewItem {
+    public var id: AnyHashable
+    public var item: NSSplitViewItem
+    public var collapsed: Binding<Bool>
+    public var cancellables: [AnyCancellable] = []
+    public var observers: [NSKeyValueObservation] = []
 
-    init(child: _VariadicView.Children.Element) {
+    public init(child: _VariadicView.Children.Element) {
         self.id = child.id
         self.item = NSSplitViewItem(viewController: NSHostingController(rootView: child))
         self.collapsed = child[SplitViewItemCollapsedViewTraitKey.self]
@@ -32,7 +32,7 @@ class SplitViewItem {
     /// Updates a SplitViewItem.
     /// This will fetch updated binding values and update them if needed.
     /// - Parameter child: the view corresponding to the SplitViewItem.
-    func update(child: _VariadicView.Children.Element) {
+    public func update(child: _VariadicView.Children.Element) {
         self.item.canCollapse = child[SplitViewItemCanCollapseViewTraitKey.self]
         DispatchQueue.main.async {
             self.observers = []

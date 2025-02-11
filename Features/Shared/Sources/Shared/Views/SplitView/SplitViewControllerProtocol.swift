@@ -12,7 +12,11 @@ public protocol SplitViewControllerProtocol: AnyObject {
 /// A wrapper that provides a unified interface for split view controllers
 public final class SplitViewControllerWrapper: NSObject {
     private let controller: NSSplitViewController
-    private let axis: Axis
+    private let _axis: Axis
+    
+    public var axis: Axis {
+        get { _axis }
+    }
     private var _items: [SplitViewItem] = []
     
     public var items: [SplitViewItem] {
@@ -25,17 +29,17 @@ public final class SplitViewControllerWrapper: NSObject {
     
     public init(axis: Axis = .horizontal) {
         self.controller = NSSplitViewController()
-        self.axis = axis
+        self._axis = axis
         super.init()
         
-        controller.splitView.isVertical = axis != .vertical
+        controller.splitView.isVertical = _axis != .vertical
         controller.splitView.dividerStyle = .thin
     }
     
     public func setPosition(of index: Int, position: CGFloat) {
         guard index < controller.splitView.arrangedSubviews.count else { return }
         let view = controller.splitView.arrangedSubviews[index]
-        if axis == .vertical {
+        if _axis == .vertical {
             view.frame.origin.y = position
         } else {
             view.frame.origin.x = position

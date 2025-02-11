@@ -1,35 +1,35 @@
 import SwiftUI
 
-final class SplitViewController: NSSplitViewController {
-    var items: [SplitViewItem] = []
-    var axis: Axis
-    var parentView: SplitViewControllerView
+public class SplitViewController: NSViewController {
+    public var splitView: NSSplitView {
+        view as! NSSplitView
+    }
 
-    init(parent: SplitViewControllerView, axis: Axis = .horizontal) {
-        self.axis = axis
+    public var items: [SplitViewItem] = []
+    public var splitViewItems: [NSSplitViewItem] = []
+
+    private var parentView: SplitViewControllerView
+    private var axis: Axis
+
+    public init(parent: SplitViewControllerView, axis: Axis) {
         self.parentView = parent
+        self.axis = axis
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
-        splitView.isVertical = axis != .vertical
+    public override func loadView() {
+        let splitView = NSSplitView()
+        splitView.isVertical = axis == .horizontal
         splitView.dividerStyle = .thin
-        DispatchQueue.main.async { [weak self] in
-            self?.parentView.viewController = { [weak self] in
-                self
-            }
-        }
+        view = splitView
     }
 
-    override func splitView(_ splitView: NSSplitView, shouldHideDividerAt dividerIndex: Int) -> Bool {
-        false
-    }
-
-    func collapse(for id: AnyHashable, enabled: Bool) {
-        items.first { $0.id == id }?.item.animator().isCollapsed = enabled
+    public func collapse(for id: AnyHashable, enabled: Bool) {
+        guard let item = items.first(where: { $0.id == id }) else { return }
+        item.item.animator().isCollapsed = enabled
     }
 }
