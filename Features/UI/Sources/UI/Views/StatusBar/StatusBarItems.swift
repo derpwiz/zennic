@@ -93,12 +93,12 @@ public struct StatusBarToggleUtilityAreaButton: View {
     
     public var body: some View {
         Button {
-            utilityAreaViewModel.togglePanel()
+            utilityAreaViewModel.toggleCollapsed()
         } label: {
             Image(systemName: "square.bottomthird.inset.filled")
                 .symbolRenderingMode(.hierarchical)
         }
-        .buttonStyle(StatusBarIconButtonStyle(isActive: false))
+        .buttonStyle(StatusBarIconButtonStyle(isActive: !utilityAreaViewModel.isCollapsed))
         .keyboardShortcut("Y", modifiers: [.command, .shift])
         .help(utilityAreaViewModel.isCollapsed ? "Show the Utility area" : "Hide the Utility area")
     }
