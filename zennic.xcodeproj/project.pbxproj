@@ -7,11 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0087F07EBA2F6B8BCE6DDE23 /* SplitViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E567B77159ADFA92D28705C /* SplitViewModifiers.swift */; };
 		011A5233E9C60DCEF72EB0B9 /* UI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 49FE49F1AECE205F63E8ECEF /* UI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		03F9D7473910E0ADF197D816 /* AlpacaServiceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F33BA7A70D0F53EBF9C57D8 /* AlpacaServiceManager.swift */; };
 		040CC3A1CC503D1A144274D1 /* LoggingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C463A8E75B87F61654E97271 /* LoggingService.swift */; };
-		07FE6058083BD16193B9B56B /* SplitViewProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF42D8D1E0533C5CDA53BD45 /* SplitViewProxy.swift */; };
 		09BC94299904AFB574F4B6B1 /* StatusBarItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 393BDC26FC0728A053903429 /* StatusBarItems.swift */; };
 		0BECC424736DC1796434A908 /* UI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 49FE49F1AECE205F63E8ECEF /* UI.framework */; };
 		0CCCA6D469B54AA253CD373F /* UtilityAreaViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AF5C9E7AE4671350C179B40 /* UtilityAreaViewModel.swift */; };
@@ -30,7 +28,6 @@
 		34DE2231CE84B30BC832ADAB /* CodeEditorInterface.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB4C6778E434A7417A5F5453 /* CodeEditorInterface.framework */; };
 		363B5823B4A6134A9BF32130 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4710E9AA53939A5B1996695E /* TerminalView.swift */; };
 		3F163CF1A507AAF82914DEC9 /* Backtesting.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F2DA2D32B1A47BBF95AB26A /* Backtesting.framework */; };
-		3FBA01B42AE331D4A131DCA0 /* SplitViewControllerLayoutValueKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB30F84DB44602020B6F7499 /* SplitViewControllerLayoutValueKey.swift */; };
 		4001CEBEFBB41A4A27E48041 /* WindowStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D85221752799BC470611F88 /* WindowStyle.swift */; };
 		42A30A295E2232508E334535 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
 		4587E87AE1FE49D252B26C28 /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
@@ -59,6 +56,7 @@
 		7424D9FF426FACDE005F692F /* RealTimeMonitoring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 684940976F8FA804E3EE9FFA /* RealTimeMonitoring.framework */; };
 		756F99BB3467F9033198C3F0 /* SplitViewControllerReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E6BB3F98B95F316AB09E75 /* SplitViewControllerReference.swift */; };
 		7C6A1B21799BB798FF7A43DF /* SplitViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ED240678BC392832048419 /* SplitViewControllerView.swift */; };
+		82DAF33925F1396264913EE2 /* UtilityAreaTabPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0879C86673C3647E4546E8D9 /* UtilityAreaTabPicker.swift */; };
 		842F31D998E612E47D1A339B /* ToolbarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C71EE573ACE9D4230DF1F37 /* ToolbarViewModel.swift */; };
 		858FDE31234A5D04779FC180 /* App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0C8D5CF8125AACF471468FE /* App.framework */; };
 		8596A922127CF0D85503C70D /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80BF5B18554A5655207290F9 /* AppCoordinator.swift */; };
@@ -104,6 +102,7 @@
 		D3A1346C726B9503972236A1 /* PressActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E0FB880981F9CD1F131DB0 /* PressActionsModifier.swift */; };
 		D5C701AF5258AE1C7F003181 /* StatusBarMenuStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D85503EF94276276D29F0B /* StatusBarMenuStyle.swift */; };
 		D64E3EC80574BCD59B24E051 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6F1B0165E255B81A2C48F29 /* ViewExtensions.swift */; };
+		DA4790ABB5F809D40E46E15C /* SplitViewTraitKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */; };
 		DBF4B9EFD997AA186D518DFC /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
 		DEB714C25949A37276D2A69D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A90DE4E210AF6DE042EB6C1 /* AppState.swift */; };
 		DFF82AD142025F57655ACB64 /* GitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC17FB1497BBC1981C4BBB9 /* GitService.swift */; };
@@ -308,6 +307,7 @@
 /* Begin PBXFileReference section */
 		0234974209ADE0CF77365C93 /* EditorTabID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabID.swift; sourceTree = "<group>"; };
 		03BFA01DE36D86D82006A1A7 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0879C86673C3647E4546E8D9 /* UtilityAreaTabPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityAreaTabPicker.swift; sourceTree = "<group>"; };
 		0CC3414A4E524E5878B11181 /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 		0D6FE2E06C30A670303C8D2F /* CodeAssistant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAssistant.swift; sourceTree = "<group>"; };
 		0F2DA2D32B1A47BBF95AB26A /* Backtesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Backtesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -334,6 +334,7 @@
 		4710E9AA53939A5B1996695E /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		49FE49F1AECE205F63E8ECEF /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B75A583CFD43F6C6A4F8D1A /* EditorTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabBarView.swift; sourceTree = "<group>"; };
+		4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewTraitKeys.swift; sourceTree = "<group>"; };
 		4D32CC954A475A1FF8192A08 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E596613E0B27953E4D51F82 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -345,7 +346,6 @@
 		6E198BA1F3B15EDB75D5F770 /* EditorTabItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabItemView.swift; sourceTree = "<group>"; };
 		6F5F901313DDBDBF970926F7 /* CodeEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorViewModel.swift; sourceTree = "<group>"; };
 		7BAA991A16DF47BD658F9CE5 /* SplitViewReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewReader.swift; sourceTree = "<group>"; };
-		7E567B77159ADFA92D28705C /* SplitViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewModifiers.swift; sourceTree = "<group>"; };
 		7F33BA7A70D0F53EBF9C57D8 /* AlpacaServiceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlpacaServiceManager.swift; sourceTree = "<group>"; };
 		7F5F234DDF8E74505714306A /* CodeEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorView.swift; sourceTree = "<group>"; };
 		80BF5B18554A5655207290F9 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
@@ -368,7 +368,6 @@
 		A7FA42BECB6F9D5D3963FA0A /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
 		A88C06A35D8AC7D3F6F53117 /* StatusBarModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarModel.swift; sourceTree = "<group>"; };
 		AEA65ABC1264F1A5B807BE8D /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
-		AF42D8D1E0533C5CDA53BD45 /* SplitViewProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewProxy.swift; sourceTree = "<group>"; };
 		AFFF1CD6A0E99C07302FBFA6 /* EffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EffectView.swift; sourceTree = "<group>"; };
 		B017317E8053BB442779218E /* SplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitView.swift; sourceTree = "<group>"; };
 		B09BF6F564DA4EB514F23232 /* AlpacaAuthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlpacaAuthView.swift; sourceTree = "<group>"; };
@@ -387,7 +386,6 @@
 		D1EA89F11ED35C7EB4673791 /* Core-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Core-Bridging-Header.h"; sourceTree = "<group>"; };
 		D2A1ABE5343E64AD5806AA74 /* EditorTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTab.swift; sourceTree = "<group>"; };
 		DA6EBA54726E3ABEB5A8791F /* CodeEditorFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorFactory.swift; sourceTree = "<group>"; };
-		DB30F84DB44602020B6F7499 /* SplitViewControllerLayoutValueKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewControllerLayoutValueKey.swift; sourceTree = "<group>"; };
 		DB4C6778E434A7417A5F5453 /* CodeEditorInterface.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CodeEditorInterface.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DBD02E21037DBED6A31594C2 /* CodeLanguage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeLanguage.swift; sourceTree = "<group>"; };
 		DD1C8F1B23BA5CE2EBF0F781 /* CodeEditor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CodeEditor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -590,15 +588,13 @@
 			children = (
 				0CC3414A4E524E5878B11181 /* SplitView.swift */,
 				2BBB87149A5E174C8FDF028E /* SplitViewController.swift */,
-				DB30F84DB44602020B6F7499 /* SplitViewControllerLayoutValueKey.swift */,
 				1E7362A71C3643DD41A3AD60 /* SplitViewControllerProtocol.swift */,
 				13E6BB3F98B95F316AB09E75 /* SplitViewControllerReference.swift */,
 				66ED240678BC392832048419 /* SplitViewControllerView.swift */,
 				C55D5AF31CB8AB5A28FD243F /* SplitViewItem.swift */,
-				7E567B77159ADFA92D28705C /* SplitViewModifiers.swift */,
 				2DF40EB948DB5FE4ADE92ECA /* SplitViewPreview.swift */,
-				AF42D8D1E0533C5CDA53BD45 /* SplitViewProxy.swift */,
 				7BAA991A16DF47BD658F9CE5 /* SplitViewReader.swift */,
+				4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */,
 				E68566D9467AECA0B620694E /* Variadic.swift */,
 			);
 			path = SplitView;
@@ -784,6 +780,7 @@
 				FF70FF2A4BB1D6956120701E /* DebugView.swift */,
 				B6A2C3F773CE38D33182323A /* OutputView.swift */,
 				4710E9AA53939A5B1996695E /* TerminalView.swift */,
+				0879C86673C3647E4546E8D9 /* UtilityAreaTabPicker.swift */,
 				EB4014364E43BE0C7A5CAB98 /* UtilityAreaToolbarButton.swift */,
 				E291B486C777806135F0725A /* UtilityAreaView.swift */,
 			);
@@ -860,28 +857,28 @@
 			path = Features/CodeEditor/Sources/CodeEditor;
 			sourceTree = "<group>";
 		};
-		"TEMP_5C86C6EC-92D4-42C6-B0C4-28F3FB9713CC" /* Headers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Headers;
-			sourceTree = "<group>";
-		};
-		"TEMP_B0A25F18-CE7E-4D9D-815E-933BD633AD98" /* include */ = {
+		"TEMP_0D93B5B3-3EEB-4810-85E4-E34A9CE116AC" /* include */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = include;
 			sourceTree = "<group>";
 		};
-		"TEMP_D9C0C984-B229-410A-8445-42C9A8BEEC8A" /* git2 */ = {
+		"TEMP_2CF65236-C8F6-4522-84C1-4B47BCB7CE25" /* Headers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Headers;
+			sourceTree = "<group>";
+		};
+		"TEMP_786091A6-D998-4AC2-BE89-F1E2884F00EC" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = git2;
 			sourceTree = "<group>";
 		};
-		"TEMP_FBA3E77A-D8BC-42EE-86A6-687EE2F0337A" /* git2 */ = {
+		"TEMP_C0702450-44A8-483C-BF98-92F4FFF11E54" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -1213,6 +1210,7 @@
 				842F31D998E612E47D1A339B /* ToolbarViewModel.swift in Sources */,
 				C00C67BE5A5998C3FC68B379 /* UI.swift in Sources */,
 				8AB951F294CFDE91C4175E45 /* UtilityAreaTab.swift in Sources */,
+				82DAF33925F1396264913EE2 /* UtilityAreaTabPicker.swift in Sources */,
 				9EB8E395E0B6A45D339512FA /* UtilityAreaToolbarButton.swift in Sources */,
 				61368838FF633FEE8DEB2148 /* UtilityAreaView.swift in Sources */,
 				0CCCA6D469B54AA253CD373F /* UtilityAreaViewModel.swift in Sources */,
@@ -1239,15 +1237,13 @@
 				040CC3A1CC503D1A144274D1 /* LoggingService.swift in Sources */,
 				59FED660EFBE57A7B619911B /* SplitView.swift in Sources */,
 				5207511CB05C427B16B8EBCA /* SplitViewController.swift in Sources */,
-				3FBA01B42AE331D4A131DCA0 /* SplitViewControllerLayoutValueKey.swift in Sources */,
 				987F0E0AB1301C7F424D6124 /* SplitViewControllerProtocol.swift in Sources */,
 				756F99BB3467F9033198C3F0 /* SplitViewControllerReference.swift in Sources */,
 				7C6A1B21799BB798FF7A43DF /* SplitViewControllerView.swift in Sources */,
 				AEFE9FED6AEBB4D6A2CA9FAE /* SplitViewItem.swift in Sources */,
-				0087F07EBA2F6B8BCE6DDE23 /* SplitViewModifiers.swift in Sources */,
 				63E561EC195F21901BDE33D7 /* SplitViewPreview.swift in Sources */,
-				07FE6058083BD16193B9B56B /* SplitViewProxy.swift in Sources */,
 				71DE7FD1A24DEF243CEE6802 /* SplitViewReader.swift in Sources */,
+				DA4790ABB5F809D40E46E15C /* SplitViewTraitKeys.swift in Sources */,
 				6DDC9DB9B5138747D44A9D3A /* StatusBarModel.swift in Sources */,
 				740A7C198D2DCD787BFAFA27 /* SyntaxHighlighter.swift in Sources */,
 				1830FB7618E5BF7D6FD41851 /* Theme.swift in Sources */,
