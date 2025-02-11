@@ -11,10 +11,10 @@ import Combine
 import Foundation
 
 @objc(WorkspaceDocument)
-final class WorkspaceDocument: NSDocument, ObservableObject {
-    @Published var sortFoldersOnTop: Bool = true
-    @Published var navigatorFilter: String = ""
-    @Published var selectedFeature: String?
+public final class WorkspaceDocument: NSDocument, ObservableObject {
+    @Published public var sortFoldersOnTop: Bool = true
+    @Published public var navigatorFilter: String = ""
+    @Published public var selectedFeature: String?
 
     private var workspaceState: [String: Any] {
         get {
@@ -27,23 +27,27 @@ final class WorkspaceDocument: NSDocument, ObservableObject {
         }
     }
 
-    var workspaceFileManager: CEWorkspaceFileManager?
-    var editorManager: EditorManager? = EditorManager()
-    var statusBarViewModel: StatusBarViewModel? = StatusBarViewModel()
-    var utilityAreaModel: UtilityAreaViewModel? = UtilityAreaViewModel()
+    public var workspaceFileManager: CEWorkspaceFileManager?
+    public var editorManager: EditorManager? = EditorManager()
+    public var statusBarViewModel: StatusBarViewModel? = StatusBarViewModel()
+    public var utilityAreaModel: UtilityAreaViewModel? = UtilityAreaViewModel()
 
     private var cancellables = Set<AnyCancellable>()
+
+    public override init() {
+        super.init()
+    }
 
     deinit {
         cancellables.forEach { $0.cancel() }
         NotificationCenter.default.removeObserver(self)
     }
 
-    func getFromWorkspaceState(_ key: WorkspaceStateKey) -> Any? {
+    public func getFromWorkspaceState(_ key: WorkspaceStateKey) -> Any? {
         return workspaceState[key.rawValue]
     }
 
-    func addToWorkspaceState(key: WorkspaceStateKey, value: Any?) {
+    public func addToWorkspaceState(key: WorkspaceStateKey, value: Any?) {
         if let value {
             workspaceState.updateValue(value, forKey: key.rawValue)
         } else {
@@ -57,15 +61,15 @@ final class WorkspaceDocument: NSDocument, ObservableObject {
         ".DS_Store"
     ]
 
-    override static var autosavesInPlace: Bool {
+    public override class var autosavesInPlace: Bool {
         false
     }
 
-    override var isDocumentEdited: Bool {
+    public override var isDocumentEdited: Bool {
         false
     }
 
-    override func makeWindowControllers() {
+    public override func makeWindowControllers() {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 1400, height: 900),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
@@ -115,15 +119,15 @@ final class WorkspaceDocument: NSDocument, ObservableObject {
         utilityAreaModel?.restoreFromState(self)
     }
 
-    override func read(from url: URL, ofType typeName: String) throws {
+    public override func read(from url: URL, ofType typeName: String) throws {
         try initWorkspaceState(url)
     }
 
-    override func write(to url: URL, ofType typeName: String) throws {}
+    public override func write(to url: URL, ofType typeName: String) throws {}
 
     // MARK: Close Workspace
 
-    override func close() {
+    public override func close() {
         super.close()
         editorManager?.saveRestorationState(self)
         utilityAreaModel?.saveRestorationState(self)
@@ -151,7 +155,7 @@ final class WorkspaceDocument: NSDocument, ObservableObject {
     ///   - delegate: The object which is a target of `shouldCloseSelector`.
     ///   - shouldClose: The callback which receives result of this method.
     ///   - contextInfo: The additional info which is not used in this method.
-    override func shouldCloseWindowController(
+    public override func shouldCloseWindowController(
         _ windowController: NSWindowController,
         delegate: Any?,
         shouldClose shouldCloseSelector: Selector?,
