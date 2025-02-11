@@ -103,7 +103,6 @@
 		D3A1346C726B9503972236A1 /* PressActionsModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27E0FB880981F9CD1F131DB0 /* PressActionsModifier.swift */; };
 		D5C701AF5258AE1C7F003181 /* StatusBarMenuStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3D85503EF94276276D29F0B /* StatusBarMenuStyle.swift */; };
 		D64E3EC80574BCD59B24E051 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6F1B0165E255B81A2C48F29 /* ViewExtensions.swift */; };
-		DA4790ABB5F809D40E46E15C /* SplitViewTraitKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */; };
 		DBF4B9EFD997AA186D518DFC /* Core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */; };
 		DEB714C25949A37276D2A69D /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A90DE4E210AF6DE042EB6C1 /* AppState.swift */; };
 		DFF82AD142025F57655ACB64 /* GitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC17FB1497BBC1981C4BBB9 /* GitService.swift */; };
@@ -333,7 +332,6 @@
 		4710E9AA53939A5B1996695E /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		49FE49F1AECE205F63E8ECEF /* UI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B75A583CFD43F6C6A4F8D1A /* EditorTabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabBarView.swift; sourceTree = "<group>"; };
-		4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewTraitKeys.swift; sourceTree = "<group>"; };
 		4D32CC954A475A1FF8192A08 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		4DD020A8B7EE0FBF3B2D06C5 /* Core.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Core.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4E596613E0B27953E4D51F82 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -598,7 +596,6 @@
 				2DF40EB948DB5FE4ADE92ECA /* SplitViewPreview.swift */,
 				AF42D8D1E0533C5CDA53BD45 /* SplitViewProxy.swift */,
 				7BAA991A16DF47BD658F9CE5 /* SplitViewReader.swift */,
-				4BE0BD1D89F3C5EF3EF91E11 /* SplitViewTraitKeys.swift */,
 				E68566D9467AECA0B620694E /* Variadic.swift */,
 			);
 			path = SplitView;
@@ -860,28 +857,28 @@
 			path = Features/CodeEditor/Sources/CodeEditor;
 			sourceTree = "<group>";
 		};
-		"TEMP_068545A5-B2E3-4833-81CD-9B40176B23BC" /* git2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = git2;
-			sourceTree = "<group>";
-		};
-		"TEMP_228C931E-B32F-4640-AA88-693338FF68A7" /* Headers */ = {
+		"TEMP_19F5877E-5C1C-49DA-BD19-EB5EABC3486C" /* Headers */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Headers;
 			sourceTree = "<group>";
 		};
-		"TEMP_2DB346FE-4254-4986-980C-37E7E2A61880" /* include */ = {
+		"TEMP_F191E395-0B2E-4FE2-86C2-4B8128C11DFA" /* include */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = include;
 			sourceTree = "<group>";
 		};
-		"TEMP_94A7A6AC-75F4-4E22-90F7-C949301363B7" /* git2 */ = {
+		"TEMP_F3BB0C87-4830-49D2-A879-2DEED45813B2" /* git2 */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = git2;
+			sourceTree = "<group>";
+		};
+		"TEMP_FE6C9C57-0677-4548-A229-558823162731" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -1247,7 +1244,6 @@
 				63E561EC195F21901BDE33D7 /* SplitViewPreview.swift in Sources */,
 				07FE6058083BD16193B9B56B /* SplitViewProxy.swift in Sources */,
 				71DE7FD1A24DEF243CEE6802 /* SplitViewReader.swift in Sources */,
-				DA4790ABB5F809D40E46E15C /* SplitViewTraitKeys.swift in Sources */,
 				6DDC9DB9B5138747D44A9D3A /* StatusBarModel.swift in Sources */,
 				740A7C198D2DCD787BFAFA27 /* SyntaxHighlighter.swift in Sources */,
 				1830FB7618E5BF7D6FD41851 /* Theme.swift in Sources */,
