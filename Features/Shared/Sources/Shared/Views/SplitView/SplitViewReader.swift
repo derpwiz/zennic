@@ -1,45 +1,48 @@
 import SwiftUI
 
-/// A view that provides access to a split view controller
-public struct SplitViewReader<Content: View>: View {
-    @StateObject private var proxy: SplitViewProxy
-    private let content: (SplitViewProxy) -> Content
-    
-    /// Creates a new split view reader
-    /// - Parameter content: A closure that creates content using the provided controller proxy
-    public init(@ViewBuilder content: @escaping (SplitViewProxy) -> Content) {
-        self._proxy = StateObject(wrappedValue: SplitViewProxy())
-        self.content = content
+struct SplitViewReader<Content: View>: View {
+    @ViewBuilder var content: (SplitViewProxy) -> Content
+    @State private var viewController: () -> SplitViewController? = { nil }
+
+    private var proxy: SplitViewProxy {
+        .init(viewController: viewController)
     }
-    
-    public var body: some View {
+
+    var body: some View {
         content(proxy)
-            .onPreferenceChange(SplitViewControllerLayoutValueKey.self) { reference in
-                if let controller = reference?.controller {
-                    proxy.controller = controller
+            .variadic { children in
+                ForEach(children, id: \.id) { child in
+                    child
+                        .task(id: child[SplitViewControllerLayoutValueKey.self]()) {
+                            viewController = child[SplitViewControllerLayoutValueKey.self]
+                        }
                 }
             }
     }
 }
 
-/// A proxy object that provides access to a split view controller
-public class SplitViewProxy: ObservableObject {
-    /// The current controller
-    var controller: SplitViewControllerProtocol?
-    
-    /// Sets the position of a split view item
-    /// - Parameters:
-    ///   - id: The identifier of the item
-    ///   - position: The new position
-    public func setPosition(of id: String, position: CGFloat) {
-        controller?.setPosition(of: id, position: position)
+struct SplitViewProxy {
+    private var viewController: () -> SplitViewController?
+
+    fileprivate init(viewController: @escaping () -> SplitViewController?) {
+        self.viewController = viewController
     }
-    
-    /// Collapses or expands a split view item
+
+    /// Set the position of a divider in a splitview.
     /// - Parameters:
-    ///   - id: The identifier of the item
-    ///   - enabled: Whether the item should be collapsed
-    public func collapse(for id: String, enabled: Bool) {
-        controller?.collapse(for: id, enabled: enabled)
+    ///   - index: index of the divider. The mostleft / top divider has index 0.
+    ///   - position: position to place the divider. This is a position inside the views width / height.
+    ///   For example, if the splitview has a width of 500, setting the position to 250
+    ///    will put the divider in the middle of the splitview.
+    func setPosition(of index: Int, position: CGFloat) {
+        viewController()?.splitView.setPosition(position, ofDividerAt: index)
+    }
+
+    /// Collapse a view of the splitview.
+    /// - Parameters:
+    ///   - id: ID of the view
+    ///   - enabled: true for collapse.
+    func collapseView(with id: AnyHashable, _ enabled: Bool) {
+        viewController()?.collapse(for: id, enabled: enabled)
     }
 }

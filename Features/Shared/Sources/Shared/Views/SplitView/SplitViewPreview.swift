@@ -2,7 +2,7 @@ import SwiftUI
 
 struct SplitViewPreview: PreviewProvider {
     static var previews: some View {
-        SplitView {
+        SplitView(axis: .horizontal) {
             Color.red
                 .frame(minWidth: 200, maxWidth: 300)
                 .canCollapse()
@@ -16,7 +16,7 @@ struct SplitViewPreview: PreviewProvider {
                     .frame(width: 200)
                     .overlay(alignment: .topLeading) {
                         Button("Toggle Left") {
-                            controller.collapse(for: "left-pane", enabled: true)
+                            controller.collapseView(with: "left-pane", true)
                         }
                         .padding()
                     }

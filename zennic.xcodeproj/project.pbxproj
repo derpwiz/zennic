@@ -57,6 +57,7 @@
 		73A582F18EE0B027676A03C9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03BFA01DE36D86D82006A1A7 /* Shared.framework */; };
 		740A7C198D2DCD787BFAFA27 /* SyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB8D1206DAABAA779E1E836F /* SyntaxHighlighter.swift */; };
 		7424D9FF426FACDE005F692F /* RealTimeMonitoring.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 684940976F8FA804E3EE9FFA /* RealTimeMonitoring.framework */; };
+		756F99BB3467F9033198C3F0 /* SplitViewControllerReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13E6BB3F98B95F316AB09E75 /* SplitViewControllerReference.swift */; };
 		7C6A1B21799BB798FF7A43DF /* SplitViewControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ED240678BC392832048419 /* SplitViewControllerView.swift */; };
 		842F31D998E612E47D1A339B /* ToolbarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C71EE573ACE9D4230DF1F37 /* ToolbarViewModel.swift */; };
 		858FDE31234A5D04779FC180 /* App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0C8D5CF8125AACF471468FE /* App.framework */; };
@@ -312,6 +313,7 @@
 		0F2DA2D32B1A47BBF95AB26A /* Backtesting.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Backtesting.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		10D8CF33C617F4A6044555DB /* Core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core.swift; sourceTree = "<group>"; };
 		112A70D3E613232D88B3873A /* EditorTabDivider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorTabDivider.swift; sourceTree = "<group>"; };
+		13E6BB3F98B95F316AB09E75 /* SplitViewControllerReference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitViewControllerReference.swift; sourceTree = "<group>"; };
 		16AD6E2B54E2FEDA5B566227 /* CodeEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeEditorViewModel.swift; sourceTree = "<group>"; };
 		1D85221752799BC470611F88 /* WindowStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowStyle.swift; sourceTree = "<group>"; };
 		1DB069AD2973B20F2780B7E7 /* DataIntegration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataIntegration.swift; sourceTree = "<group>"; };
@@ -590,6 +592,7 @@
 				2BBB87149A5E174C8FDF028E /* SplitViewController.swift */,
 				DB30F84DB44602020B6F7499 /* SplitViewControllerLayoutValueKey.swift */,
 				1E7362A71C3643DD41A3AD60 /* SplitViewControllerProtocol.swift */,
+				13E6BB3F98B95F316AB09E75 /* SplitViewControllerReference.swift */,
 				66ED240678BC392832048419 /* SplitViewControllerView.swift */,
 				C55D5AF31CB8AB5A28FD243F /* SplitViewItem.swift */,
 				7E567B77159ADFA92D28705C /* SplitViewModifiers.swift */,
@@ -857,32 +860,32 @@
 			path = Features/CodeEditor/Sources/CodeEditor;
 			sourceTree = "<group>";
 		};
-		"TEMP_03AF4F89-7BFA-478E-85B8-18C983037D09" /* git2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = git2;
-			sourceTree = "<group>";
-		};
-		"TEMP_0C744EA6-88A4-4E63-B7B8-E3652E364C8D" /* Headers */ = {
+		"TEMP_5C86C6EC-92D4-42C6-B0C4-28F3FB9713CC" /* Headers */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = Headers;
 			sourceTree = "<group>";
 		};
-		"TEMP_1503ADEB-32A8-465F-8CAD-4F306B4A9FAB" /* git2 */ = {
+		"TEMP_B0A25F18-CE7E-4D9D-815E-933BD633AD98" /* include */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = include;
+			sourceTree = "<group>";
+		};
+		"TEMP_D9C0C984-B229-410A-8445-42C9A8BEEC8A" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			path = git2;
 			sourceTree = "<group>";
 		};
-		"TEMP_C6B628EB-4DCF-4CCD-ADE0-C0555D188284" /* include */ = {
+		"TEMP_FBA3E77A-D8BC-42EE-86A6-687EE2F0337A" /* git2 */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			path = include;
+			path = git2;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1238,6 +1241,7 @@
 				5207511CB05C427B16B8EBCA /* SplitViewController.swift in Sources */,
 				3FBA01B42AE331D4A131DCA0 /* SplitViewControllerLayoutValueKey.swift in Sources */,
 				987F0E0AB1301C7F424D6124 /* SplitViewControllerProtocol.swift in Sources */,
+				756F99BB3467F9033198C3F0 /* SplitViewControllerReference.swift in Sources */,
 				7C6A1B21799BB798FF7A43DF /* SplitViewControllerView.swift in Sources */,
 				AEFE9FED6AEBB4D6A2CA9FAE /* SplitViewItem.swift in Sources */,
 				0087F07EBA2F6B8BCE6DDE23 /* SplitViewModifiers.swift in Sources */,

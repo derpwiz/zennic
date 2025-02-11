@@ -1,17 +1,17 @@
 import SwiftUI
 
-public struct SplitView<Content: View>: View {
+struct SplitView<Content: View>: View {
     var axis: Axis
     var content: Content
 
-    public init(axis: Axis, @ViewBuilder content: () -> Content) {
+    init(axis: Axis = .horizontal, @ViewBuilder content: () -> Content) {
         self.axis = axis
         self.content = content()
     }
 
-    @State var viewController: () -> SplitViewControllerProtocol? = { nil }
+    @State var viewController: () -> SplitViewController? = { nil }
 
-    public var body: some View {
+    var body: some View {
         VStack {
             content.variadic { children in
                 SplitViewControllerView(axis: axis, children: children, viewController: $viewController)
