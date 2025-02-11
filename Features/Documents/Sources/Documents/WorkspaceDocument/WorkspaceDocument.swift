@@ -1,6 +1,6 @@
 //
 //  WorkspaceDocument.swift
-//  zennic
+//  Documents
 //
 //  Created by Claude on 2/11/25.
 //
@@ -9,9 +9,16 @@ import AppKit
 import SwiftUI
 import Combine
 import Foundation
+import Editor
+import UtilityArea
+import CodeEditorInterface
+import DocumentsInterface
+import UniformTypeIdentifiers
 
 @objc(WorkspaceDocument)
-public final class WorkspaceDocument: NSDocument, ObservableObject {
+public final class WorkspaceDocument: ReferenceFileDocument {
+    public static var readableContentTypes: [UTType] { [.zennicWorkspace] }
+    
     @Published public var sortFoldersOnTop: Bool = true
     @Published public var navigatorFilter: String = ""
     @Published public var selectedFeature: String?
@@ -33,9 +40,23 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
     public var utilityAreaModel: UtilityAreaViewModel? = UtilityAreaViewModel()
 
     private var cancellables = Set<AnyCancellable>()
+    
+    public var fileURL: URL?
 
-    public override init() {
+    public init() {
         super.init()
+    }
+    
+    public required init(configuration: ReadConfiguration) throws {
+        try initWorkspaceState(configuration.file.url)
+    }
+    
+    public func snapshot(contentType: UTType) throws -> WorkspaceDocument {
+        self
+    }
+    
+    public func fileWrapper(snapshot: WorkspaceDocument, configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(directoryWithFileWrappers: [:])
     }
 
     deinit {
@@ -43,33 +64,17 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
         NotificationCenter.default.removeObserver(self)
     }
 
-    public func getFromWorkspaceState(_ key: WorkspaceStateKey) -> Any? {
-        return workspaceState[key.rawValue]
-    }
-
-    public func addToWorkspaceState(key: WorkspaceStateKey, value: Any?) {
-        if let value {
-            workspaceState.updateValue(value, forKey: key.rawValue)
-        } else {
-            workspaceState.removeValue(forKey: key.rawValue)
-        }
-    }
-
-    // MARK: NSDocument
+    // MARK: Document Management
 
     private let ignoredFilesAndDirectory = [
         ".DS_Store"
     ]
 
-    public override class var autosavesInPlace: Bool {
+    public var isDocumentEdited: Bool {
         false
     }
 
-    public override var isDocumentEdited: Bool {
-        false
-    }
-
-    public override func makeWindowControllers() {
+    public func makeWindowControllers() {
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 1400, height: 900),
             styleMask: [.titled, .closable, .miniaturizable, .resizable, .fullSizeContentView],
@@ -92,8 +97,6 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
         window.setAccessibilityIdentifier("workspace")
         window.setAccessibilityDocument(self.fileURL?.absoluteString)
 
-        self.addWindowController(windowController)
-
         window.makeKeyAndOrderFront(nil)
     }
 
@@ -108,8 +111,6 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
         }
 
         self.fileURL = url
-        self.displayName = url.lastPathComponent
-
         self.workspaceFileManager = .init(
             folderUrl: url,
             ignoredFilesAndFolders: Set(ignoredFilesAndDirectory)
@@ -119,16 +120,9 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
         utilityAreaModel?.restoreFromState(self)
     }
 
-    public override func read(from url: URL, ofType typeName: String) throws {
-        try initWorkspaceState(url)
-    }
-
-    public override func write(to url: URL, ofType typeName: String) throws {}
-
     // MARK: Close Workspace
 
-    public override func close() {
-        super.close()
+    public func close() {
         editorManager?.saveRestorationState(self)
         utilityAreaModel?.saveRestorationState(self)
 
@@ -155,7 +149,7 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
     ///   - delegate: The object which is a target of `shouldCloseSelector`.
     ///   - shouldClose: The callback which receives result of this method.
     ///   - contextInfo: The additional info which is not used in this method.
-    public override func shouldCloseWindowController(
+    public func shouldCloseWindowController(
         _ windowController: NSWindowController,
         delegate: Any?,
         shouldClose shouldCloseSelector: Selector?,
@@ -165,17 +159,10 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
               let shouldCloseSelector = shouldCloseSelector,
               let contextInfo = contextInfo
         else {
-            super.shouldCloseWindowController(
-                windowController,
-                delegate: delegate,
-                shouldClose: shouldCloseSelector,
-                contextInfo: contextInfo
-            )
             return
         }
         // Save unsaved changes before closing
-        let editedCodeFiles = editorManager?.editorLayout
-            .gatherOpenFiles()
+        let editedCodeFiles = editorManager?.gatherOpenFiles()
             .compactMap(\.fileDocument)
             .filter(\.isDocumentEdited) ?? []
 
@@ -203,13 +190,13 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
             implementation,
             to: (@convention(c)(Any, Selector, Any, Bool, UnsafeMutableRawPointer?) -> Void).self
         )
-        let areAllOpenedCodeFilesClean = editorManager?.editorLayout.gatherOpenFiles()
+        let areAllOpenedCodeFilesClean = editorManager?.gatherOpenFiles()
             .compactMap(\.fileDocument)
             .allSatisfy { !$0.isDocumentEdited } ?? false
         function(object, shouldCloseSelector, self, areAllOpenedCodeFilesClean, contextInfo)
     }
 
-    // MARK: NSDocument delegate
+    // MARK: Document delegate
 
     /// Receives result of `canClose` and then, set `shouldClose` to `contextInfo`'s `pointee`.
     ///
@@ -228,5 +215,21 @@ public final class WorkspaceDocument: NSDocument, ObservableObject {
         let opaquePtr = OpaquePointer(contextInfo)
         let mutablePointer = UnsafeMutablePointer<Bool>(opaquePtr)
         mutablePointer.pointee = shouldClose
+    }
+}
+
+// MARK: - WorkspaceDocumentProtocol
+
+extension WorkspaceDocument: WorkspaceDocumentProtocol {
+    public func getFromWorkspaceState(_ key: WorkspaceStateKey) -> Any? {
+        workspaceState[key.rawValue]
+    }
+
+    public func addToWorkspaceState(key: WorkspaceStateKey, value: Any?) {
+        if let value = value {
+            workspaceState[key.rawValue] = value
+        } else {
+            workspaceState.removeValue(forKey: key.rawValue)
+        }
     }
 }
