@@ -2,20 +2,30 @@
 //  CodeEditWindowController.swift
 //  zennic
 //
-//  Created by Claude on 2/11/25.
-//
 
 import Cocoa
 import SwiftUI
 import Combine
+import DocumentsInterface
+import Editor
+import UtilityArea
+import CodeEditorInterface
 
 final class CodeEditWindowController: NSWindowController, NSToolbarDelegate, ObservableObject, NSWindowDelegate {
     @Published var navigatorCollapsed = false
+    @Published var inspectorCollapsed = false
     @Published var toolbarCollapsed = false
 
     private var panelOpen = false
+
     var observers: [NSKeyValueObservation] = []
+
     var workspace: WorkspaceDocument?
+    var workspaceSettingsWindow: NSWindow?
+    var quickOpenPanel: SearchPanel?
+    var commandPalettePanel: SearchPanel?
+    var navigatorSidebarViewModel: NavigatorAreaViewModel?
+
     internal var cancellables = [AnyCancellable]()
 
     var splitViewController: CodeEditSplitViewController? {
@@ -37,12 +47,20 @@ final class CodeEditWindowController: NSWindowController, NSToolbarDelegate, Obs
         contentViewController = splitViewController
 
         observers = [
-            splitViewController.splitViewItems.first!.observe(\.isCollapsed, changeHandler: { [weak self] item, _ in
-                self?.navigatorCollapsed = item.isCollapsed
-            })
+            splitViewController.splitViewItems.first!.observe(\.isCollapsed) { [weak self] object, change in
+                if let newValue = change.newValue {
+                    self?.navigatorCollapsed = newValue
+                }
+            },
+            splitViewController.splitViewItems.last!.observe(\.isCollapsed) { [weak self] object, change in
+                if let newValue = change.newValue {
+                    self?.inspectorCollapsed = newValue
+                }
+            }
         ]
 
         setupToolbar()
+        registerCommands()
     }
 
     deinit {
@@ -61,20 +79,109 @@ final class CodeEditWindowController: NSWindowController, NSToolbarDelegate, Obs
             return nil
         }
 
-        return CodeEditSplitViewController(
+        let navigatorModel = NavigatorAreaViewModel()
+        navigatorSidebarViewModel = navigatorModel
+        self.listenToDocumentEdited(workspace: workspace)
+        let splitViewController = CodeEditSplitViewController(
             workspace: workspace,
+            navigatorViewModel: navigatorModel,
             windowRef: window
         )
+        return splitViewController
     }
 
     private func getSelectedCodeFile() -> CodeFileDocument? {
-        workspace?.editorManager?.activeEditor.selectedTab?.file.fileDocument
+        workspace?.editorManager?.activeEditor?.selectedTab?.file.fileDocument as? CodeFileDocument
     }
 
     @IBAction func saveDocument(_ sender: Any) {
         guard let codeFile = getSelectedCodeFile() else { return }
         codeFile.save(sender)
-        workspace?.editorManager?.activeEditor.temporaryTab = nil
+        workspace?.editorManager?.activeEditor?.temporaryTab = nil
+    }
+
+    @IBAction func openCommandPalette(_ sender: Any) {
+        if let workspace, let state = workspace.commandsPaletteState {
+            if let commandPalettePanel {
+                if commandPalettePanel.isKeyWindow {
+                    commandPalettePanel.close()
+                    self.panelOpen = false
+                    state.reset()
+                    return
+                } else {
+                    state.reset()
+                    window?.addChildWindow(commandPalettePanel, ordered: .above)
+                    commandPalettePanel.makeKeyAndOrderFront(self)
+                    self.panelOpen = true
+                }
+            } else {
+                let panel = SearchPanel()
+                self.commandPalettePanel = panel
+                let contentView = QuickActionsView(state: state) {
+                    panel.close()
+                    self.panelOpen = false
+                }
+                panel.contentView = NSHostingView(rootView: SettingsInjector { contentView })
+                window?.addChildWindow(panel, ordered: .above)
+                panel.makeKeyAndOrderFront(self)
+                self.panelOpen = true
+            }
+        }
+    }
+
+    @IBAction func openQuickly(_ sender: Any?) {
+        if let workspace, let state = workspace.openQuicklyViewModel {
+            if let quickOpenPanel {
+                if quickOpenPanel.isKeyWindow {
+                    quickOpenPanel.close()
+                    self.panelOpen = false
+                    return
+                } else {
+                    window?.addChildWindow(quickOpenPanel, ordered: .above)
+                    quickOpenPanel.makeKeyAndOrderFront(self)
+                    self.panelOpen = true
+                }
+            } else {
+                let panel = SearchPanel()
+                self.quickOpenPanel = panel
+
+                let contentView = OpenQuicklyView(state: state) {
+                    panel.close()
+                    self.panelOpen = false
+                } openFile: { [weak self] (file: DocumentsInterface.CEWorkspaceFile) in
+                    guard let self = self,
+                          let workspace = self.workspace,
+                          let editor = workspace.editorManager?.activeEditor else { return }
+                    editor.openTab(file: file)
+                }.environmentObject(workspace)
+
+                panel.contentView = NSHostingView(rootView: SettingsInjector { contentView })
+                window?.addChildWindow(panel, ordered: .above)
+                panel.makeKeyAndOrderFront(self)
+                self.panelOpen = true
+            }
+        }
+    }
+
+    @IBAction func closeCurrentTab(_ sender: Any) {
+        if self.panelOpen { return }
+        if (workspace?.editorManager?.activeEditor?.tabs ?? []).isEmpty {
+            self.closeActiveEditor(self)
+        } else {
+            workspace?.editorManager?.activeEditor?.closeSelectedTab()
+        }
+    }
+
+    @IBAction func closeActiveEditor(_ sender: Any) {
+        guard let workspace = self.workspace,
+              let editorManager = workspace.editorManager,
+              let activeEditor = editorManager.activeEditor else { return }
+        
+        if editorManager.editorLayout.findSomeEditor(except: activeEditor) == nil {
+            NSApp.sendAction(#selector(NSWindow.performClose(_:)), to: NSApp.keyWindow, from: nil)
+        } else {
+            activeEditor.close()
+        }
     }
 
     func windowShouldClose(_ sender: NSWindow) -> Bool {
@@ -86,95 +193,27 @@ final class CodeEditWindowController: NSWindowController, NSToolbarDelegate, Obs
         }
         contentViewController?.removeFromParent()
         contentViewController = nil
+
+        workspaceSettingsWindow?.close()
+        workspaceSettingsWindow = nil
+        quickOpenPanel = nil
+        commandPalettePanel = nil
+        navigatorSidebarViewModel = nil
         workspace = nil
         return true
     }
-}
 
-// MARK: - Toolbar
+    // MARK: - Private Methods
 
-extension CodeEditWindowController {
-    internal func setupToolbar() {
-        let toolbar = NSToolbar(identifier: UUID().uuidString)
-        toolbar.delegate = self
-        toolbar.displayMode = .labelOnly
-        toolbar.showsBaselineSeparator = false
-        self.window?.titleVisibility = toolbarCollapsed ? .visible : .hidden
-        self.window?.toolbarStyle = .unifiedCompact
-        self.window?.titlebarSeparatorStyle = .automatic
-        self.window?.toolbar = toolbar
+    private func setupToolbar() {
+        // TODO: Implement toolbar setup
     }
 
-    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        [
-            .toggleFirstSidebarItem,
-            .flexibleSpace,
-            .sidebarTrackingSeparator,
-            .flexibleSpace,
-            .itemListTrackingSeparator
-        ]
+    private func registerCommands() {
+        // TODO: Implement command registration
     }
 
-    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        [
-            .toggleFirstSidebarItem,
-            .sidebarTrackingSeparator,
-            .flexibleSpace,
-            .itemListTrackingSeparator
-        ]
-    }
-
-    func toggleToolbar() {
-        toolbarCollapsed.toggle()
-        updateToolbarVisibility()
-    }
-
-    private func updateToolbarVisibility() {
-        if toolbarCollapsed {
-            window?.titleVisibility = .visible
-            window?.title = workspace?.workspaceFileManager?.folderUrl.lastPathComponent ?? "Empty"
-            window?.toolbar = nil
-        } else {
-            window?.titleVisibility = .hidden
-            setupToolbar()
-        }
-    }
-
-    func toolbar(
-        _ toolbar: NSToolbar,
-        itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier,
-        willBeInsertedIntoToolbar flag: Bool
-    ) -> NSToolbarItem? {
-        switch itemIdentifier {
-        case .itemListTrackingSeparator:
-            guard let splitViewController else { return nil }
-
-            return NSTrackingSeparatorToolbarItem(
-                identifier: .itemListTrackingSeparator,
-                splitView: splitViewController.splitView,
-                dividerIndex: 1
-            )
-        case .toggleFirstSidebarItem:
-            let toolbarItem = NSToolbarItem(itemIdentifier: NSToolbarItem.Identifier.toggleFirstSidebarItem)
-            toolbarItem.label = "Navigator Sidebar"
-            toolbarItem.paletteLabel = " Navigator Sidebar"
-            toolbarItem.toolTip = "Hide or show the Navigator"
-            toolbarItem.isBordered = true
-            toolbarItem.target = self
-            toolbarItem.action = #selector(self.toggleFirstPanel)
-            toolbarItem.image = NSImage(
-                systemSymbolName: "sidebar.leading",
-                accessibilityDescription: nil
-            )?.withSymbolConfiguration(.init(scale: .large))
-
-            return toolbarItem
-        default:
-            return NSToolbarItem(itemIdentifier: itemIdentifier)
-        }
-    }
-
-    @objc private func toggleFirstPanel() {
-        splitViewController?.splitViewItems.first?.isCollapsed.toggle()
-        splitViewController?.saveNavigatorCollapsedState(isCollapsed: navigatorCollapsed)
+    private func listenToDocumentEdited(workspace: WorkspaceDocument) {
+        // TODO: Implement document edited listener
     }
 }

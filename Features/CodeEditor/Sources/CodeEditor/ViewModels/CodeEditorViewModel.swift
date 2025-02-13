@@ -77,8 +77,8 @@ public class CodeEditorViewModel: CodeEditorViewModelProtocol {
     }
     
     /// Updates the status bar model with the current state
-    public func updateStatusBar() -> StatusBarModel {
-        StatusBarModel(
+    public func updateStatusBar() -> CodeEditorInterface.StatusBarModel {
+        CodeEditorInterface.StatusBarModel(
             fileSize: fileSize,
             line: cursorLine,
             column: cursorColumn,

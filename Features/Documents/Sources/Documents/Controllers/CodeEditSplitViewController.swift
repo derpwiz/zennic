@@ -1,34 +1,32 @@
 //
 //  CodeEditSplitViewController.swift
-//  Documents
-//
-//  Created by Claude on 2/11/25.
+//  zennic
 //
 
 import Cocoa
 import SwiftUI
-import Editor
-import UtilityArea
-import Core
 
-public final class CodeEditSplitViewController: NSSplitViewController {
-    public static let minSidebarWidth: CGFloat = 242
-    public static let maxSnapWidth: CGFloat = snapWidth + 10
-    public static let snapWidth: CGFloat = 272
-    public static let minSnapWidth: CGFloat = snapWidth - 10
+final class CodeEditSplitViewController: NSSplitViewController {
+    static let minSidebarWidth: CGFloat = 242
+    static let maxSnapWidth: CGFloat = snapWidth + 10
+    static let snapWidth: CGFloat = 272
+    static let minSnapWidth: CGFloat = snapWidth - 10
 
     private weak var workspace: WorkspaceDocument?
+    private weak var navigatorViewModel: NavigatorAreaViewModel?
     private weak var windowRef: NSWindow?
     private unowned var hapticPerformer: NSHapticFeedbackPerformer
 
     // MARK: - Initialization
 
-    public init(
+    init(
         workspace: WorkspaceDocument,
+        navigatorViewModel: NavigatorAreaViewModel,
         windowRef: NSWindow,
         hapticPerformer: NSHapticFeedbackPerformer = NSHapticFeedbackManager.defaultPerformer
     ) {
         self.workspace = workspace
+        self.navigatorViewModel = navigatorViewModel
         self.windowRef = windowRef
         self.hapticPerformer = hapticPerformer
         super.init(nibName: nil, bundle: nil)
@@ -39,45 +37,41 @@ public final class CodeEditSplitViewController: NSSplitViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
         guard let windowRef else {
-            assertionFailure("No WindowRef found, not initialized properly or the window was dereferenced and the controller was not.")
+            assertionFailure("No WindowRef found not initialized properly or the window was dereferenced and the controller was not.")
             return
         }
 
         guard let workspace,
+              let navigatorViewModel,
               let editorManager = workspace.editorManager,
               let statusBarViewModel = workspace.statusBarViewModel,
-              let utilityAreaModel = workspace.utilityAreaModel else {
-            assertionFailure("Missing a workspace model")
+              let utilityAreaModel = workspace.utilityAreaModel,
+              let taskManager = workspace.taskManager else {
+            assertionFailure("Missing a workspace model: workspace=\(workspace == nil) navigator=\(navigatorViewModel == nil) editorManager=\(workspace?.editorManager == nil) statusBarModel=\(workspace?.statusBarViewModel == nil) utilityAreaModel=\(workspace?.utilityAreaModel == nil) taskManager=\(workspace?.taskManager == nil)")
             return
         }
 
         splitView.translatesAutoresizingMaskIntoConstraints = false
 
         let navigator = makeNavigator(view: SettingsInjector {
-            NavigationSplitView {
-                SidebarNavigationView(selectedFeature: Binding(
-                    get: { workspace.selectedFeature },
-                    set: { workspace.selectedFeature = $0 }
-                ))
-            } detail: {
-                EmptyView()
-            }
-            .environmentObject(workspace)
-            .environmentObject(editorManager)
+            NavigatorAreaView(workspace: workspace, viewModel: navigatorViewModel)
+                .environmentObject(workspace)
+                .environmentObject(editorManager)
         })
 
         addSplitViewItem(navigator)
 
         let workspaceView = SettingsInjector {
             WindowObserver(window: WindowBox(value: windowRef)) {
-                DocumentContentView()
+                WorkspaceView()
                     .environmentObject(workspace)
                     .environmentObject(editorManager)
                     .environmentObject(statusBarViewModel)
                     .environmentObject(utilityAreaModel)
+                    .environmentObject(taskManager)
             }
         }
 
@@ -86,6 +80,14 @@ public final class CodeEditSplitViewController: NSSplitViewController {
         mainContent.minimumThickness = 200
 
         addSplitViewItem(mainContent)
+
+        let inspector = makeInspector(view: SettingsInjector {
+            InspectorAreaView(viewModel: InspectorAreaViewModel())
+                .environmentObject(workspace)
+                .environmentObject(editorManager)
+        })
+
+        addSplitViewItem(inspector)
     }
 
     private func makeNavigator(view: some View) -> NSSplitViewItem {
@@ -97,7 +99,17 @@ public final class CodeEditSplitViewController: NSSplitViewController {
         return navigator
     }
 
-    public override func viewWillAppear() {
+    private func makeInspector(view: some View) -> NSSplitViewItem {
+        let inspector = NSSplitViewItem(inspectorWithViewController: NSHostingController(rootView: view))
+        inspector.titlebarSeparatorStyle = .none
+        inspector.minimumThickness = Self.minSidebarWidth
+        inspector.maximumThickness = .greatestFiniteMagnitude
+        inspector.collapseBehavior = .useConstraints
+        inspector.isSpringLoaded = true
+        return inspector
+    }
+
+    override func viewWillAppear() {
         super.viewWillAppear()
 
         guard let workspace else { return }
@@ -110,11 +122,17 @@ public final class CodeEditSplitViewController: NSSplitViewController {
                 .navigatorCollapsed
             ) as? Bool ?? false
         }
+
+        if let lastSplitView = splitViewItems.last {
+            lastSplitView.isCollapsed = workspace.getFromWorkspaceState(
+                .inspectorCollapsed
+            ) as? Bool ?? true
+        }
     }
 
     // MARK: - NSSplitViewDelegate
 
-    public override func splitView(
+    override func splitView(
         _ splitView: NSSplitView,
         constrainSplitPosition proposedPosition: CGFloat,
         ofSubviewAt dividerIndex: Int
@@ -131,6 +149,15 @@ public final class CodeEditSplitViewController: NSSplitViewController {
                 hapticCollapse(splitViewItems.first, collapseAction: false)
                 return max(Self.minSidebarWidth, proposedPosition)
             }
+        case 1:
+            let proposedWidth = view.frame.width - proposedPosition
+            if proposedWidth <= Self.minSidebarWidth / 2 {
+                hapticCollapse(splitViewItems.last, collapseAction: true)
+                return proposedPosition
+            } else {
+                hapticCollapse(splitViewItems.last, collapseAction: false)
+                return min(view.frame.width - Self.minSidebarWidth, proposedPosition)
+            }
         default:
             return proposedPosition
         }
@@ -143,7 +170,7 @@ public final class CodeEditSplitViewController: NSSplitViewController {
         item?.isCollapsed = collapseAction
     }
 
-    public override func splitViewDidResizeSubviews(_ notification: Notification) {
+    override func splitViewDidResizeSubviews(_ notification: Notification) {
         super.splitViewDidResizeSubviews(notification)
         guard let resizedDivider = notification.userInfo?["NSSplitViewDividerIndex"] as? Int else {
             return
@@ -158,43 +185,11 @@ public final class CodeEditSplitViewController: NSSplitViewController {
         }
     }
 
-    public func saveNavigatorCollapsedState(isCollapsed: Bool) {
+    func saveNavigatorCollapsedState(isCollapsed: Bool) {
         workspace?.addToWorkspaceState(key: .navigatorCollapsed, value: isCollapsed)
     }
-}
 
-// MARK: - Helper Views
-
-public struct WindowBox {
-    public let value: NSWindow?
-
-    public init(value: NSWindow?) {
-        self.value = value
-    }
-}
-
-public struct WindowObserver<Content: View>: View {
-    public let window: WindowBox
-    public let content: () -> Content
-
-    public init(window: WindowBox, @ViewBuilder content: @escaping () -> Content) {
-        self.window = window
-        self.content = content
-    }
-
-    public var body: some View {
-        content()
-    }
-}
-
-public struct SettingsInjector<Content: View>: View {
-    public let content: () -> Content
-
-    public init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
-    }
-
-    public var body: some View {
-        content()
+    func saveInspectorCollapsedState(isCollapsed: Bool) {
+        workspace?.addToWorkspaceState(key: .inspectorCollapsed, value: isCollapsed)
     }
 }

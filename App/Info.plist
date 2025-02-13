@@ -22,48 +22,5 @@
 	<string>1.0.0</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>UTExportedTypeDeclarations</key>
-	<array>
-		<dict>
-			<key>UTTypeConformsTo</key>
-			<array>
-				<string>com.apple.package</string>
-				<string>public.directory</string>
-			</array>
-			<key>UTTypeDescription</key>
-			<string>Zennic Workspace</string>
-			<key>UTTypeIcons</key>
-			<dict>
-				<key>UTTypeIconText</key>
-				<string>workspace</string>
-			</dict>
-			<key>UTTypeIdentifier</key>
-			<string>com.zennic.workspace</string>
-			<key>UTTypeTagSpecification</key>
-			<dict>
-				<key>public.filename-extension</key>
-				<array>
-					<string>zennicworkspace</string>
-				</array>
-			</dict>
-		</dict>
-	</array>
-	<key>CFBundleDocumentTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeName</key>
-			<string>Zennic Workspace</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>LSHandlerRank</key>
-			<string>Owner</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>com.zennic.workspace</string>
-			</array>
-			<key>NSDocumentClass</key>
-			<string>WorkspaceDocument</string>
-		</dict>
-	</array>
 </dict>
 </plist>

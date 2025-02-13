@@ -11,16 +11,19 @@ import Editor
 import UtilityArea
 import CodeEditor
 import CodeEditorInterface
+import DocumentsInterface
 
 /// A simple container view that provides the basic layout structure
 /// without depending on UI module implementation details
-public struct DocumentContentView: View {
-    @EnvironmentObject private var workspace: WorkspaceDocument
+public struct DocumentContentView<Document: WorkspaceDocumentProtocol>: View {
+    @ObservedObject private var workspace: Document
     @EnvironmentObject private var editorManager: EditorManager
     @EnvironmentObject private var statusBarViewModel: StatusBarViewModel
     @EnvironmentObject private var utilityAreaModel: UtilityAreaViewModel
     
-    public init() {}
+    public init(workspace: Document) {
+        self.workspace = workspace
+    }
     
     public var body: some View {
         VStack(spacing: 0) {
@@ -53,8 +56,7 @@ public struct DocumentContentView: View {
 #if DEBUG
 struct DocumentContentView_Previews: PreviewProvider {
     static var previews: some View {
-        DocumentContentView()
-            .environmentObject(WorkspaceDocument())
+        DocumentContentView(workspace: WorkspaceDocument())
             .environmentObject(EditorManager())
             .environmentObject(StatusBarViewModel())
             .environmentObject(UtilityAreaViewModel())

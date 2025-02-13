@@ -5,12 +5,19 @@ import Documents
 
 struct ContentView: View {
     @EnvironmentObject private var appState: AppState
-    @EnvironmentObject private var workspace: WorkspaceDocument
+    @ObservedObject private var workspace: WorkspaceDocument
+    
+    init(workspace: WorkspaceDocument) {
+        self.workspace = workspace
+    }
     
     var body: some View {
-        MainView()
+        WorkspaceView(workspace: workspace)
             .environmentObject(appState)
-            .environmentObject(workspace)
+            .environmentObject(EditorManager())
+            .environmentObject(StatusBarViewModel())
+            .environmentObject(UtilityAreaViewModel())
+            .environmentObject(TaskManager())
     }
 }
 
@@ -20,9 +27,8 @@ struct ContentView_Previews: PreviewProvider {
         let workspace = WorkspaceDocument()
         workspace.selectedFeature = "CodeEditor"
         
-        return ContentView()
+        return ContentView(workspace: workspace)
             .environmentObject(AppState.shared)
-            .environmentObject(workspace)
     }
 }
 #endif

@@ -1,8 +1,13 @@
+//
+//  MainView.swift
+//  UI
+//
+
 import SwiftUI
 import Shared
 import Core
 import CodeEditorInterface
-import Documents
+import DocumentsInterface
 
 // Use Shared module's SplitView components
 typealias SplitViewProxy = Shared.SplitViewProxy
@@ -112,11 +117,11 @@ private struct SettingsSection: View {
 }
 
 // MARK: - Sidebar Navigation
-private struct SidebarNavigationView: View {
-    @Binding var selectedFeature: String?
+private struct SidebarNavigationView<Document: WorkspaceDocumentProtocol>: View {
+    @EnvironmentObject var workspace: Document
     
     var body: some View {
-        List(selection: $selectedFeature) {
+        List(selection: $workspace.selectedFeature) {
             DevelopmentSection()
             AnalysisSection()
             SettingsSection()
@@ -129,8 +134,8 @@ private struct SidebarNavigationView: View {
 }
 
 // MARK: - Feature Content
-private struct FeatureContentView: View {
-    @EnvironmentObject var workspace: WorkspaceDocument
+private struct FeatureContentView<Document: WorkspaceDocumentProtocol>: View {
+    @EnvironmentObject var workspace: Document
     @Binding var editorsHeight: CGFloat
     
     var body: some View {
@@ -158,8 +163,8 @@ private struct FeatureContentView: View {
     }
 }
 
-private struct CodeEditorContent: View {
-    @ObservedObject var workspace: WorkspaceDocument
+private struct CodeEditorContent<Document: WorkspaceDocumentProtocol>: View {
+    @ObservedObject var workspace: Document
     
     var body: some View {
         Group {
@@ -200,11 +205,25 @@ private struct DefaultContent: View {
     }
 }
 
+// MARK: - Workspace Toolbar View
+private struct WorkspaceToolbarView<Document: WorkspaceDocumentProtocol>: View {
+    @EnvironmentObject var workspace: Document
+    
+    var body: some View {
+        HStack {
+            // TODO: Implement toolbar
+            Text("Toolbar")
+        }
+        .frame(height: 28)
+        .background(Color(NSColor.windowBackgroundColor))
+    }
+}
+
 // MARK: - Main Content Layout
-private struct MainContentLayout: View {
+private struct MainContentLayout<Document: WorkspaceDocumentProtocol>: View {
     @Binding var editorsHeight: CGFloat
     @ObservedObject var utilityAreaViewModel: UtilityAreaViewModel
-    @ObservedObject var workspace: WorkspaceDocument
+    @ObservedObject var workspace: Document
     let proxy: Shared.SplitViewProxy
     
     private let statusbarHeight: CGFloat = 29
@@ -212,7 +231,7 @@ private struct MainContentLayout: View {
     var body: some View {
         Shared.SplitView(axis: .vertical) {
             ZStack {
-                FeatureContentView(editorsHeight: $editorsHeight)
+                FeatureContentView<Document>(editorsHeight: $editorsHeight)
             }
             .frame(minHeight: 170 + statusbarHeight)
             .canCollapse()
@@ -238,9 +257,9 @@ private struct MainContentLayout: View {
 }
 
 // MARK: - Main View
-public struct _MainView: View {
+public struct _MainView<Document: WorkspaceDocumentProtocol>: View {
     @EnvironmentObject var appState: AppState
-    @EnvironmentObject var workspace: WorkspaceDocument
+    @EnvironmentObject var workspace: Document
     @StateObject private var utilityAreaViewModel = UtilityAreaViewModel()
     @StateObject private var statusBarViewModel = StatusBarViewModel()
     @State private var columnVisibility = NavigationSplitViewVisibility.automatic
@@ -262,12 +281,12 @@ public struct _MainView: View {
     
     public var body: some View {
         NavigationSplitView(columnVisibility: $columnVisibility) {
-            SidebarNavigationView(selectedFeature: $workspace.selectedFeature)
+            SidebarNavigationView<Document>()
         } detail: {
             NavigationStack {
                 Shared.SplitViewReader { proxy in
                     VStack(spacing: 0) {
-                        ToolbarView()
+                        WorkspaceToolbarView<Document>()
                             .padding(EdgeInsets(top: 1, leading: 0, bottom: 0, trailing: 0))
                         MainContentLayout(
                             editorsHeight: $editorsHeight,
@@ -289,12 +308,20 @@ public struct _MainView: View {
 
 #if DEBUG
 // MARK: - Previews
+private class PreviewWorkspaceDocument: WorkspaceDocumentProtocol {
+    @Published var selectedFeature: String?
+    var workspaceFileManager: CEWorkspaceFileManager?
+    
+    func getFromWorkspaceState(_ key: WorkspaceStateKey) -> Any? { nil }
+    func addToWorkspaceState(key: WorkspaceStateKey, value: Any?) {}
+}
+
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
-        let workspace = WorkspaceDocument()
+        let workspace = PreviewWorkspaceDocument()
         workspace.selectedFeature = "CodeEditor"
         
-        return _MainView()
+        return _MainView<PreviewWorkspaceDocument>()
             .environmentObject(AppState.shared)
             .environmentObject(workspace)
             .environmentObject(StatusBarViewModel())

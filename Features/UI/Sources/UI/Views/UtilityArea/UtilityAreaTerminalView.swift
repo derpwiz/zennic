@@ -4,7 +4,7 @@ import SwiftUI
 public struct UtilityAreaTerminalView: View {
     @StateObject private var model = UtilityAreaTabViewModel()
     
-    var body: some View {
+    public var body: some View {
         UtilityAreaTabView(model: model) { _ in
             VStack {
                 Text("Terminal")

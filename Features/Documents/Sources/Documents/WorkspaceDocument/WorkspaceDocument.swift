@@ -13,7 +13,6 @@ import Editor
 import UtilityArea
 import CodeEditorInterface
 import DocumentsInterface
-import UniformTypeIdentifiers
 
 extension UTType {
     static let zennicWorkspace = UTType("com.zennic.workspace") ?? UTType.folder
@@ -24,23 +23,25 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     
     @Published public var sortFoldersOnTop: Bool = true
     @Published public var navigatorFilter: String = ""
-    @Published public var selectedFeature: String?
+    @Published private var _selectedFeature: String?
+    @Published private var _workspaceFileManager: CEWorkspaceFileManager?
 
     private var workspaceState: [String: Any] {
         get {
-            let key = "workspaceState-\(self.fileURL?.absoluteString ?? "")"
-            return UserDefaults.standard.object(forKey: key) as? [String: Any] ?? [:]
+            let key = self.fileURL?.absoluteString ?? ""
+            return UserDefaults.standard.object(forKey: "workspaceState-\(key)") as? [String: Any] ?? [:]
         }
         set {
-            let key = "workspaceState-\(self.fileURL?.absoluteString ?? "")"
-            UserDefaults.standard.set(newValue, forKey: key)
+            let key = self.fileURL?.absoluteString ?? ""
+            UserDefaults.standard.set(newValue, forKey: "workspaceState-\(key)")
         }
     }
 
-    public var workspaceFileManager: CEWorkspaceFileManager?
     public var editorManager: EditorManager? = EditorManager()
     public var statusBarViewModel: StatusBarViewModel? = StatusBarViewModel()
     public var utilityAreaModel: UtilityAreaViewModel? = UtilityAreaViewModel()
+    public var commandsPaletteState: CommandsPaletteState? = CommandsPaletteState()
+    public var openQuicklyViewModel: OpenQuicklyViewModel?
 
     private var cancellables = Set<AnyCancellable>()
     
@@ -51,16 +52,29 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     }
     
     public required init(configuration: ReadConfiguration) throws {
-        // Initialize properties
-        let url = configuration.fileURL
-        self.workspaceFileManager = .init(
-            folderUrl: url,
-            ignoredFilesAndFolders: Set(ignoredFilesAndDirectory)
-        )
-        self.fileURL = url
+        // FileWrapper is not optional and has filename/directory properties
+        let wrapper = configuration.file
+        if wrapper.isDirectory,
+           let filename = wrapper.preferredFilename {
+            self.fileURL = URL(fileURLWithPath: filename)
+        } else {
+            throw CocoaError(.fileReadUnknown)
+        }
+        
+        if let fileURL = self.fileURL {
+            self._workspaceFileManager = .init(
+                folderUrl: fileURL,
+                ignoredFilesAndFolders: Set(ignoredFilesAndDirectory)
+            )
+        } else {
+            self._workspaceFileManager = nil
+        }
+        
         self.editorManager = EditorManager()
         self.statusBarViewModel = StatusBarViewModel()
         self.utilityAreaModel = UtilityAreaViewModel()
+        self.commandsPaletteState = CommandsPaletteState()
+        self.openQuicklyViewModel = OpenQuicklyViewModel(workspace: self)
         
         // Restore state
         editorManager?.restoreFromState(self)
@@ -129,8 +143,8 @@ public final class WorkspaceDocument: ReferenceFileDocument {
         statusBarViewModel = nil
         utilityAreaModel = nil
         editorManager = nil
-        workspaceFileManager?.cleanUp()
-        workspaceFileManager = nil
+        _workspaceFileManager?.cleanUp()
+        _workspaceFileManager = nil
     }
 
     /// Determines if the windows should be closed.
@@ -219,7 +233,17 @@ public final class WorkspaceDocument: ReferenceFileDocument {
 
 // MARK: - WorkspaceDocumentProtocol
 
-extension WorkspaceDocument: WorkspaceDocumentProtocol {
+extension WorkspaceDocument: WorkspaceDocumentProtocol, ObservableObject {
+    public var selectedFeature: String? {
+        get { _selectedFeature }
+        set { _selectedFeature = newValue }
+    }
+    
+    public var workspaceFileManager: CEWorkspaceFileManager? {
+        get { _workspaceFileManager }
+        set { _workspaceFileManager = newValue }
+    }
+
     public func getFromWorkspaceState(_ key: WorkspaceStateKey) -> Any? {
         workspaceState[key.rawValue]
     }

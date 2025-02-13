@@ -101,6 +101,8 @@ targets:
       - target: DocumentsInterface
       - target: CodeEditorInterface
       - target: CodeEditor
+      - target: TerminalEmulator
+      - target: UI
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"
@@ -338,9 +340,9 @@ targets:
       - target: Core
       - target: CodeEditorInterface
       - target: Shared
-      - target: Documents
       - target: Editor
       - target: UtilityArea
+      - target: DocumentsInterface
     settings:
       base:
         CODE_SIGN_IDENTITY: "-"

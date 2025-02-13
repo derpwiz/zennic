@@ -9,8 +9,9 @@ import Combine
 import Foundation
 import AppKit
 import OSLog
+import DocumentsInterface
 
-protocol CEWorkspaceFileManagerObserver: AnyObject {
+public protocol CEWorkspaceFileManagerObserver: AnyObject {
     func fileManagerUpdated(updatedItems: Set<CEWorkspaceFile>)
 }
 
@@ -20,10 +21,10 @@ protocol CEWorkspaceFileManagerObserver: AnyObject {
 /// - Navigating and loading file items.
 /// - Moving and modifying files.
 /// - Listening for file system updates and notifying observers.
-final class CEWorkspaceFileManager {
+public final class CEWorkspaceFileManager {
     let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "", category: "CEWorkspaceFileManager")
-    private(set) var fileManager: FileManager
-    private(set) var ignoredFilesAndFolders: Set<String>
+    public private(set) var fileManager: FileManager
+    public private(set) var ignoredFilesAndFolders: Set<String>
 
     var flattenedFileItems: [String: CEWorkspaceFile]
     /// Maps all directories to it's children's paths.
@@ -31,15 +32,15 @@ final class CEWorkspaceFileManager {
     var fsEventStream: DirectoryEventStream?
     var observers: NSHashTable<AnyObject> = .weakObjects()
 
-    let folderUrl: URL
-    let workspaceItem: CEWorkspaceFile
+    public let folderUrl: URL
+    public let workspaceItem: CEWorkspaceFile
 
     /// Create a file  manager object with a root and a set of files to ignore.
     /// - Parameters:
     ///   - folderUrl: The folder to use as the root of the file manager.
     ///   - ignoredFilesAndFolders: A set of files to ignore. These should not be paths, but rather file names
     ///                             like `.DS_Store`
-    init(
+    public init(
         folderUrl: URL,
         ignoredFilesAndFolders: Set<String>,
         fileManager: FileManager = FileManager.default
@@ -67,7 +68,7 @@ final class CEWorkspaceFileManager {
     ///   - createIfNotFound: Set to true if the function should index any intermediate directories to find the file,
     ///                       as well as index the file if it is not already.
     /// - Returns: The file item corresponding to the file
-    func getFile(
+    public func getFile(
         _ path: String,
         createIfNotFound: Bool = false
     ) -> CEWorkspaceFile? {
@@ -115,7 +116,7 @@ final class CEWorkspaceFileManager {
     ///         ``CEWorkspaceFileManager/getFile(_:createIfNotFound:)`` to force a file to be loaded.
     /// - Parameter file: The file to find children for.
     /// - Returns: An array of children for the file, or `nil` if the file was not a directory.
-    func childrenOfFile(_ file: CEWorkspaceFile) -> [CEWorkspaceFile]? {
+    public func childrenOfFile(_ file: CEWorkspaceFile) -> [CEWorkspaceFile]? {
         if file.isFolder {
             if childrenMap[file.id] == nil {
                 // Load the children
@@ -178,7 +179,7 @@ final class CEWorkspaceFileManager {
     func createChild(_ url: URL, forParent file: CEWorkspaceFile) -> CEWorkspaceFile {
         let relativeURL = URL(filePath: file.id).appendingPathComponent(url.lastPathComponent)
         let childId = relativeURL.relativePath
-        let newFileItem = CEWorkspaceFile(id: childId, url: relativeURL)
+        let newFileItem = CEWorkspaceFile(url: url)
         newFileItem.parent = file
         return newFileItem
     }
@@ -186,7 +187,7 @@ final class CEWorkspaceFileManager {
     /// Run when the owner of the ``CEWorkspaceFileManager`` doesn't need it anymore.
     /// This de-inits most functions in the ``CEWorkspaceFileManager``, so that in case it isn't de-init'd it does not
     /// use up significant amounts of RAM, and clears any file system event watchers.
-    func cleanUp() {
+    public func cleanUp() {
         fsEventStream?.cancel()
         flattenedFileItems = [workspaceItem.id: workspaceItem]
     }
