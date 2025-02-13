@@ -7,8 +7,8 @@ import SwiftUI
 import Editor
 import DocumentsInterface
 
-struct NavigatorAreaView: View {
-    @ObservedObject var workspace: any WorkspaceDocumentProtocol
+struct NavigatorAreaView<Document: WorkspaceDocumentProtocol>: View {
+    @ObservedObject var workspace: Document
     @ObservedObject var viewModel: NavigatorAreaViewModel
     @EnvironmentObject var editorManager: EditorManager
     
@@ -52,8 +52,8 @@ struct NavigatorAreaView: View {
 }
 
 // MARK: - Project Navigator
-struct ProjectNavigatorView: View {
-    @ObservedObject var workspace: any WorkspaceDocumentProtocol
+struct ProjectNavigatorView<Document: WorkspaceDocumentProtocol>: View {
+    @ObservedObject var workspace: Document
     @ObservedObject var viewModel: NavigatorAreaViewModel
     
     var body: some View {
@@ -66,8 +66,8 @@ struct ProjectNavigatorView: View {
 }
 
 // MARK: - Source Control Navigator
-struct SourceControlNavigatorView: View {
-    @ObservedObject var workspace: any WorkspaceDocumentProtocol
+struct SourceControlNavigatorView<Document: WorkspaceDocumentProtocol>: View {
+    @ObservedObject var workspace: Document
     @ObservedObject var viewModel: NavigatorAreaViewModel
     
     var body: some View {
@@ -80,8 +80,8 @@ struct SourceControlNavigatorView: View {
 }
 
 // MARK: - Find Navigator
-struct FindNavigatorView: View {
-    @ObservedObject var workspace: any WorkspaceDocumentProtocol
+struct FindNavigatorView<Document: WorkspaceDocumentProtocol>: View {
+    @ObservedObject var workspace: Document
     @ObservedObject var viewModel: NavigatorAreaViewModel
     
     var body: some View {

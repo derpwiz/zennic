@@ -7,10 +7,15 @@ import SwiftUI
 import Editor
 import DocumentsInterface
 
-struct InspectorAreaView: View {
+struct InspectorAreaView<Document: WorkspaceDocumentProtocol>: View {
     @ObservedObject var viewModel: InspectorAreaViewModel
-    @EnvironmentObject var workspace: WorkspaceDocument
+    @ObservedObject var workspace: Document
     @EnvironmentObject var editorManager: EditorManager
+    
+    init(workspace: Document, viewModel: InspectorAreaViewModel) {
+        self.workspace = workspace
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -103,8 +108,10 @@ struct HistoryInspectorView: View {
 }
 
 #Preview {
-    InspectorAreaView(viewModel: InspectorAreaViewModel())
-        .frame(width: 280, height: 600)
-        .environmentObject(WorkspaceDocument())
-        .environmentObject(EditorManager())
+    InspectorAreaView(
+        workspace: WorkspaceDocument(),
+        viewModel: InspectorAreaViewModel()
+    )
+    .frame(width: 280, height: 600)
+    .environmentObject(EditorManager())
 }

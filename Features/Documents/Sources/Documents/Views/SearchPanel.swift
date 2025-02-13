@@ -5,6 +5,7 @@
 
 import AppKit
 import SwiftUI
+import DocumentsInterface
 
 class SearchPanel: NSPanel {
     init() {
@@ -83,9 +84,9 @@ struct QuickActionsView: View {
     }
 }
 
-struct OpenQuicklyView: View {
+struct OpenQuicklyView<Document: WorkspaceDocumentProtocol>: View {
     @ObservedObject var state: OpenQuicklyViewModel
-    @EnvironmentObject var workspace: WorkspaceDocument
+    @ObservedObject var workspace: Document
     let onDismiss: () -> Void
     let openFile: (CEWorkspaceFile) -> Void
     

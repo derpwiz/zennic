@@ -26,14 +26,14 @@ final class CommandsPaletteState: ObservableObject {
     }
 }
 
-final class OpenQuicklyViewModel: ObservableObject {
+final class OpenQuicklyViewModel<Document: WorkspaceDocumentProtocol>: ObservableObject {
     @Published var searchText: String = ""
     @Published var selectedFile: CEWorkspaceFile?
     @Published var files: [CEWorkspaceFile] = []
     
-    private weak var workspace: WorkspaceDocument?
+    private weak var workspace: Document?
     
-    init(workspace: WorkspaceDocument?) {
+    init(workspace: Document?) {
         self.workspace = workspace
         // TODO: Initialize with workspace files
     }

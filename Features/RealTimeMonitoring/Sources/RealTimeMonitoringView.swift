@@ -1,21 +1,23 @@
 import SwiftUI
 import Documents
+import DocumentsInterface
 
-struct RealTimeMonitoringView: View {
-    @EnvironmentObject private var workspace: WorkspaceDocument
+struct RealTimeMonitoringView<Document: WorkspaceDocumentProtocol>: View {
+    @ObservedObject var workspace: Document
+    
+    init(workspace: Document) {
+        self.workspace = workspace
+    }
     
     var body: some View {
-        FileTreeView()
-            .environmentObject(workspace)
+        FileTreeView(workspace: workspace)
     }
 }
 
 #if DEBUG
 struct RealTimeMonitoringView_Previews: PreviewProvider {
     static var previews: some View {
-        let workspace = WorkspaceDocument()
-        return RealTimeMonitoringView()
-            .environmentObject(workspace)
+        RealTimeMonitoringView(workspace: WorkspaceDocument())
     }
 }
 #endif

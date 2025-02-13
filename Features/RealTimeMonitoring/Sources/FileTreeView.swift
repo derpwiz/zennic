@@ -2,6 +2,7 @@ import SwiftUI
 import Core
 import AppKit
 import Documents
+import DocumentsInterface
 
 struct FileItem: Identifiable {
     let id = UUID()
@@ -10,17 +11,17 @@ struct FileItem: Identifiable {
     var isDirectory: Bool { children != nil }
 }
 
-class FileTreeViewModel: ObservableObject {
+class FileTreeViewModel<Document: WorkspaceDocumentProtocol>: ObservableObject {
     @Published var items: [FileItem] = []
     private var gitService: Core.GitServiceType?
     
-    private func initializeGitService(workspace: WorkspaceDocument) {
+    private func initializeGitService(workspace: Document) {
         if let fileManager = workspace.workspaceFileManager {
             gitService = try? Core.GitServiceType(path: fileManager.folderUrl.path)
         }
     }
     
-    func loadFiles(workspace: WorkspaceDocument) {
+    func loadFiles(workspace: Document) {
         initializeGitService(workspace: workspace)
         do {
             guard let gitService = gitService else { return }
@@ -31,7 +32,7 @@ class FileTreeViewModel: ObservableObject {
         }
     }
     
-    func createFile(name: String, content: String, workspace: WorkspaceDocument) {
+    func createFile(name: String, content: String, workspace: Document) {
         initializeGitService(workspace: workspace)
         do {
             guard let gitService = gitService else { return }
@@ -42,7 +43,7 @@ class FileTreeViewModel: ObservableObject {
         }
     }
     
-    func deleteFile(name: String, workspace: WorkspaceDocument) {
+    func deleteFile(name: String, workspace: Document) {
         initializeGitService(workspace: workspace)
         do {
             guard let gitService = gitService else { return }
@@ -54,11 +55,16 @@ class FileTreeViewModel: ObservableObject {
     }
 }
 
-struct FileTreeView: View {
-    @StateObject private var viewModel = FileTreeViewModel()
-    @EnvironmentObject private var workspace: WorkspaceDocument
+struct FileTreeView<Document: WorkspaceDocumentProtocol>: View {
+    @StateObject private var viewModel: FileTreeViewModel<Document>
+    @ObservedObject var workspace: Document
     @State private var selectedFile: String? = nil
     @State private var showingCreateFile = false
+    
+    init(workspace: Document) {
+        self.workspace = workspace
+        self._viewModel = StateObject(wrappedValue: FileTreeViewModel<Document>())
+    }
     
     var body: some View {
         List(viewModel.items) { item in
@@ -127,9 +133,7 @@ struct CreateFileView: View {
 #if DEBUG
 struct FileTreeView_Previews: PreviewProvider {
     static var previews: some View {
-        let workspace = WorkspaceDocument()
-        return FileTreeView()
-            .environmentObject(workspace)
+        FileTreeView(workspace: WorkspaceDocument())
     }
 }
 #endif
