@@ -52,15 +52,15 @@ public final class WorkspaceDocument: ReferenceFileDocument {
     
     public required init(configuration: ReadConfiguration) throws {
         // Initialize properties
-        let url = configuration.file?.url
+        let url = configuration.fileURL
         self.workspaceFileManager = .init(
             folderUrl: url,
             ignoredFilesAndFolders: Set(ignoredFilesAndDirectory)
         )
+        self.fileURL = url
         self.editorManager = EditorManager()
         self.statusBarViewModel = StatusBarViewModel()
         self.utilityAreaModel = UtilityAreaViewModel()
-        self.fileURL = url
         
         // Restore state
         editorManager?.restoreFromState(self)
