@@ -50,3 +50,5 @@ redate_zsh.sh
 simple_redate.sh
 fix_redate_script.sh
 *redate*.sh
+fix_dates*.sh
+simple_date_fix.sh
