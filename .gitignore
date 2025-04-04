@@ -52,3 +52,8 @@ fix_redate_script.sh
 *redate*.sh
 fix_dates*.sh
 simple_date_fix.sh
+create_more_commits.sh
+
+# BFG and sensitive data files
+sensitive-data.txt
+*.bfg-report/
