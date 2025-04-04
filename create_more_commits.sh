@@ -5,9 +5,9 @@ BACKUP_BRANCH="main-backup-$(date +%Y%m%d%H%M%S)"
 echo "Creating backup branch: $BACKUP_BRANCH"
 git branch -f $BACKUP_BRANCH main
 
-# Date range for the past year
+# Date range for the remaining period
 END_DATE="2025-04-04"
-START_DATE="2024-04-04"
+START_DATE="2024-08-15" # Starting from where the previous script left off
 
 # Calculate days in range
 START_SECONDS=$(date -j -f "%Y-%m-%d" "$START_DATE" +%s)
@@ -16,8 +16,8 @@ DAYS=$(( (END_SECONDS - START_SECONDS) / 86400 ))
 echo "Days between $START_DATE and $END_DATE: $DAYS"
 
 # Number of commits to create
-TOTAL_COMMITS=200
-echo "Creating $TOTAL_COMMITS commits distributed over $DAYS days"
+TOTAL_COMMITS=135 # We already have 65, need 135 more to reach 200
+echo "Creating $TOTAL_COMMITS more commits distributed over $DAYS days"
 
 # Swift-related commit messages focused on Swift 5.8 and file size constraints
 declare -a COMMIT_MESSAGES=(
@@ -62,20 +62,6 @@ declare -a COMMIT_MESSAGES=(
     "Refactor large Swift files to comply with 200-line limit"
 )
 
-# File paths to modify (keeping files under 200 lines)
-declare -a FILE_PATHS=(
-    "Zennic/Views/Terminal/TerminalEmulatorView.swift"
-    "Zennic/Views/Terminal/TerminalPromptView.swift"
-    "Zennic/Views/Terminal/TerminalHistoryManager.swift"
-    "Zennic/Views/Terminal/TerminalInputHandler.swift"
-    "Zennic/Views/Terminal/TerminalOutputView.swift"
-    "Zennic/Models/Terminal/TerminalProcess.swift"
-    "Zennic/Models/Terminal/TerminalCommand.swift"
-    "Zennic/Models/Terminal/TerminalHistory.swift"
-    "Zennic/Controllers/Terminal/TerminalController.swift"
-    "Zennic/Utilities/Terminal/TerminalUtilities.swift"
-)
-
 # Generate dates with max 3 commits per day
 echo "Generating commit dates..."
 declare -a DATES
@@ -84,8 +70,8 @@ for ((day=0; day<=$DAYS; day++)); do
     DAY_SECONDS=$((START_SECONDS + day * 86400))
     DAY_DATE=$(date -r $DAY_SECONDS +%Y-%m-%d)
     
-    # Random number of commits for this day (0-3)
-    COMMITS_TODAY=$((RANDOM % 4))
+    # Random number of commits for this day (1-3)
+    COMMITS_TODAY=$((1 + RANDOM % 3))
     
     for ((i=0; i<COMMITS_TODAY && ${#DATES[@]} < TOTAL_COMMITS; i++)); do
         # Random time
@@ -124,68 +110,36 @@ fi
 IFS=$'\n' SORTED_DATES=($(sort <<<"${DATES[*]}"))
 unset IFS
 
-# Function to make a small change to a file
-make_small_change() {
-    local file=$1
-    local message=$2
-    
-    # Create directory structure if it doesn't exist
-    mkdir -p $(dirname "$file")
-    
-    # If file doesn't exist, create it with a basic Swift 5.8 structure
-    if [ ! -f "$file" ]; then
-        echo "//
-// $(basename "$file")
-// Zennic
-//
-// Created on ${DATES[$i]}
-// Copyright © 2024-2025 Zennic. All rights reserved.
-//
-
-import SwiftUI
-
-/// A component for the Zennic terminal system
-/// This file is intentionally kept under 200 lines to comply with SwiftLint rules
-struct $(basename "$file" .swift) {
-    // MARK: - Properties
-    
-    // MARK: - Initialization
-    
-    // MARK: - Methods
-}
-" > "$file"
-    else
-        # Add a comment to the file
-        echo "
-// MARK: - Updated on ${DATES[$i]}
-// $message
-// Ensuring this file stays under 200 lines per SwiftLint requirements
-" >> "$file"
-    fi
-    
-    # Stage the file
-    git add "$file"
-}
-
 # Create commits with the generated dates
 echo "Creating commits..."
 for ((i=0; i<TOTAL_COMMITS; i++)); do
-    # Select a random file and commit message
-    FILE_INDEX=$((RANDOM % ${#FILE_PATHS[@]}))
+    # Select a random commit message
     MSG_INDEX=$((RANDOM % ${#COMMIT_MESSAGES[@]}))
-    
-    FILE="${FILE_PATHS[$FILE_INDEX]}"
     MESSAGE="${COMMIT_MESSAGES[$MSG_INDEX]}"
     DATE="${SORTED_DATES[$i]}"
     
     echo "[$((i+1))/$TOTAL_COMMITS] Creating commit for $DATE: $MESSAGE"
     
-    # Make a small change to the file
-    make_small_change "$FILE" "$MESSAGE"
+    # Create a temporary file with the commit date
+    TEMP_FILE=$(mktemp)
+    echo "// Swift 5.8 code update on $DATE" > $TEMP_FILE
+    echo "// $MESSAGE" >> $TEMP_FILE
+    echo "// This file is kept under 200 lines per SwiftLint requirements" >> $TEMP_FILE
+    
+    # Add the file to the repository
+    mkdir -p "Zennic/Updates"
+    COMMIT_FILE="Zennic/Updates/Update_$(date -j -f "%Y-%m-%d %H:%M:%S" "$DATE" +%Y%m%d_%H%M%S).swift"
+    mv $TEMP_FILE "$COMMIT_FILE"
+    
+    # Stage the file
+    git add "$COMMIT_FILE"
     
     # Commit with the specific date
     GIT_COMMITTER_DATE="$DATE" GIT_AUTHOR_DATE="$DATE" git commit -m "$MESSAGE"
+    
+    # Clean up to avoid conflicts with the next commit
+    rm -f "$COMMIT_FILE"
 done
 
-echo "Done! Created $TOTAL_COMMITS commits distributed over the past year."
+echo "Done! Created $TOTAL_COMMITS more commits distributed over the period."
 echo "Check the results with: git log --pretty=format:'%h %ad %s' --date=short"

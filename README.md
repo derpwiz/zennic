@@ -92,7 +92,7 @@ The app follows a modern SwiftUI architecture with:
 
 ## License
 
-This project is proprietary and confidential. All rights reserved.
+MIT License
 
 ## Contact
 
